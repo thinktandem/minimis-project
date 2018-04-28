@@ -36,27 +36,16 @@
             "url": "https://github.com/thinktandem/bootstrap"
         }
     ],
-    "autoload": {
-        "psr-4": {
-            "Tandem\\composer\\": "src/composer"
-        }
-    },
     "scripts": {
-        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
-        "pre-install-cmd": ["Tandem\\composer\\ScriptHandler::checkComposerVersion"],
-        "pre-update-cmd": ["Tandem\\composer\\ScriptHandler::checkComposerVersion"],
         "post-install-cmd": [
-            "Tandem\\composer\\ScriptHandler::createRequiredFiles",
-            "Tandem\\composer\\ScriptHandler::removeGitDirectories",
-            "@composer drupal-scaffold"
+            "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+            "find web -name '.git' | xargs rm -rf"
         ],
         "post-update-cmd": [
-            "Tandem\\composer\\ScriptHandler::createRequiredFiles",
-            "Tandem\\composer\\ScriptHandler::removeGitDirectories"
+            "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+            "find web -name '.git' | xargs rm -rf"
         ],
-        "nuke": [
-            "rm -r -f web vendor composer.lock"
-        ]
+        "nuke": "rm -r -f web vendor composer.lock"
     },
     "extra": {
         "installer-paths": {
