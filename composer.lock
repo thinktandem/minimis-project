@@ -5712,7 +5712,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thinktandem/minimis",
-                "reference": "2fe0c9ac37ca4e1334e3685e902209a437148261"
+                "reference": "eab004b8a53ee6555e4967f7b149e5b19953d621"
             },
             "require": {
                 "composer/installers": "^1.2",
@@ -5793,34 +5793,6 @@
                 },
                 "patches-file": "composer.patches.json"
             },
-            "autoload": {
-                "psr-4": {
-                    "Tandem\\composer\\": "src/composer"
-                }
-            },
-            "scripts": {
-                "drupal-scaffold": [
-                    "DrupalComposer\\DrupalScaffold\\Plugin::scaffold"
-                ],
-                "pre-install-cmd": [
-                    "Tandem\\composer\\ScriptHandler::checkComposerVersion"
-                ],
-                "pre-update-cmd": [
-                    "Tandem\\composer\\ScriptHandler::checkComposerVersion"
-                ],
-                "post-install-cmd": [
-                    "Tandem\\composer\\ScriptHandler::createRequiredFiles",
-                    "Tandem\\composer\\ScriptHandler::removeGitDirectories",
-                    "@composer drupal-scaffold"
-                ],
-                "post-update-cmd": [
-                    "Tandem\\composer\\ScriptHandler::createRequiredFiles",
-                    "Tandem\\composer\\ScriptHandler::removeGitDirectories"
-                ],
-                "nuke": [
-                    "rm -r -f web vendor composer.lock"
-                ]
-            },
             "license": [
                 "GPL-2.0-or-later"
             ],
@@ -5833,7 +5805,7 @@
                 }
             ],
             "description": "Thinktandem's Minimis Distribution",
-            "time": "2018-04-28T16:00:13+00:00"
+            "time": "2018-04-28T16:59:54+00:00"
         },
         {
             "name": "twig/twig",
