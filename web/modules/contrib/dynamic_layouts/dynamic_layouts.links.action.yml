@@ -1,0 +1,5 @@
+dynamic_layout.dynamic_layout_add:
+  route_name: dynamic_layout.dynamic_layout_add
+  title: 'Add new layout'
+  appears_on:
+    - dynamic_layout.dynamic_layout_list

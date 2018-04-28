@@ -1,0 +1,29 @@
+$highlight-animation-speed: 1.5s;
+
+@keyframes highlight-row {
+  0% {
+    background: $row-bg;
+  }
+
+  30% {
+    background: $added-element-color;
+  }
+
+  100% {
+    background: $row-bg;
+  }
+}
+
+@keyframes highlight-column {
+  0% {
+    background: $column-bg;
+  }
+
+  30% {
+    background: $added-element-color;
+  }
+
+  100% {
+    background: $column-bg;
+  }
+}

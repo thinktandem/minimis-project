@@ -1,0 +1,15 @@
+name: Dynamic Layouts
+type: module
+description: 'Provides a dynamic layout builder.'
+package: Dynamic Layouts
+configure: dynamic_layout.dynamic_layout_settings
+# version: 1.0
+# core: 8.x
+dependencies:
+  - drupal:layout_discovery
+  - drupal:system (>= 8.3.x)
+# Information added by Drupal.org packaging script on 2018-03-08
+version: '8.x-1.3'
+core: '8.x'
+project: 'dynamic_layouts'
+datestamp: 1520518687

@@ -1,0 +1,57 @@
+{
+    "name": "thinktandem/minimis-project",
+    "description": "Template for Tandem's Drupal 8 Minimis Distribution.",
+    "type": "project",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "John Ouellet",
+            "email": "john@thinktandem.io",
+            "homepage": "https://thinktandem.io",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "drush/drush": "^9.0",
+        "drupal/console": "^1.0.2"
+    },
+    "require": {
+        "cweagans/composer-patches": "^1.6",
+        "drupal-composer/drupal-scaffold": "^2.2",
+        "thinktandem/minimis": "dev-8.x-1.x"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/thinktandem/minimis"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/thinktandem/bootstrap"
+        }
+    ],
+    "scripts": {
+        "post-install-cmd": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+        "post-update-cmd": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+        "nuke": "rm -r -f web vendor composer.lock"
+    },
+    "extra": {
+        "installer-paths": {
+            "web/core": ["type:drupal-core"],
+            "web/libraries/{$name}": ["type:drupal-library"],
+            "web/modules/contrib/{$name}": ["type:drupal-module"],
+            "web/profiles/contrib/{$name}": ["type:drupal-profile"],
+            "web/themes/contrib/{$name}": ["type:drupal-theme"],
+            "web/modules/custom/{$name}": ["type:drupal-custom-module"],
+            "web/themes/custom/{$name}": ["type:drupal-custom-theme"],
+            "drush/contrib/{$name}": ["type:drupal-drush"]
+        },
+        "patches-file": "composer.patches.json"
+    }
+}

@@ -1,0 +1,5 @@
+.dynamic-layouts-container {
+  .dynamic-layout-row {
+    @include flex('wrap', 'space-between', 'stretch');
+  }
+}

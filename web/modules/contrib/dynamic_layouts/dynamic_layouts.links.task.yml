@@ -1,0 +1,55 @@
+dynamic_layout.dynamic_layout_list:
+  route_name : dynamic_layout.dynamic_layout_list
+  title: List
+  base_route: dynamic_layout.dynamic_layout_list
+  weight: 10
+
+dynamic_layout.dynamic_layout_settings:
+  route_name : dynamic_layout.dynamic_layout_settings
+  title: Settings
+  base_route: dynamic_layout.dynamic_layout_list
+  weight: 10
+
+
+dynamic_layout.add_layout:
+  route_name : dynamic_layout.dynamic_layout_add
+  title: 'Layout'
+  base_route: dynamic_layout.add_layout
+  parent_id: dynamic_layout.dynamic_layout_list
+  weight: 30
+
+dynamic_layout.add_layout.settings:
+  route_name : dynamic_layout.dynamic_layout_settings
+  title: Settings
+  base_route: dynamic_layout.add_layout
+  parent_id: dynamic_layout.add_layout
+  weight: 20
+
+dynamic_layout.add_layout.list:
+  route_name : dynamic_layout.dynamic_layout_list
+  title: List
+  base_route: dynamic_layout.add_layout
+  parent_id: dynamic_layout.add_layout
+  weight: 10
+
+
+dynamic_layout.edit_layout:
+  route_name : entity.dynamic_layout.edit_form
+  title: 'Layout'
+  base_route: dynamic_layout.edit_layout
+  parent_id: dynamic_layout.add_layout
+  weight: 30
+
+dynamic_layout.edit_layout.settings:
+  route_name : dynamic_layout.dynamic_layout_settings
+  title: Settings
+  base_route: dynamic_layout.edit_layout
+  parent_id: dynamic_layout.edit_layout
+  weight: 20
+
+dynamic_layout.edit_layout.list:
+  route_name : dynamic_layout.dynamic_layout_list
+  title: List
+  base_route: dynamic_layout.edit_layout
+  parent_id: dynamic_layout.edit_layout
+  weight: 10

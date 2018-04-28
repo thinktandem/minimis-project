@@ -1,0 +1,26 @@
+.dynamic-layout-row {
+  background-color: $row-bg;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  padding: 0 20px 20px;
+
+  > .actions-element {
+    margin-top: 20px;
+  }
+
+  &.added-element {
+    animation: highlight-row $highlight-animation-speed;
+  }
+}
+
+.add-row-wrapper {
+  @extend %button-extend;
+  margin: 20px 0;
+  text-align: center;
+
+  a {
+    border-radius: 6px;
+    overflow: hidden;
+  }
+}

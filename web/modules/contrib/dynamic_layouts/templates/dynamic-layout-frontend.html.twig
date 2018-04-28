@@ -1,0 +1,29 @@
+{# Container #}
+<div class="dynamic-layouts-container {{ content['#wrapperClasses'] }}">
+
+  {# Rows #}
+  {% for row in content.rows|first %}
+
+    {% if row.default_row_class|length %}
+      <div class="dynamic-layout-row {{ row.default_row_class }} {{ row.custom_row_classes | join(' ') }}">
+    {% endif %}
+
+    {# Columns #}
+    {% for column in row.columns %}
+
+      {% set column_width_number = column.column_width_number %}
+      {% if column.custom_column_width_number|length %}
+        {% set column_width_number = column.custom_column_width_number %}
+      {% endif %}
+
+      <div class="dynamic-layouts-container-column layout-builder--layout__region {{ column.column_width_prefix }}-{{ column_width_number }} {{ column.default_column_class }} {{ column.custom_column_classes | join(' ') }} ">
+        {{ content[column.region_name] }}
+      </div>
+    {% endfor %}
+
+    {% if row.default_row_class|length %}
+      </div>
+    {% endif %}
+
+  {% endfor %}
+</div>

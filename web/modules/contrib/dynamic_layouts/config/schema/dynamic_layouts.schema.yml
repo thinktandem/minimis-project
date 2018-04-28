@@ -1,0 +1,39 @@
+dynamic_layouts.dynamic_layout.*:
+  type: config_entity
+  label: 'Dynamic layout'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    weight:
+      type: integer
+      label: 'Weight'
+    category:
+      type: string
+      label: 'Category'
+    regions:
+      type: text
+      label: 'Regions'
+    default_column_class:
+      type: text
+      label: 'Default column class'
+    default_row_class:
+      type: text
+      label: 'Default row class'
+
+dynamic_layouts.dynamic_layout_settings.*:
+  type: config_entity
+  label: 'Dynamic layout settings'
+  mapping:
+    id:
+      type: string
+      label: 'ID'
+    label:
+      type: label
+      label: 'Label'
+    settings:
+      type: text
+      label: 'Settings'
