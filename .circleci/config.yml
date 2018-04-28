@@ -24,7 +24,7 @@ jobs:
 
       - add_ssh_keys:
           fingerprints:
-            - "6d:a0:d7:e2:f1:97:02:84:e6:df:d9:56:45:76:3d:0d"
+            - "cf:8f:40:b2:3f:6e:09:a0:0c:ab:5d:84:be:98:7d:e4"
 
       - run:
           name: Prep For Pushing
