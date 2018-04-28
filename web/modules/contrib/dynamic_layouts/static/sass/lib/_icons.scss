@@ -1,0 +1,10 @@
+// Ad a new icomoon character on a new line
+$fonticons: ();
+
+// For crisp icons use font-size: 16, 32, 64 etc
+$fonticons: append($fonticons, edit '\e900');
+$fonticons: append($fonticons, plus '\e901');
+$fonticons: append($fonticons, column '\e902');
+$fonticons: append($fonticons, arrow '\e903');
+$fonticons: append($fonticons, delete '\e904');
+$fonticons: append($fonticons, settings '\e905');

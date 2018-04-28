@@ -1,0 +1,42 @@
+.dynamic-layout-column {
+  background-color: $column-bg;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  margin-top: 20px;
+
+  .column-content {
+    min-height: 50px;
+    padding: 10px;
+
+    .layout-name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+  }
+
+  &.added-element {
+    animation: highlight-column $highlight-animation-speed;
+  }
+
+  &.col-1,
+  &.col-2,
+  &.col-3 {
+    .actions-element ul {
+      li {
+        &:hover,
+        &.edit-action {
+          max-width: 30px;
+        }
+      }
+    }
+  }
+
+  &.col-1,
+  &.col-2 {
+    .layout-name {
+      font-size: 1em;
+      line-height: 1em;
+    }
+  }
+}

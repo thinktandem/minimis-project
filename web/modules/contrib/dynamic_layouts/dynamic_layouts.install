@@ -1,0 +1,61 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the dynamic_layouts module.
+ */
+
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+
+/**
+ * Implements hook_install().
+ *
+ * Show a message to the settings page.
+ */
+function dynamic_layouts_install() {
+  $settings_link = Link::fromTextAndUrl(t('here'), Url::fromRoute('dynamic_layout.dynamic_layout_settings'))->toString();
+
+  // Display a message.
+  drupal_set_message(t('Click @link to configure Dynamic Layouts!', array('@link' => $settings_link)));
+}
+
+/**
+ * Implements hook_requirements().
+ *
+ * {@inheritdoc}
+ */
+function dynamic_layouts_requirements($phase) {
+  $requirements = [];
+
+  $moduleHandler = \Drupal::service('module_handler');
+  $bootstrap_library_enabled = FALSE;
+  if ($moduleHandler->moduleExists('bootstrap_library')) {
+    $bootstrap_library_enabled = TRUE;
+  }
+
+  if ($phase == 'runtime') {
+    /** @var \Drupal\dynamic_layouts\DynamicLayoutSettingsInterface $settings */
+    if ($settings = \Drupal::entityTypeManager()
+      ->getStorage('dynamic_layout_settings')
+      ->load('settings')) {
+
+      // Check if the chosen frontend is Bootstrap.
+      if (($settings->getFrontendLibrary() == 'bootstrap') && (!$bootstrap_library_enabled)) {
+
+        $url = Url::fromUri('https://www.drupal.org/project/bootstrap_library');
+        $link = Link::fromTextAndUrl(t('bootstrap_library'), $url)->toString();
+
+        $requirements['dynamic_layouts'] = array(
+          'title' => t('Dynamic layouts'),
+          'value' => t('Bootstrap library not found'),
+          'severity' => REQUIREMENT_WARNING,
+          'description' => t('You have selected Bootstrap as your frontend library, to display the layout properly in the frontend: install the @link module & select version 4.x', ['@link' => $link]),
+        );
+      }
+    }
+
+  }
+
+  return $requirements;
+}
