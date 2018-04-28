@@ -1,0 +1,31 @@
+.actions-element {
+  ul {
+    @include flex('wrap', 'flex-end', 'stretch');
+    margin: 0;
+    padding: 0;
+
+    li {
+      @extend %button-extend;
+      border-radius: 6px;
+      list-style: none outside;
+      margin: 0 0 10px 10px;
+      max-width: 30px;
+      overflow: hidden;
+      transition: max-width 0.3s;
+      width: auto;
+
+      &.no-hover {
+        max-width: fit-content;
+      }
+
+      &:hover,
+      &.edit-action {
+        max-width: 200px;
+      }
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+}
