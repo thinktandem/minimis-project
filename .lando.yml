@@ -1,5 +1,0 @@
-name: minimis-project
-recipe: drupal8
-config:
-  webroot: web
-  database: mariadb:10.2
