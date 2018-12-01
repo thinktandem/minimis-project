@@ -2,4 +2,10 @@ name: minimis-project
 recipe: drupal8
 config:
   webroot: web
-  database: mariadb:10.2
+  database: mariadb
+  via: nginx
+  php: 7.2
+services:
+  appserver:
+    run:
+      - "cd $LANDO_MOUNT && composer install"
