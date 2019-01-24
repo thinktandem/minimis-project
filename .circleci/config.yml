@@ -34,11 +34,12 @@ jobs:
             git remote add drupalorg git@git.drupal.org:project/minimis.git
             git fetch drupalorg
 
-#      - run:
-#          name: Move Files & Start Lando
-#          command: |
-#            cp -rf .circleci/.lando.yml .lando.yml
-#            lando start -- -v
+      - run:
+          name: Move Files & Start Lando
+          command: |
+            rm -rf README.md
+            cp -rf .circleci/.lando.yml .lando.yml
+            lando start -- -v
 
       - run:
           name: Push to Drupal.org
