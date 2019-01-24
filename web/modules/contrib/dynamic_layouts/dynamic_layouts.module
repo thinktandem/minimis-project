@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * Provides Dynamic Layouts module functions.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function dynamic_layouts_theme() {
+  return [
+    'dynamic_layouts_backend' => [
+      'variables' => [
+        'row' => NULL,
+      ],
+    ],
+  ];
+}
+
+/**
+ * Implements hook_help().
+ */
+function dynamic_layouts_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.dynamic_layouts':
+      return check_markup(file_get_contents(dirname(__FILE__) . '/README.txt'));
+  }
+
+  return NULL;
+}

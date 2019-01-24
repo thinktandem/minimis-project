@@ -1,0 +1,13 @@
+dynamic_layouts:
+  version: 1.x
+  js:
+    static/js/dynamic-layouts.js: {}
+  css:
+    layout:
+      static/css/dynamic-layouts.css: {}
+
+dynamic_layouts_frontend:
+  version: 1.x
+  css:
+    layout:
+      static/css/dynamic-layouts-frontend.css: {}

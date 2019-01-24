@@ -1,0 +1,13 @@
+{
+  "name": "thinktandem/bootstrap",
+  "description": "Bootstrap 4.0.0",
+  "type": "drupal-library",
+  "license": "GPL-2.0",
+  "homepage": "https://github.com/thinktandem/bootstrap",
+  "authors": [
+      {
+          "name": "John Ouellet",
+          "email": "john@thinktandem.io"
+      }
+  ]
+}

@@ -1,0 +1,28 @@
+@font-face{font-family:'icomoon';src:url("../fonts/icomoon.eot");src:url("../fonts/icomoon.eot?#iefix") format("embedded-opentype"),url("../fonts/icomoon.woff") format("application/font-woff"),url("../fonts/icomoon.ttf") format("truetype"),url("../fonts/icomoon.svg#icomoon") format("svg");font-weight:normal;font-style:normal}
+.dynamic-layouts-container .dynamic-layout-row{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;-webkit-box-align:stretch;-ms-flex-align:stretch;align-items:stretch;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between}
+.custom-6 .dynamic-layout-row div[class*='-1']{margin-right:0;width:13.10541%}
+.custom-6 .dynamic-layout-row div[class*='-2']{margin-right:0;width:30.48433%}
+.custom-6 .dynamic-layout-row div[class*='-3']{margin-right:0;width:47.86325%}
+.custom-6 .dynamic-layout-row div[class*='-4']{margin-right:0;width:65.24217%}
+.custom-6 .dynamic-layout-row div[class*='-5']{margin-right:0;width:82.62108%}
+.custom-6 .dynamic-layout-row div[class*='-6']{margin-right:0;width:100%}
+.custom-8 .dynamic-layout-row div[class*='-1']{margin-right:0;width:9.72516%}
+.custom-8 .dynamic-layout-row div[class*='-2']{margin-right:0;width:22.62156%}
+.custom-8 .dynamic-layout-row div[class*='-3']{margin-right:0;width:35.51797%}
+.custom-8 .dynamic-layout-row div[class*='-4']{margin-right:0;width:48.41438%}
+.custom-8 .dynamic-layout-row div[class*='-5']{margin-right:0;width:61.31078%}
+.custom-8 .dynamic-layout-row div[class*='-6']{margin-right:0;width:74.20719%}
+.custom-8 .dynamic-layout-row div[class*='-7']{margin-right:0;width:87.10359%}
+.custom-8 .dynamic-layout-row div[class*='-8']{margin-right:0;width:100%}
+.custom-12 .dynamic-layout-row div[class*='-1']{margin-right:0;width:6.41562%}
+.custom-12 .dynamic-layout-row div[class*='-2']{margin-right:0;width:14.92329%}
+.custom-12 .dynamic-layout-row div[class*='-3']{margin-right:0;width:23.43096%}
+.custom-12 .dynamic-layout-row div[class*='-4']{margin-right:0;width:31.93863%}
+.custom-12 .dynamic-layout-row div[class*='-5']{margin-right:0;width:40.4463%}
+.custom-12 .dynamic-layout-row div[class*='-6']{margin-right:0;width:48.95397%}
+.custom-12 .dynamic-layout-row div[class*='-7']{margin-right:0;width:57.46165%}
+.custom-12 .dynamic-layout-row div[class*='-8']{margin-right:0;width:65.96932%}
+.custom-12 .dynamic-layout-row div[class*='-9']{margin-right:0;width:74.47699%}
+.custom-12 .dynamic-layout-row div[class*='-10']{margin-right:0;width:82.98466%}
+.custom-12 .dynamic-layout-row div[class*='-11']{margin-right:0;width:91.49233%}
+.custom-12 .dynamic-layout-row div[class*='-12']{margin-right:0;width:100%}

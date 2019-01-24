@@ -1,0 +1,19 @@
+.dynamic-layout-form {
+  * {
+    -moz-osx-font-smoothing: grayscale; // sass-lint:disable-line no-vendor-prefixes
+    -webkit-font-smoothing: antialiased; // sass-lint:disable-line no-vendor-prefixes
+    box-sizing: border-box;
+  }
+
+  .container-fluid {
+    .dynamic-layout-row {
+      .dynamic-layout-columns {
+        @include flex('wrap', 'space-between', 'stretch');
+
+        > .dynamic-layout-column:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}

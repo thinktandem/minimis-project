@@ -1,0 +1,9 @@
+$grid-columns: 8;
+
+.custom-#{$grid-columns} {
+  @for $i from 1 through $grid-columns {
+    .dynamic-layout-row div[class*='-#{$i}'] {
+      @include span-fluid-columns($i);
+    }
+  }
+}

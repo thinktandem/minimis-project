@@ -1,0 +1,117 @@
+%fonticon {
+  font-family: 'icomoon';
+  font-size: inherit;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: inherit;
+  speak: none;
+  text-transform: none;
+}
+
+@mixin icon($name) {
+  @extend %fonticon;
+  @each $icon in $fonticons {
+    $itemname: nth($icon, 1);
+    $char: nth($icon, 2);
+    @if $name == $itemname {
+      content: $char;
+    }
+  }
+}
+
+@function span-fluid-spacing($spacing) {
+  $context-width: ($grid-column-width + $grid-gutter-width) * $grid-columns - $grid-gutter-width;
+  $space: 0;
+
+  @if $spacing == true {
+    $space: (100% * $grid-gutter-width / $context-width);
+  }
+
+  @return $space;
+}
+
+@mixin span-fluid-spacing-margin($spacing) {
+  $context-width: ($grid-column-width + $grid-gutter-width) * $grid-columns - $grid-gutter-width;
+
+  @if $spacing == true {
+    margin-right: 100% * $grid-gutter-width / $context-width;
+  } @else if $spacing == false {
+    margin-right: 0;
+  }
+}
+
+@mixin span-fluid-columns($cols, $spacing: false) {
+  $context-width: ($grid-column-width + $grid-gutter-width) * $grid-columns - $grid-gutter-width;
+  $target-width: ($grid-column-width + $grid-gutter-width) * $cols - $grid-gutter-width;
+
+  @include span-fluid-spacing-margin($spacing);
+  width: 100% * $target-width / $context-width;
+}
+
+@mixin flex-order($number) {
+  order: #{$number};
+}
+
+@mixin flex-align($align) {
+  @if $align == 'start' or $align == 'end' {
+    align-items: flex-#{$align};
+  } @else {
+    align-items: #{$align};
+  }
+}
+
+@mixin flex-flow($direction: none, $wrap: none) {
+  @if $wrap != none {
+    flex-wrap: #{$wrap};
+  }
+  @if $direction != none {
+    flex-direction: #{$direction};
+  }
+}
+
+@mixin flex-grow($value) {
+  flex-grow: #{$value};
+}
+
+@mixin flex-shrink($value) {
+  flex-shrink: #{$value};
+}
+
+@mixin flex-child($value) {
+  flex: #{$value};
+}
+
+@mixin flex($wrap: none, $justify: none, $align: none, $flow: none, $direction: none, $inline: none) {
+  @if $inline != none {
+    display: inline-flex;
+  } @else {
+    display: flex;
+  }
+  @if $direction != none {
+    flex-direction: #{$direction};
+  }
+  @if $wrap != none {
+    flex-wrap: #{$wrap};
+  }
+  @if $align != none {
+    align-items: #{$align};
+  }
+  @if $justify != none {
+    justify-content: #{$justify};
+  }
+}
+
+@function calc-fluid-grid($wrapper-margin: 0, $cols: $grid-columns, $include-gutter: false) {
+  $guttervalue: 1;
+  @if $include-gutter {
+    $guttervalue: 0;
+  }
+  $context-width: ($grid-column-width + $grid-gutter-width) * $grid-columns - $grid-gutter-width;
+  $target-width: $grid-column-width * $cols + $grid-gutter-width * ($cols - $guttervalue);
+  @if $wrapper-margin > 0 {
+    @return 100% * $target-width / $context-width - 100% * $wrapper-margin / $master-context-width;
+  } @else {
+    @return 100% * $target-width / $context-width;
+  }
+}

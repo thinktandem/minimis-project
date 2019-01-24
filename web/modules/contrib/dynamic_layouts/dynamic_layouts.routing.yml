@@ -1,0 +1,116 @@
+dynamic_layout.dynamic_layout_list:
+  path: '/admin/config/dynamic-layouts'
+  defaults:
+    _entity_list: 'dynamic_layout'
+    _title: 'Dynamic Layouts'
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+dynamic_layout.dynamic_layout_settings:
+  path: '/admin/config/dynamic-layouts/settings'
+  defaults:
+    _title: 'Settings'
+    _form: '\Drupal\dynamic_layouts\Form\SettingsForm'
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+dynamic_layout.dynamic_layout_add:
+  path: '/admin/config/dynamic-layouts/add'
+  defaults:
+    _entity_form: dynamic_layout.default
+    _title: 'Add layout'
+  requirements:
+    _permission: 'admin dynamic layouts'
+    _custom_access: '\Drupal\dynamic_layouts\Controller\DynamicLayoutController::access'
+  options:
+    _admin_route: TRUE
+
+entity.dynamic_layout.edit_form:
+  path: '/admin/config/dynamic-layouts/manage/{dynamic_layout}'
+  defaults:
+    _entity_form: dynamic_layout.default
+    _title: 'Edit layout'
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+entity.dynamic_layout.delete_form:
+  path: '/admin/config/dynamic-layouts/manage/{dynamic_layout}/delete'
+  defaults:
+    _entity_form: dynamic_layout.delete
+    _title: 'Delete layout'
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+dynamic_layouts.edit_row_modal_form:
+  path: '/admin/config/dynamic-layouts/edit-row/modal_form'
+  defaults:
+    _title: 'Edit row'
+    _controller: '\Drupal\dynamic_layouts\Controller\DynamicLayoutController::openEditRowModalForm'
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+dynamic_layouts.delete_row:
+  path: '/admin/config/dynamic-layouts/manage/{dynamic_layout_id}/delete-row/{row_id}'
+  defaults:
+    _title: 'Delete row'
+    _controller: '\Drupal\dynamic_layouts\Controller\DynamicLayoutController::deleteRow'
+    row_id: ''
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+dynamic_layouts.add_row:
+  path: '/admin/config/dynamic-layouts/manage/{dynamic_layout_id}/add-row'
+  defaults:
+    _title: 'Add row'
+    _controller: '\Drupal\dynamic_layouts\Controller\DynamicLayoutController::addRow'
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+dynamic_layouts.edit_column_modal_form:
+  path: '/admin/config/dynamic-layouts/edit-column/modal_form'
+  defaults:
+    _title: 'Edit column'
+    _controller: '\Drupal\dynamic_layouts\Controller\DynamicLayoutController::openEditColumnModalForm'
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+dynamic_layouts.delete_column:
+  path: '/admin/config/dynamic-layouts/manage/{dynamic_layout_id}/delete-column/{row_id}/{column_id}'
+  defaults:
+    _title: 'Delete row'
+    _controller: '\Drupal\dynamic_layouts\Controller\DynamicLayoutController::deleteColumn'
+    row_id: ''
+    column_id: ''
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+dynamic_layouts.add_column:
+  path: '/admin/config/dynamic-layouts/manage/{dynamic_layout_id}/add-column/{row_id}'
+  defaults:
+    _title: 'Add column'
+    _controller: '\Drupal\dynamic_layouts\Controller\DynamicLayoutController::addColumn'
+    row_id: ''
+  requirements:
+    _permission: 'admin dynamic layouts'
+  options:
+    _admin_route: TRUE
+
+

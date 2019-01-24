@@ -1,0 +1,49 @@
+{% if row.default_row_class|length %}
+  <div data-row="{{ row.row_id }}" class="{{ row.default_row_class }} {{ row.custom_row_classes | join(' ') }} {{ row.admin_row_classes | join(' ') }}">
+{% endif %}
+
+  {# Columns #}
+  <div class="dynamic-layout-columns">
+    {% for column in row.columns %}
+
+      {% set column_width_number = column.column_width_number %}
+      {% if column.custom_column_width_number|length %}
+        {% set column_width_number = column.custom_column_width_number %}
+      {% endif %}
+
+      <div data-column="{{ column.column_id }}" class="col-{{ column_width_number }} {{ column.default_column_class }} {{ column.admin_column_classes | join(' ') }} {{ column.custom_column_classes | join(' ') }}">
+        <div class="column-content">
+
+          {% if column.column_name|length %}
+            <div class="layout-name">
+              {{ column.column_name }}
+            </div>
+
+          {% else %}
+            <div class="layout-name">
+              Row {{ row.row_count }} - Column {{ loop.index }}
+            </div>
+          {% endif %}
+
+          <div class="actions-element">
+            <ul>
+              <li class="edit-action">{{ column.edit_column }}</li>
+              <li class="delete-action">{{ column.delete_column }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="actions-element">
+    <ul>
+      <li class="no-hover">{{ row.add_column_link }}</li>
+      <li class="edit-action">{{ row.edit_row_link }}</li>
+      <li class="delete-action">{{ row.delete_row_link }}</li>
+    </ul>
+  </div>
+
+{% if row.default_row_class|length %}
+  </div>
+{% endif %}

@@ -1,0 +1,86 @@
+%btn-before {
+  $rgba: rgba(0, 0, 0, 0.05);
+  background: $rgba;
+  font-size: 20px;
+  font-weight: 500;
+  height: 100%;
+  left: 0;
+  line-height: 36px;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 30px;
+}
+
+%button-extend {
+  .btn {
+    color: $white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 20px;
+    outline: none;
+    padding: 8px 10px 8px 40px;
+    position: relative;
+    text-transform: uppercase;
+    transition: background-color 0.3s, width 0.3s;
+    white-space: nowrap;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    &.add-row {
+      background-color: $add-color;
+
+      &:hover {
+        background-color: $add-hover-color;
+      }
+
+      &:before {
+        @extend %btn-before;
+        @include icon('plus');
+      }
+    }
+
+    &.add-column-link {
+      background-color: $add-color;
+
+      &:hover {
+        background-color: $add-hover-color;
+      }
+
+      &:before {
+        @extend %btn-before;
+        @include icon('column');
+      }
+    }
+
+    &.edit-link {
+      background-color: $edit-color;
+
+      &:hover {
+        background-color: $edit-hover-color;
+      }
+
+      &:before {
+        @extend %btn-before;
+        @include icon('edit');
+      }
+    }
+
+    &.delete-link {
+      background-color: $danger;
+
+      &:hover {
+        background-color: $danger-hover;
+      }
+
+      &:before {
+        @extend %btn-before;
+        @include icon('delete');
+      }
+    }
+  }
+}
