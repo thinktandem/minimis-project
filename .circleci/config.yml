@@ -31,7 +31,7 @@ jobs:
           command: |
             git config --global user.email labboy0276@yahoo.com
             git config --global user.name "John Ouellet"
-            git remote add drupalorg labboy0276@git.drupal.org:project/minimis.git
+            git remote add drupalorg git@git.drupal.org:project/minimis.git
             git fetch drupalorg
 
       - run:
@@ -48,7 +48,6 @@ jobs:
           name: Push to DO
           command: |
             git fetch drupalorg
-            rm -f src/composer/ScriptHandler.php
             git add -A
             git commit -m "Compiling and Pushing from CircleCI"
             git pull drupalorg 8.x-1.x --rebase
