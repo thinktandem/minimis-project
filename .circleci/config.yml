@@ -45,7 +45,7 @@ jobs:
             lando start -- -v
 
       - run:
-          name: Push to DO
+          name: Push to Drupal.org
           command: |
             git fetch drupalorg
             git add -A
