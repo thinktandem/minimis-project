@@ -48,6 +48,7 @@ jobs:
           name: Push to DO
           command: |
             git fetch drupalorg
+            rm -f src/composer/ScriptHandler.php
             git add -A
             git commit -m "Compiling and Pushing from CircleCI"
             git pull drupalorg 8.x-1.x --rebase
