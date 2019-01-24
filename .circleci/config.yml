@@ -18,9 +18,9 @@ jobs:
           command: |
             sudo apt-get -y update
             sudo apt-get -y install cgroup-bin curl
-            curl -fsSL -o /tmp/lando.deb https://github.com/lando/lando/releases/download/v3.0.0-beta.39/lando-v3.0.0-beta.39.deb
-            sudo dpkg -i /tmp/lando.deb
-            lando version
+#            curl -fsSL -o /tmp/lando.deb https://github.com/lando/lando/releases/download/v3.0.0-beta.39/lando-v3.0.0-beta.39.deb
+#            sudo dpkg -i /tmp/lando.deb
+#            lando version
 
       - add_ssh_keys:
           fingerprints:
@@ -37,12 +37,8 @@ jobs:
       - run:
           name: Move Files & Start Lando
           command: |
-            rm -f .gitignore
-            rm -f .lando.yml
-            rm -f web/profiles/minimis/.gitignore
-            cp -rf .circleci/.gitignore .gitignore
-            cp -rf .circleci/.lando.yml .lando.yml
-            lando start -- -v
+#            cp -rf .circleci/.lando.yml .lando.yml
+#            lando start -- -v
 
       - run:
           name: Push to Drupal.org
