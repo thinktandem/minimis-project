@@ -13,18 +13,18 @@ jobs:
     steps:
       - checkout
 
-      - run:
-          name: Setup Lando
-          command: |
-            sudo apt-get -y update
-            sudo apt-get -y install cgroup-bin curl
+#      - run:
+#          name: Setup Lando
+#          command: |
+#            sudo apt-get -y update
+#            sudo apt-get -y install cgroup-bin curl
 #            curl -fsSL -o /tmp/lando.deb https://github.com/lando/lando/releases/download/v3.0.0-beta.39/lando-v3.0.0-beta.39.deb
 #            sudo dpkg -i /tmp/lando.deb
 #            lando version
 
       - add_ssh_keys:
           fingerprints:
-            - "cf:8f:40:b2:3f:6e:09:a0:0c:ab:5d:84:be:98:7d:e4"
+            - "9e:6c:d1:da:c8:22:31:a0:c8:a9:ae:34:96:88:0e:46"
 
       - run:
           name: Prep For Pushing
@@ -35,7 +35,7 @@ jobs:
             git fetch drupalorg
 
       - run:
-          name: Move Files & Start Lando
+          name: Move Files
           command: |
             rm -rf README.md
 #            cp -rf .circleci/.lando.yml .lando.yml
