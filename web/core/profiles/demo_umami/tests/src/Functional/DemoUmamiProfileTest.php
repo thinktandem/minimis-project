@@ -77,9 +77,6 @@ class DemoUmamiProfileTest extends BrowserTestBase {
           'filter.format.basic_html' => ['roles:', '  - authenticated'],
           'filter.format.full_html' => ['roles:', '  - administrator'],
           'filter.format.restricted_html' => ['roles:', '  - anonymous'],
-          // The system.site config is overwritten during tests by
-          // FunctionalTestSetupTrait::installParameters().
-          'system.site' => ['uuid:', 'name:', 'mail:'],
         ]);
       }
       else {
@@ -92,12 +89,7 @@ class DemoUmamiProfileTest extends BrowserTestBase {
    * Tests the successful editing of nodes by admin.
    */
   public function testEditNodesByAdmin() {
-    $permissions = [
-      'administer nodes',
-      'edit any recipe content',
-      'use editorial transition create_new_draft',
-    ];
-    $account = $this->drupalCreateUser($permissions);
+    $account = $this->drupalCreateUser(['administer nodes', 'edit any recipe content']);
     $this->drupalLogin($account);
     $webassert = $this->assertSession();
 
@@ -130,11 +122,10 @@ class DemoUmamiProfileTest extends BrowserTestBase {
   public function testDemonstrationWarningMessage() {
     $permissions = [
       'access content overview',
-      'access toolbar',
       'administer nodes',
-      'edit any recipe content',
       'create recipe content',
-      'use editorial transition create_new_draft',
+      'edit any recipe content',
+      'access toolbar',
     ];
     $account = $this->drupalCreateUser($permissions);
     $this->drupalLogin($account);

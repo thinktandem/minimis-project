@@ -26,12 +26,12 @@ class Twig_Extension_Sandbox extends Twig_Extension
 
     public function getTokenParsers()
     {
-        return [new Twig_TokenParser_Sandbox()];
+        return array(new Twig_TokenParser_Sandbox());
     }
 
     public function getNodeVisitors()
     {
-        return [new Twig_NodeVisitor_Sandbox()];
+        return array(new Twig_NodeVisitor_Sandbox());
     }
 
     public function enableSandbox()

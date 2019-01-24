@@ -9,7 +9,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests system_update_8001().
  *
  * @group Update
- * @group legacy
  */
 class MenuTreeSerializationTitleTest extends UpdatePathTestBase {
 

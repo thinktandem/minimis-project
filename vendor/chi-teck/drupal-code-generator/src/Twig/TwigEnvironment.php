@@ -21,9 +21,18 @@ class TwigEnvironment extends Twig_Environment {
   public function __construct(Twig_LoaderInterface $loader) {
     parent::__construct($loader);
 
-    $this->addFilter(new Twig_SimpleFilter('plural', [Utils::class, 'pluralize']), ['deprecated' => TRUE]);
+    $this->addFilter(new Twig_SimpleFilter('plural', function ($string) {
+      switch (substr($string, -1)) {
+        case 'y':
+          return substr($string, 0, -1) . 'ies';
 
-    $this->addFilter(new Twig_SimpleFilter('pluralize', [Utils::class, 'pluralize']));
+        case 's':
+          return $string . 'es';
+
+        default:
+          return $string . 's';
+      }
+    }));
 
     $this->addFilter(new Twig_SimpleFilter('article', function ($string) {
       $article = in_array(strtolower($string[0]), ['a', 'e', 'i', 'o', 'u']) ? 'an' : 'a';
@@ -55,24 +64,6 @@ class TwigEnvironment extends Twig_Environment {
     }));
 
     $this->addTokenParser(new TwigSortTokenParser());
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function tokenize($source, $name = NULL) {
-    if (!$source instanceof \Twig_Source) {
-      $source = new \Twig_Source($source, $name);
-    }
-    // Remove leading whitespaces to preserve indentation.
-    // @see https://github.com/twigphp/Twig/issues/1423
-    $code = $source->getCode();
-    if (strpos($code, '{% verbatim %}') === FALSE) {
-      $code = preg_replace("/\n +\{%/", "\n{%", $source->getCode());
-    }
-    // Twig source has no setters.
-    $source = new \Twig_Source($code, $source->getName(), $source->getPath());
-    return parent::tokenize($source, $name);
   }
 
 }

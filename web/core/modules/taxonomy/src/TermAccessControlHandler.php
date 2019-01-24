@@ -18,37 +18,19 @@ class TermAccessControlHandler extends EntityAccessControlHandler {
    * {@inheritdoc}
    */
   protected function checkAccess(EntityInterface $entity, $operation, AccountInterface $account) {
-    if ($account->hasPermission('administer taxonomy')) {
-      return AccessResult::allowed()->cachePerPermissions();
-    }
-
     switch ($operation) {
       case 'view':
-        $access_result = AccessResult::allowedIf($account->hasPermission('access content') && $entity->isPublished())
-          ->cachePerPermissions()
-          ->addCacheableDependency($entity);
-        if (!$access_result->isAllowed()) {
-          $access_result->setReason("The 'access content' permission is required and the taxonomy term must be published.");
-        }
-        return $access_result;
+        return AccessResult::allowedIfHasPermission($account, 'access content');
 
       case 'update':
-        if ($account->hasPermission("edit terms in {$entity->bundle()}")) {
-          return AccessResult::allowed()->cachePerPermissions();
-        }
-
-        return AccessResult::neutral()->setReason("The following permissions are required: 'edit terms in {$entity->bundle()}' OR 'administer taxonomy'.");
+        return AccessResult::allowedIfHasPermissions($account, ["edit terms in {$entity->bundle()}", 'administer taxonomy'], 'OR');
 
       case 'delete':
-        if ($account->hasPermission("delete terms in {$entity->bundle()}")) {
-          return AccessResult::allowed()->cachePerPermissions();
-        }
-
-        return AccessResult::neutral()->setReason("The following permissions are required: 'delete terms in {$entity->bundle()}' OR 'administer taxonomy'.");
+        return AccessResult::allowedIfHasPermissions($account, ["delete terms in {$entity->bundle()}", 'administer taxonomy'], 'OR');
 
       default:
         // No opinion.
-        return AccessResult::neutral()->cachePerPermissions();
+        return AccessResult::neutral();
     }
   }
 

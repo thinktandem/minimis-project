@@ -3,9 +3,8 @@
  * Attaches behaviors for the Contextual module.
  */
 
-(function($, Drupal, drupalSettings, _, Backbone, JSON, storage) {
-  const options = $.extend(
-    drupalSettings.contextual,
+(function ($, Drupal, drupalSettings, _, Backbone, JSON, storage) {
+  const options = $.extend(drupalSettings.contextual,
     // Merge strings on top of drupalSettings so that they are not mutable.
     {
       strings: {
@@ -17,19 +16,15 @@
 
   // Clear the cached contextual links whenever the current user's set of
   // permissions changes.
-  const cachedPermissionsHash = storage.getItem(
-    'Drupal.contextual.permissionsHash',
-  );
+  const cachedPermissionsHash = storage.getItem('Drupal.contextual.permissionsHash');
   const permissionsHash = drupalSettings.user.permissionsHash;
   if (cachedPermissionsHash !== permissionsHash) {
     if (typeof permissionsHash === 'string') {
-      _.chain(storage)
-        .keys()
-        .each(key => {
-          if (key.substring(0, 18) === 'Drupal.contextual.') {
-            storage.removeItem(key);
-          }
-        });
+      _.chain(storage).keys().each((key) => {
+        if (key.substring(0, 18) === 'Drupal.contextual.') {
+          storage.removeItem(key);
+        }
+      });
     }
     storage.setItem('Drupal.contextual.permissionsHash', permissionsHash);
   }
@@ -46,8 +41,7 @@
   function adjustIfNestedAndOverlapping($contextual) {
     const $contextuals = $contextual
       // @todo confirm that .closest() is not sufficient
-      .parents('.contextual-region')
-      .eq(-1)
+      .parents('.contextual-region').eq(-1)
       .find('.contextual');
 
     // Early-return when there's no nesting.
@@ -98,22 +92,16 @@
       .prepend(Drupal.theme('contextualTrigger'));
 
     // Set the destination parameter on each of the contextual links.
-    const destination = `destination=${Drupal.encodePath(
-      Drupal.url(drupalSettings.path.currentPath),
-    )}`;
-    $contextual.find('.contextual-links a').each(function() {
+    const destination = `destination=${Drupal.encodePath(drupalSettings.path.currentPath)}`;
+    $contextual.find('.contextual-links a').each(function () {
       const url = this.getAttribute('href');
-      const glue = url.indexOf('?') === -1 ? '?' : '&';
+      const glue = (url.indexOf('?') === -1) ? '?' : '&';
       this.setAttribute('href', url + glue + destination);
     });
 
     // Create a model and the appropriate views.
     const model = new contextual.StateModel({
-      title: $region
-        .find('h2')
-        .eq(0)
-        .text()
-        .trim(),
+      title: $region.find('h2').eq(0).text().trim(),
     });
     const viewOptions = $.extend({ el: $contextual, model }, options);
     contextual.views.push({
@@ -121,8 +109,8 @@
       aural: new contextual.AuralView(viewOptions),
       keyboard: new contextual.KeyboardView(viewOptions),
     });
-    contextual.regionViews.push(
-      new contextual.RegionView($.extend({ el: $region, model }, options)),
+    contextual.regionViews.push(new contextual.RegionView(
+      $.extend({ el: $region, model }, options)),
     );
 
     // Add the model to the collection. This must happen after the views have
@@ -158,26 +146,20 @@
       const $context = $(context);
 
       // Find all contextual links placeholders, if any.
-      let $placeholders = $context
-        .find('[data-contextual-id]')
-        .once('contextual-render');
+      let $placeholders = $context.find('[data-contextual-id]').once('contextual-render');
       if ($placeholders.length === 0) {
         return;
       }
 
       // Collect the IDs for all contextual links placeholders.
       const ids = [];
-      $placeholders.each(function() {
-        ids.push({
-          id: $(this).attr('data-contextual-id'),
-          token: $(this).attr('data-contextual-token'),
-        });
+      $placeholders.each(function () {
+        ids.push($(this).attr('data-contextual-id'));
       });
 
-      const uncachedIDs = [];
-      const uncachedTokens = [];
-      ids.forEach(contextualID => {
-        const html = storage.getItem(`Drupal.contextual.${contextualID.id}`);
+      // Update all contextual links placeholders whose HTML is cached.
+      const uncachedIDs = _.filter(ids, (contextualID) => {
+        const html = storage.getItem(`Drupal.contextual.${contextualID}`);
         if (html && html.length) {
           // Initialize after the current execution cycle, to make the AJAX
           // request for retrieving the uncached contextual links as soon as
@@ -185,15 +167,11 @@
           // the chance to set up an event listener on the Backbone collection
           // Drupal.contextual.collection.
           window.setTimeout(() => {
-            initContextual(
-              $context.find(`[data-contextual-id="${contextualID.id}"]`),
-              html,
-            );
+            initContextual($context.find(`[data-contextual-id="${contextualID}"]`), html);
           });
-          return;
+          return false;
         }
-        uncachedIDs.push(contextualID.id);
-        uncachedTokens.push(contextualID.token);
+        return true;
       });
 
       // Perform an AJAX request to let the server render the contextual links
@@ -202,7 +180,7 @@
         $.ajax({
           url: Drupal.url('contextual/render'),
           type: 'POST',
-          data: { 'ids[]': uncachedIDs, 'tokens[]': uncachedTokens },
+          data: { 'ids[]': uncachedIDs },
           dataType: 'json',
           success(results) {
             _.each(results, (html, contextualID) => {
@@ -217,9 +195,7 @@
                 // possible for multiple identical placeholders exist on the
                 // page (probably because the same content appears more than
                 // once).
-                $placeholders = $context.find(
-                  `[data-contextual-id="${contextualID}"]`,
-                );
+                $placeholders = $context.find(`[data-contextual-id="${contextualID}"]`);
 
                 // Initialize the contextual links.
                 for (let i = 0; i < $placeholders.length; i++) {
@@ -239,6 +215,7 @@
    * @namespace
    */
   Drupal.contextual = {
+
     /**
      * The {@link Drupal.contextual.View} instances associated with each list
      * element of contextual links.
@@ -261,9 +238,7 @@
    *
    * @type {Backbone.Collection}
    */
-  Drupal.contextual.collection = new Backbone.Collection([], {
-    model: Drupal.contextual.StateModel,
-  });
+  Drupal.contextual.collection = new Backbone.Collection([], { model: Drupal.contextual.StateModel });
 
   /**
    * A trigger is an interactive element often bound to a click handler.
@@ -271,7 +246,7 @@
    * @return {string}
    *   A string representing a DOM fragment.
    */
-  Drupal.theme.contextualTrigger = function() {
+  Drupal.theme.contextualTrigger = function () {
     return '<button class="trigger visually-hidden focusable" type="button"></button>';
   };
 
@@ -288,12 +263,4 @@
   $(document).on('drupalContextualLinkAdded', (event, data) => {
     Drupal.ajax.bindAjaxLinks(data.$el[0]);
   });
-})(
-  jQuery,
-  Drupal,
-  drupalSettings,
-  _,
-  Backbone,
-  window.JSON,
-  window.sessionStorage,
-);
+}(jQuery, Drupal, drupalSettings, _, Backbone, window.JSON, window.sessionStorage));

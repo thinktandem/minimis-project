@@ -8,7 +8,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Ensures that response.gzip is removed from system.performance configuration.
  *
  * @group Update
- * @group legacy
  */
 class RemoveResponseGzipFromSystemPerformanceConfigurationTest extends UpdatePathTestBase {
 

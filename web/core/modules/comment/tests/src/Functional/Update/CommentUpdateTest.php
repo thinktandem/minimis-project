@@ -8,7 +8,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests that comment settings are properly updated during database updates.
  *
  * @group comment
- * @group legacy
  */
 class CommentUpdateTest extends UpdatePathTestBase {
 

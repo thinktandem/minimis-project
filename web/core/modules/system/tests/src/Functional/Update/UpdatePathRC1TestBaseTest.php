@@ -9,7 +9,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests the update path base class with the RC1 database dump.
  *
  * @group Update
- * @group legacy
  */
 class UpdatePathRC1TestBaseTest extends UpdatePathTestBase {
 

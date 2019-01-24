@@ -98,7 +98,7 @@ class WorkflowStateDeleteForm extends ConfirmFormBase {
       ->deleteState($this->stateId);
     $this->workflow->save();
 
-    $this->messenger()->addStatus($this->t(
+    drupal_set_message($this->t(
       'State %label deleted.',
       ['%label' => $workflow_label]
     ));

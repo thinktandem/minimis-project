@@ -38,9 +38,9 @@ class LinkField extends D6LinkField {
   }
 
   /**
-   * @inheritdoc}
+   * {@inheritdoc}
    */
-  public function alterFieldInstanceMigration(MigrationInterface $migration) {
+  public function processFieldInstance(MigrationInterface $migration) {
     $process = [
       'plugin' => 'static_map',
       'source' => 'settings/title',

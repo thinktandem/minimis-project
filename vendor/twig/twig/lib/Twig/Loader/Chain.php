@@ -18,13 +18,13 @@
  */
 class Twig_Loader_Chain implements Twig_LoaderInterface, Twig_ExistsLoaderInterface, Twig_SourceContextLoaderInterface
 {
-    private $hasSourceCache = [];
-    protected $loaders = [];
+    private $hasSourceCache = array();
+    protected $loaders = array();
 
     /**
      * @param Twig_LoaderInterface[] $loaders
      */
-    public function __construct(array $loaders = [])
+    public function __construct(array $loaders = array())
     {
         foreach ($loaders as $loader) {
             $this->addLoader($loader);
@@ -34,14 +34,14 @@ class Twig_Loader_Chain implements Twig_LoaderInterface, Twig_ExistsLoaderInterf
     public function addLoader(Twig_LoaderInterface $loader)
     {
         $this->loaders[] = $loader;
-        $this->hasSourceCache = [];
+        $this->hasSourceCache = array();
     }
 
     public function getSource($name)
     {
         @trigger_error(sprintf('Calling "getSource" on "%s" is deprecated since 1.27. Use getSourceContext() instead.', get_class($this)), E_USER_DEPRECATED);
 
-        $exceptions = [];
+        $exceptions = array();
         foreach ($this->loaders as $loader) {
             if ($loader instanceof Twig_ExistsLoaderInterface && !$loader->exists($name)) {
                 continue;
@@ -59,7 +59,7 @@ class Twig_Loader_Chain implements Twig_LoaderInterface, Twig_ExistsLoaderInterf
 
     public function getSourceContext($name)
     {
-        $exceptions = [];
+        $exceptions = array();
         foreach ($this->loaders as $loader) {
             if ($loader instanceof Twig_ExistsLoaderInterface && !$loader->exists($name)) {
                 continue;
@@ -113,7 +113,7 @@ class Twig_Loader_Chain implements Twig_LoaderInterface, Twig_ExistsLoaderInterf
 
     public function getCacheKey($name)
     {
-        $exceptions = [];
+        $exceptions = array();
         foreach ($this->loaders as $loader) {
             if ($loader instanceof Twig_ExistsLoaderInterface && !$loader->exists($name)) {
                 continue;
@@ -131,7 +131,7 @@ class Twig_Loader_Chain implements Twig_LoaderInterface, Twig_ExistsLoaderInterf
 
     public function isFresh($name, $time)
     {
-        $exceptions = [];
+        $exceptions = array();
         foreach ($this->loaders as $loader) {
             if ($loader instanceof Twig_ExistsLoaderInterface && !$loader->exists($name)) {
                 continue;

@@ -12,7 +12,6 @@ use Drupal\Tests\UnitTestCase;
  * @group Database
  */
 class EmptyStatementTest extends UnitTestCase {
-
   /**
    * Tests that the empty result set behaves as empty.
    */

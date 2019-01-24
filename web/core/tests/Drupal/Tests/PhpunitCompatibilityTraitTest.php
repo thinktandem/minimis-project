@@ -52,7 +52,6 @@ class PhpunitCompatibilityTraitTest extends UnitTestCase {
  * Test class for \PHPUnit\Framework\TestCase in PHPUnit 4.
  */
 class Phpunit4TestClass {
-
   public function getMock($originalClassName) {
     return 'PHPUnit 4';
   }
@@ -63,7 +62,6 @@ class Phpunit4TestClass {
  * Test class for \PHPUnit\Framework\TestCase in PHPUnit 6.
  */
 class Phpunit6TestClass {
-
   public function createMock($originalClassName) {
     return 'PHPUnit 6';
   }
@@ -78,7 +76,6 @@ class Phpunit6TestClass {
  * Test double for PHPUnit_Framework_MockObject_MockBuilder.
  */
 class Mockbuilder {
-
   public function __call($name, $arguments) {
     return $this;
   }

@@ -4,6 +4,7 @@
 table.diff {
   border-spacing: 4px;
   margin-bottom: 20px;
+  table-layout: fixed;
   width: 100%;
 }
 table.diff .diff-context {

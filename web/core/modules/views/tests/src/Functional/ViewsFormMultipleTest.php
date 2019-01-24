@@ -38,6 +38,7 @@ class ViewsFormMultipleTest extends ViewTestBase {
     return $data;
   }
 
+
   /**
    * Tests the a page with multiple View forms in it.
    */

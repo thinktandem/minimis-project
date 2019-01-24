@@ -15,11 +15,12 @@
 {%
   set classes = [
     'region',
+    'row',
     'region-' ~ region|clean_class,
   ]
 %}
 {% if content %}
-  <section{{ attributes.addClass(classes) }}>
+  <div{{ attributes.addClass(classes) }}>
     {{ content }}
-  </section>
+  </div>
 {% endif %}

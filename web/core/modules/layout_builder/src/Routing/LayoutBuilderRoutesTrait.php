@@ -3,7 +3,6 @@
 namespace Drupal\layout_builder\Routing;
 
 use Drupal\Component\Utility\NestedArray;
-use Drupal\layout_builder\DefaultsSectionStorageInterface;
 use Drupal\layout_builder\OverridesSectionStorageInterface;
 use Drupal\layout_builder\SectionStorage\SectionStorageDefinition;
 use Symfony\Component\Routing\Route;
@@ -44,7 +43,6 @@ trait LayoutBuilderRoutesTrait {
     $defaults['section_storage'] = '';
     // Trigger the layout builder access check.
     $requirements['_has_layout_section'] = 'true';
-    $requirements['_layout_builder_access'] = 'view';
     // Trigger the layout builder RouteEnhancer.
     $options['_layout_builder'] = TRUE;
     // Trigger the layout builder param converter.
@@ -93,17 +91,6 @@ trait LayoutBuilderRoutesTrait {
         ->setRequirements($requirements)
         ->setOptions($options);
       $collection->add("$route_name_prefix.revert", $route);
-    }
-    elseif (is_subclass_of($definition->getClass(), DefaultsSectionStorageInterface::class)) {
-      $disable_defaults = $defaults;
-      $disable_defaults['_form'] = '\Drupal\layout_builder\Form\LayoutBuilderDisableForm';
-      $disable_options = $options;
-      unset($disable_options['_admin_route'], $disable_options['_layout_builder']);
-      $route = (new Route("$path/disable"))
-        ->setDefaults($disable_defaults)
-        ->setRequirements($requirements)
-        ->setOptions($disable_options);
-      $collection->add("$route_name_prefix.disable", $route);
     }
   }
 

@@ -1,7 +1,6 @@
 <?php
 
 namespace Drupal\pathauto;
-
 use Drupal\Core\Language\LanguageInterface;
 
 /**

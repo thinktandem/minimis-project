@@ -27,7 +27,7 @@ interface ContextProviderInterface {
    *   $node = ...
    *
    *   // Set that specific node as the value of the 'node' context.
-   *   $context = EntityContext::fromEntity($node);
+   *   $context = new Context(new ContextDefinition('entity:node'), $node);
    *   return ['node' => $context];
    * @endcode
    *
@@ -62,7 +62,7 @@ interface ContextProviderInterface {
    *   // can be configured to use it. When the plugin, for example a block,
    *   // needs to evaluate the context, the value of this context will be
    *   // supplied by getRuntimeContexts().
-   *   $context = EntityContext::fromEntityTypeId('node');
+   *   $context = new Context(new ContextDefinition('entity:node'));
    *   return ['node' => $context];
    * @endcode
    *

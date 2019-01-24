@@ -11,15 +11,15 @@
  */
 class Twig_Node_Expression_Name extends Twig_Node_Expression
 {
-    protected $specialVars = [
+    protected $specialVars = array(
         '_self' => '$this',
         '_context' => '$context',
         '_charset' => '$this->env->getCharset()',
-    ];
+    );
 
     public function __construct($name, $lineno)
     {
-        parent::__construct([], ['name' => $name, 'is_defined_test' => false, 'ignore_strict_check' => false, 'always_defined' => false], $lineno);
+        parent::__construct(array(), array('name' => $name, 'is_defined_test' => false, 'ignore_strict_check' => false, 'always_defined' => false), $lineno);
     }
 
     public function compile(Twig_Compiler $compiler)
@@ -32,12 +32,7 @@ class Twig_Node_Expression_Name extends Twig_Node_Expression
             if ($this->isSpecial()) {
                 $compiler->repr(true);
             } else {
-                $compiler
-                    ->raw('(isset($context[')
-                    ->string($name)
-                    ->raw(']) || array_key_exists(')
-                    ->string($name)
-                    ->raw(', $context))');
+                $compiler->raw('array_key_exists(')->repr($name)->raw(', $context)');
             }
         } elseif ($this->isSpecial()) {
             $compiler->raw($this->specialVars[$name]);

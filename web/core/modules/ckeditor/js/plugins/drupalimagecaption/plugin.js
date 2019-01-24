@@ -88,11 +88,9 @@
         widgetDefinition.upcast = function (element, data) {
           if (element.name !== 'img' || !element.attributes['data-entity-type'] || !element.attributes['data-entity-uuid']) {
             return;
-          }
-
-          if (element.attributes['data-cke-realelement']) {
-            return;
-          }
+          } else if (element.attributes['data-cke-realelement']) {
+              return;
+            }
 
           element = originalUpcast.call(this, element, data);
           var attrs = element.attributes;

@@ -52,11 +52,11 @@ class FileAccessControlHandler extends EntityAccessControlHandler {
           //   services can be more properly injected.
           $allowed_fids = \Drupal::service('session')->get('anonymous_allowed_file_ids', []);
           if (!empty($allowed_fids[$entity->id()])) {
-            return AccessResult::allowed()->addCacheContexts(['session', 'user']);
+            return AccessResult::allowed();
           }
         }
         else {
-          return AccessResult::allowed()->addCacheContexts(['user']);
+          return AccessResult::allowed();
         }
       }
     }
@@ -64,11 +64,11 @@ class FileAccessControlHandler extends EntityAccessControlHandler {
     if ($operation == 'delete' || $operation == 'update') {
       $account = $this->prepareUser($account);
       $file_uid = $entity->get('uid')->getValue();
-      // Only the file owner can update or delete the file entity.
+      // Only the file owner can delete and update the file entity.
       if ($account->id() == $file_uid[0]['target_id']) {
         return AccessResult::allowed();
       }
-      return AccessResult::forbidden('Only the file owner can update or delete the file entity.');
+      return AccessResult::forbidden();
     }
 
     // No opinion.

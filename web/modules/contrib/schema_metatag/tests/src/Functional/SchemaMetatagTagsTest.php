@@ -59,7 +59,6 @@ class SchemaMetatagTagsTest extends SchemaMetatagTagsTestBase {
     'schema_metatag_test_member_of' => 'SchemaMetatagTestMemberOf',
     'schema_metatag_test_opening_hours_specification' => 'SchemaMetatagTestOpeningHoursSpecification',
     'schema_metatag_test_nutrition_information' => 'SchemaMetatagTestNutritionInformation',
-    'schema_metatag_test_contact_point' => 'SchemaMetatagTestContactPoint',
    ];
 
 }

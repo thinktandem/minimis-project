@@ -12,11 +12,9 @@
 namespace Psy\Command;
 
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name\FullyQualified as FullyQualifiedName;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Throw_;
 use PhpParser\PrettyPrinter\Standard as Printer;
 use Psy\Context;
@@ -87,7 +85,6 @@ e.g.
 <return>>>> throw-up</return>
 <return>>>> throw-up $e</return>
 <return>>>> throw-up new Exception('WHEEEEEE!')</return>
-<return>>>> throw-up "bye!"</return>
 HELP
             );
     }
@@ -125,28 +122,17 @@ HELP
             return [new Arg(new Variable('_e'))];
         }
 
-        if (\strpos('<?', $code) === false) {
+        if (strpos('<?', $code) === false) {
             $code = '<?php ' . $code;
         }
 
-        $nodes = $this->parse($code);
-        if (\count($nodes) !== 1) {
+        $expr = $this->parse($code);
+
+        if (count($expr) !== 1) {
             throw new \InvalidArgumentException('No idea how to throw this');
         }
 
-        $node = $nodes[0];
-
-        // Make this work for PHP Parser v3.x
-        $expr = isset($node->expr) ? $node->expr : $node;
-
-        $args = [new Arg($expr, false, false, $node->getAttributes())];
-
-        // Allow throwing via a string, e.g. `throw-up "SUP"`
-        if ($expr instanceof String_) {
-            return [new New_(new FullyQualifiedName('Exception'), $args)];
-        }
-
-        return $args;
+        return [new Arg($expr[0])];
     }
 
     /**
@@ -161,7 +147,7 @@ HELP
         try {
             return $this->parser->parse($code);
         } catch (\PhpParser\Error $e) {
-            if (\strpos($e->getMessage(), 'unexpected EOF') === false) {
+            if (strpos($e->getMessage(), 'unexpected EOF') === false) {
                 throw $e;
             }
 

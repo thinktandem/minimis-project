@@ -457,6 +457,7 @@ interface DisplayPluginInterface {
    */
   public function execute();
 
+
   /**
    * Builds a basic render array which can be properly render cached.
    *

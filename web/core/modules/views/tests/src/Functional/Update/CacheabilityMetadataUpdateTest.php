@@ -11,7 +11,6 @@ use Drupal\views\Views;
  * @see views_post_update_update_cacheability_metadata().
  *
  * @group Update
- * @group legacy
  */
 class CacheabilityMetadataUpdateTest extends UpdatePathTestBase {
 

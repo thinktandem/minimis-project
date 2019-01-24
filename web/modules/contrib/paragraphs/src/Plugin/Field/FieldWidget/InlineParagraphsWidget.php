@@ -44,7 +44,7 @@ class InlineParagraphsWidget extends WidgetBase {
    *
    * @var bool
    */
-  protected $isTranslating;
+  private $isTranslating;
 
   /**
    * Id to name ajax buttons that includes field parents and field name.
@@ -230,7 +230,6 @@ class InlineParagraphsWidget extends WidgetBase {
     $parents = $element['#field_parents'];
     $info = [];
 
-    /** @var \Drupal\paragraphs\ParagraphInterface $paragraphs_entity */
     $paragraphs_entity = NULL;
     $host = $items->getEntity();
     $widget_state = static::getWidgetState($parents, $field_name, $form_state);
@@ -271,7 +270,6 @@ class InlineParagraphsWidget extends WidgetBase {
       $paragraphs_entity = $entity_manager->getStorage($target_type)->create(array(
         $bundle_key => $widget_state['selected_bundle'],
       ));
-      $paragraphs_entity->setParentEntity($items->getEntity(), $field_name);
 
       $item_mode = 'edit';
     }
@@ -360,7 +358,6 @@ class InlineParagraphsWidget extends WidgetBase {
       $element += array(
         '#type' => 'container',
         '#element_validate' => array(array($this, 'elementValidate')),
-        '#paragraph_type' => $paragraphs_entity->bundle(),
         'subform' => array(
           '#type' => 'container',
           '#parents' => $element_parents,
@@ -448,6 +445,9 @@ class InlineParagraphsWidget extends WidgetBase {
               '#paragraphs_show_warning' => TRUE,
             );
           }
+
+          // Hide the button when translating.
+          $button_access = $paragraphs_entity->access('delete') && !$this->isTranslating;
 
           $info['edit_button_info'] = array(
             '#type' => 'container',
@@ -653,38 +653,14 @@ class InlineParagraphsWidget extends WidgetBase {
 
       if ($item_mode == 'edit') {
         $display->buildForm($paragraphs_entity, $element['subform'], $form_state);
-        $hide_untranslatable_fields = $paragraphs_entity->isDefaultTranslationAffectedOnly();
         foreach (Element::children($element['subform']) as $field) {
           if ($paragraphs_entity->hasField($field)) {
-            $field_definition = $paragraphs_entity->getFieldDefinition($field);
             $translatable = $paragraphs_entity->{$field}->getFieldDefinition()->isTranslatable();
-
-            // Do a check if we have to add a class to the form element. We need
-            // those classes (paragraphs-content and paragraphs-behavior) to show
-            // and hide elements, depending of the active perspective.
-            // We need them to filter out entity reference revisions fields that
-            // reference paragraphs, cause otherwise we have problems with showing
-            // and hiding the right fields in nested paragraphs.
-            $is_paragraph_field = FALSE;
-            if ($field_definition->getType() == 'entity_reference_revisions') {
-              // Check if we are referencing paragraphs.
-              if ($field_definition->getSetting('target_type') == 'paragraph') {
-                $is_paragraph_field = TRUE;
-              }
-            }
-
-            // Hide untranslatable fields when configured to do so except
-            // paragraph fields.
-            if (!$translatable && $this->isTranslating && !$is_paragraph_field) {
-              if ($hide_untranslatable_fields) {
-                $element['subform'][$field]['#access'] = FALSE;
-              }
-              else {
-                $element['subform'][$field]['widget']['#after_build'][] = [
-                  static::class,
-                  'addTranslatabilityClue'
-                ];
-              }
+            if ($translatable) {
+              $element['subform'][$field]['widget']['#after_build'][] = [
+                static::class,
+                'removeTranslatabilityClue'
+              ];
             }
           }
         }
@@ -753,7 +729,7 @@ class InlineParagraphsWidget extends WidgetBase {
       $bundles = \Drupal::service('entity_type.bundle.info')->getBundleInfo($this->getFieldSetting('target_type'));
       $weight = 0;
       foreach ($bundles as $machine_name => $bundle) {
-        if (empty($this->getSelectionHandlerSetting('target_bundles'))
+        if (!count($this->getSelectionHandlerSetting('target_bundles'))
           || in_array($machine_name, $this->getSelectionHandlerSetting('target_bundles'))) {
 
           $return_bundles[$machine_name] = array(
@@ -790,7 +766,6 @@ class InlineParagraphsWidget extends WidgetBase {
         $paragraphs_entity = $entity_type_manager->getStorage($target_type)->create([
           'type' => $default_type,
         ]);
-        $paragraphs_entity->setParentEntity($items->getEntity(), $field_name);
         $field_state['selected_bundle'] = $default_type;
         $display = EntityFormDisplay::collectRenderDisplay($paragraphs_entity, $this->getSetting('form_display_mode'));
         $field_state['paragraphs'][0] = [
@@ -945,13 +920,7 @@ class InlineParagraphsWidget extends WidgetBase {
       return ['#markup' => $this->t('No widget available for: %label.', ['%label' => $items->getFieldDefinition()->getLabel()])];
     }
 
-    $elements = parent::form($items, $form, $form_state, $get_delta);
-
-    // Signal to content_translation that this field should be treated as
-    // multilingual and not be hidden, see
-    // \Drupal\content_translation\ContentTranslationHandler::entityFormSharedElements().
-    $elements['#multilingual'] = TRUE;
-    return $elements;
+    return parent::form($items, $form, $form_state, $get_delta);
   }
 
   /**
@@ -1005,7 +974,7 @@ class InlineParagraphsWidget extends WidgetBase {
     $dragdrop_settings = $this->getSelectionHandlerSetting('target_bundles_drag_drop');
 
     foreach ($bundles as $machine_name => $bundle) {
-      if ($dragdrop_settings || (empty($this->getSelectionHandlerSetting('target_bundles'))
+      if ($dragdrop_settings || (!count($this->getSelectionHandlerSetting('target_bundles'))
           || in_array($machine_name, $this->getSelectionHandlerSetting('target_bundles')))) {
         if ($access_control_handler->createAccess($machine_name)) {
           $this->accessOptions[$machine_name] = $bundle['label'];
@@ -1378,45 +1347,37 @@ class InlineParagraphsWidget extends WidgetBase {
   }
 
   /**
-   * After-build callback for adding the translatability clue from the widget.
+   * After-build callback for removing the translatability clue from the widget.
    *
-   * ContentTranslationHandler::addTranslatabilityClue() adds an
-   * "(all languages)" suffix to the widget title, replicate that here.
+   * If the fields on the paragraph type are translatable,
+   * ContentTranslationHandler::addTranslatabilityClue()adds an
+   * "(all languages)" suffix to the widget title. That suffix is incorrect and
+   * is being removed by this method using a #after_build on the field widget.
    *
    * @param array $element
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    *
    * @return array
    */
-  public static function addTranslatabilityClue(array $element, FormStateInterface $form_state) {
-    static $suffix, $fapi_title_elements;
-
+  public static function removeTranslatabilityClue(array $element, FormStateInterface $form_state) {
     // Widgets could have multiple elements with their own titles, so remove the
     // suffix if it exists, do not recurse lower than this to avoid going into
     // nested paragraphs or similar nested field types.
-    // Elements which can have a #title attribute according to FAPI Reference.
-    if (!isset($suffix)) {
-      $suffix = ' <span class="translation-entity-all-languages">(' . t('all languages') . ')</span>';
-      $fapi_title_elements = array_flip(['checkbox', 'checkboxes', 'date', 'details', 'fieldset', 'file', 'item', 'password', 'password_confirm', 'radio', 'radios', 'select', 'textarea', 'textfield', 'weight']);
+    $suffix = ' <span class="translation-entity-all-languages">(' . t('all languages') . ')</span>';
+    if (isset($element['#title']) && strpos($element['#title'], $suffix)) {
+      $element['#title'] = str_replace($suffix, '', $element['#title']);
     }
-
-    // Update #title attribute for all elements that are allowed to have a
-    // #title attribute according to the Form API Reference. The reason for this
-    // check is because some elements have a #title attribute even though it is
-    // not rendered; for instance, field containers.
-    if (isset($element['#type']) && isset($fapi_title_elements[$element['#type']]) && isset($element['#title'])) {
-      $element['#title'] .= $suffix;
-    }
-    // If the current element does not have a (valid) title, try child elements.
-    elseif ($children = Element::children($element)) {
-      foreach ($children as $delta) {
-        $element[$delta] = static::addTranslatabilityClue($element[$delta], $form_state);
+    // Loop over all widget deltas.
+    foreach (Element::children($element) as $delta) {
+      if (isset($element[$delta]['#title']) && strpos($element[$delta]['#title'], $suffix)) {
+        $element[$delta]['#title'] = str_replace($suffix, '', $element[$delta]['#title']);
       }
-    }
-    // If there are no children, fall back to the current #title attribute if it
-    // exists.
-    elseif (isset($element['#title'])) {
-      $element['#title'] .= $suffix;
+      // Loop over all form elements within the current delta.
+      foreach (Element::children($element[$delta]) as $field) {
+        if (isset($element[$delta][$field]['#title']) && strpos($element[$delta][$field]['#title'], $suffix)) {
+          $element[$delta][$field]['#title'] = str_replace($suffix, '', $element[$delta][$field]['#title']);
+        }
+      }
     }
     return $element;
   }

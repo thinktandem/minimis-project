@@ -19,7 +19,8 @@ interface ConditionInterface {
    * Implements \Countable::count().
    *
    * Returns the size of this conditional. The size of the conditional is the
-   * size of its conditional array.
+   * size of its conditional array minus one, because one element is the
+   * conjunction.
    */
   public function count();
 

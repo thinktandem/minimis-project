@@ -38,12 +38,14 @@ class ValidClassNamePass extends NamespaceAwarePass
     const INTERFACE_TYPE = 'interface';
     const TRAIT_TYPE     = 'trait';
 
+    protected $checkTraits;
     private $conditionalScopes = 0;
     private $atLeastPhp55;
 
     public function __construct()
     {
-        $this->atLeastPhp55 = \version_compare(PHP_VERSION, '5.5', '>=');
+        $this->checkTraits = function_exists('trait_exists');
+        $this->atLeastPhp55 = version_compare(PHP_VERSION, '5.5', '>=');
     }
 
     /**
@@ -115,7 +117,7 @@ class ValidClassNamePass extends NamespaceAwarePass
      */
     protected function validateClassStatement(Class_ $stmt)
     {
-        $this->ensureCanDefine($stmt, self::CLASS_TYPE);
+        $this->ensureCanDefine($stmt);
         if (isset($stmt->extends)) {
             $this->ensureClassExists($this->getFullyQualifiedName($stmt->extends), $stmt);
         }
@@ -129,7 +131,7 @@ class ValidClassNamePass extends NamespaceAwarePass
      */
     protected function validateInterfaceStatement(Interface_ $stmt)
     {
-        $this->ensureCanDefine($stmt, self::INTERFACE_TYPE);
+        $this->ensureCanDefine($stmt);
         $this->ensureInterfacesExist($stmt->extends, $stmt);
     }
 
@@ -140,7 +142,7 @@ class ValidClassNamePass extends NamespaceAwarePass
      */
     protected function validateTraitStatement(Trait_ $stmt)
     {
-        $this->ensureCanDefine($stmt, self::TRAIT_TYPE);
+        $this->ensureCanDefine($stmt);
     }
 
     /**
@@ -164,7 +166,7 @@ class ValidClassNamePass extends NamespaceAwarePass
     protected function validateClassConstFetchExpression(ClassConstFetch $stmt)
     {
         // there is no need to check exists for ::class const for php 5.5 or newer
-        if (\strtolower($stmt->name) === 'class' && $this->atLeastPhp55) {
+        if (strtolower($stmt->name) === 'class' && $this->atLeastPhp55) {
             return;
         }
 
@@ -192,10 +194,9 @@ class ValidClassNamePass extends NamespaceAwarePass
      *
      * @throws FatalErrorException
      *
-     * @param Stmt   $stmt
-     * @param string $scopeType
+     * @param Stmt $stmt
      */
-    protected function ensureCanDefine(Stmt $stmt, $scopeType = self::CLASS_TYPE)
+    protected function ensureCanDefine(Stmt $stmt)
     {
         $name = $this->getFullyQualifiedName($stmt->name);
 
@@ -210,12 +211,12 @@ class ValidClassNamePass extends NamespaceAwarePass
         }
 
         if ($errorType !== null) {
-            throw $this->createError(\sprintf('%s named %s already exists', \ucfirst($errorType), $name), $stmt);
+            throw $this->createError(sprintf('%s named %s already exists', ucfirst($errorType), $name), $stmt);
         }
 
         // Store creation for the rest of this code snippet so we can find local
         // issue too
-        $this->currentScope[\strtolower($name)] = $scopeType;
+        $this->currentScope[strtolower($name)] = $this->getScopeType($stmt);
     }
 
     /**
@@ -229,7 +230,7 @@ class ValidClassNamePass extends NamespaceAwarePass
     protected function ensureClassExists($name, $stmt)
     {
         if (!$this->classExists($name)) {
-            throw $this->createError(\sprintf('Class \'%s\' not found', $name), $stmt);
+            throw $this->createError(sprintf('Class \'%s\' not found', $name), $stmt);
         }
     }
 
@@ -244,22 +245,7 @@ class ValidClassNamePass extends NamespaceAwarePass
     protected function ensureClassOrInterfaceExists($name, $stmt)
     {
         if (!$this->classExists($name) && !$this->interfaceExists($name)) {
-            throw $this->createError(\sprintf('Class \'%s\' not found', $name), $stmt);
-        }
-    }
-
-    /**
-     * Ensure that a referenced class _or trait_ exists.
-     *
-     * @throws FatalErrorException
-     *
-     * @param string $name
-     * @param Stmt   $stmt
-     */
-    protected function ensureClassOrTraitExists($name, $stmt)
-    {
-        if (!$this->classExists($name) && !$this->traitExists($name)) {
-            throw $this->createError(\sprintf('Class \'%s\' not found', $name), $stmt);
+            throw $this->createError(sprintf('Class \'%s\' not found', $name), $stmt);
         }
     }
 
@@ -274,10 +260,10 @@ class ValidClassNamePass extends NamespaceAwarePass
      */
     protected function ensureMethodExists($class, $name, $stmt)
     {
-        $this->ensureClassOrTraitExists($class, $stmt);
+        $this->ensureClassExists($class, $stmt);
 
         // let's pretend all calls to self, parent and static are valid
-        if (\in_array(\strtolower($class), ['self', 'parent', 'static'])) {
+        if (in_array(strtolower($class), ['self', 'parent', 'static'])) {
             return;
         }
 
@@ -291,8 +277,8 @@ class ValidClassNamePass extends NamespaceAwarePass
             return;
         }
 
-        if (!\method_exists($class, $name) && !\method_exists($class, '__callStatic')) {
-            throw $this->createError(\sprintf('Call to undefined method %s::%s()', $class, $name), $stmt);
+        if (!method_exists($class, $name) && !method_exists($class, '__callStatic')) {
+            throw $this->createError(sprintf('Call to undefined method %s::%s()', $class, $name), $stmt);
         }
     }
 
@@ -310,16 +296,13 @@ class ValidClassNamePass extends NamespaceAwarePass
             /** @var string $name */
             $name = $this->getFullyQualifiedName($interface);
             if (!$this->interfaceExists($name)) {
-                throw $this->createError(\sprintf('Interface \'%s\' not found', $name), $stmt);
+                throw $this->createError(sprintf('Interface \'%s\' not found', $name), $stmt);
             }
         }
     }
 
     /**
      * Get a symbol type key for storing in the scope name cache.
-     *
-     * @deprecated No longer used. Scope type should be passed into ensureCanDefine directly.
-     * @codeCoverageIgnore
      *
      * @param Stmt $stmt
      *
@@ -350,11 +333,11 @@ class ValidClassNamePass extends NamespaceAwarePass
         // Give `self`, `static` and `parent` a pass. This will actually let
         // some errors through, since we're not checking whether the keyword is
         // being used in a class scope.
-        if (\in_array(\strtolower($name), ['self', 'static', 'parent'])) {
+        if (in_array(strtolower($name), ['self', 'static', 'parent'])) {
             return true;
         }
 
-        return \class_exists($name) || $this->findInScope($name) === self::CLASS_TYPE;
+        return class_exists($name) || $this->findInScope($name) === self::CLASS_TYPE;
     }
 
     /**
@@ -366,7 +349,7 @@ class ValidClassNamePass extends NamespaceAwarePass
      */
     protected function interfaceExists($name)
     {
-        return \interface_exists($name) || $this->findInScope($name) === self::INTERFACE_TYPE;
+        return interface_exists($name) || $this->findInScope($name) === self::INTERFACE_TYPE;
     }
 
     /**
@@ -378,7 +361,7 @@ class ValidClassNamePass extends NamespaceAwarePass
      */
     protected function traitExists($name)
     {
-        return \trait_exists($name) || $this->findInScope($name) === self::TRAIT_TYPE;
+        return $this->checkTraits && (trait_exists($name) || $this->findInScope($name) === self::TRAIT_TYPE);
     }
 
     /**
@@ -390,7 +373,7 @@ class ValidClassNamePass extends NamespaceAwarePass
      */
     protected function findInScope($name)
     {
-        $name = \strtolower($name);
+        $name = strtolower($name);
         if (isset($this->currentScope[$name])) {
             return $this->currentScope[$name];
         }

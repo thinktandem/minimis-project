@@ -34,6 +34,7 @@ class EnforcedFormResponseSubscriber implements EventSubscriberInterface {
     }
   }
 
+
   /**
    * {@inheritdoc}
    */

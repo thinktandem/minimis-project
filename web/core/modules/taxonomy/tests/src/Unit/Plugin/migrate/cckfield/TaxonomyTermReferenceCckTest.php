@@ -44,15 +44,11 @@ class TaxonomyTermReferenceCckTest extends UnitTestCase {
     $this->migration = $migration->reveal();
   }
 
-  public function testProcessCckFieldValues() {
-    $this->testDefineValueProcessPipeline('processCckFieldValues');
-  }
-
   /**
-   * @covers ::defineValueProcessPipeline
+   * @covers ::processCckFieldValues
    */
-  public function testDefineValueProcessPipeline($method = 'defineValueProcessPipeline') {
-    $this->plugin->$method($this->migration, 'somefieldname', []);
+  public function testProcessCckFieldValues() {
+    $this->plugin->processFieldValues($this->migration, 'somefieldname', []);
 
     $expected = [
       'plugin' => 'sub_process',

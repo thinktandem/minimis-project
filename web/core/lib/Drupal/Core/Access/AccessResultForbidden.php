@@ -24,6 +24,7 @@ class AccessResultForbidden extends AccessResult implements AccessResultReasonIn
     $this->reason = $reason;
   }
 
+
   /**
    * {@inheritdoc}
    */

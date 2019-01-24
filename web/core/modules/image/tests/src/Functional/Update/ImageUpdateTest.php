@@ -8,7 +8,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests Image update path.
  *
  * @group image
- * @group legacy
  */
 class ImageUpdateTest extends UpdatePathTestBase {
 

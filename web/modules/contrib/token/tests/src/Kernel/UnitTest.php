@@ -33,9 +33,9 @@ class UnitTest extends KernelTestBase {
    * Test invalid tokens.
    */
   public function testGetInvalidTokens() {
-    $tests = [];
-    $tests[] = [
-      'valid tokens' => [
+    $tests = array();
+    $tests[] = array(
+      'valid tokens' => array(
         '[node:title]',
         '[node:created:short]',
         '[node:created:custom:invalid]',
@@ -46,8 +46,8 @@ class UnitTest extends KernelTestBase {
         '[current-date:short]',
         '[current-user:uid]',
         '[current-user:ip-address]',
-      ],
-      'invalid tokens' => [
+      ),
+      'invalid tokens' => array(
         '[node:title:invalid]',
         '[node:created:invalid]',
         '[node:created:short:invalid]',
@@ -62,11 +62,11 @@ class UnitTest extends KernelTestBase {
         '[node:type]',
         '[node:type-name]',
         '[date:short]',
-      ],
-      'types' => ['node'],
-    ];
-    $tests[] = [
-      'valid tokens' => [
+      ),
+      'types' => array('node'),
+    );
+    $tests[] = array(
+      'valid tokens' => array(
         '[node:title]',
         '[node:created:short]',
         '[node:created:custom:invalid]',
@@ -77,8 +77,8 @@ class UnitTest extends KernelTestBase {
         '[user:uid]',
         '[current-date:short]',
         '[current-user:uid]',
-      ],
-      'invalid tokens' => [
+      ),
+      'invalid tokens' => array(
         '[node:title:invalid]',
         '[node:created:invalid]',
         '[node:created:short:invalid]',
@@ -91,9 +91,9 @@ class UnitTest extends KernelTestBase {
         '[node:tnid]',
         '[node:type]',
         '[node:type-name]',
-      ],
-      'types' => ['all'],
-    ];
+      ),
+      'types' => array('all'),
+    );
 
     foreach ($tests as $test) {
       $tokens = array_merge($test['valid tokens'], $test['invalid tokens']);
@@ -116,5 +116,4 @@ class UnitTest extends KernelTestBase {
     $this->assertNull($this->tokenService->getTokenInfo('user_role', 'url'));
     $this->assertNull($this->tokenService->getTypeInfo('user_role'));
   }
-
 }

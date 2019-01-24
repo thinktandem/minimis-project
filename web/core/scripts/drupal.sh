@@ -58,8 +58,8 @@ EOF;
   exit;
 }
 
-$cmd = 'index.php';
 // define default settings
+$cmd = 'index.php';
 $_SERVER['HTTP_HOST']       = 'default';
 $_SERVER['PHP_SELF']        = '/index.php';
 $_SERVER['REMOTE_ADDR']     = '127.0.0.1';

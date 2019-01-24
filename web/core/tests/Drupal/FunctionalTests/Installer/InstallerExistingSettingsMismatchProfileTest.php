@@ -8,10 +8,9 @@ use Drupal\Core\Database\Database;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Tests install with existing settings.php and a mismatching install profile.
+ * Tests the installer with an existing settings file but no install profile.
  *
  * @group Installer
- * @group legacy
  */
 class InstallerExistingSettingsMismatchProfileTest extends InstallerTestBase {
 
@@ -69,7 +68,7 @@ class InstallerExistingSettingsMismatchProfileTest extends InstallerTestBase {
    * {@inheritdoc}
    */
   protected function setUpLanguage() {
-    // This step is skipped, because there is a langcode as a query param.
+    // This step is skipped, because there is a lagcode as a query param.
   }
 
   /**
@@ -89,8 +88,6 @@ class InstallerExistingSettingsMismatchProfileTest extends InstallerTestBase {
 
   /**
    * Verifies that installation succeeded.
-   *
-   * @expectedDeprecation To access the install profile in Drupal 8 use \Drupal::installProfile() or inject the install_profile container parameter into your service. See https://www.drupal.org/node/2538996
    */
   public function testInstaller() {
     $this->assertUrl('user/1');

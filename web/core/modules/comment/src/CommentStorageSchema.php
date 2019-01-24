@@ -17,26 +17,24 @@ class CommentStorageSchema extends SqlContentEntityStorageSchema {
   protected function getEntitySchema(ContentEntityTypeInterface $entity_type, $reset = FALSE) {
     $schema = parent::getEntitySchema($entity_type, $reset);
 
-    if ($data_table = $this->storage->getDataTable()) {
-      $schema[$data_table]['indexes'] += [
-        'comment__status_pid' => ['pid', 'status'],
-        'comment__num_new' => [
-          'entity_id',
-          'entity_type',
-          'comment_type',
-          'status',
-          'created',
-          'cid',
-          'thread',
-        ],
-        'comment__entity_langcode' => [
-          'entity_id',
-          'entity_type',
-          'comment_type',
-          'default_langcode',
-        ],
-      ];
-    }
+    $schema['comment_field_data']['indexes'] += [
+      'comment__status_pid' => ['pid', 'status'],
+      'comment__num_new' => [
+        'entity_id',
+        'entity_type',
+        'comment_type',
+        'status',
+        'created',
+        'cid',
+        'thread',
+      ],
+      'comment__entity_langcode' => [
+        'entity_id',
+        'entity_type',
+        'comment_type',
+        'default_langcode',
+      ],
+    ];
 
     return $schema;
   }

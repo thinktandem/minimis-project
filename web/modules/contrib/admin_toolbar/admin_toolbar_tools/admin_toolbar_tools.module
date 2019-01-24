@@ -5,6 +5,7 @@
  * Provides extra menu links for the core drupal toolbar.
  */
 
+use Drupal\Core\Link;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Url;
 
@@ -33,12 +34,21 @@ function admin_toolbar_tools_toolbar() {
 function admin_toolbar_tools_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     case 'help.page.admin_toolbar_tools':
+      $url = Url::fromUri('https://www.drupal.org/project/admin_toolbar');
+      $external_link = Link::fromTextAndUrl(t('Admin Toolbar'), $url);
+      $external_link2 = Link::fromTextAndUrl(t('Toolbar'), $url);
+      $url = Url::fromUri('https://www.drupal.org/node/2713693');
+      $external_link3 = Link::fromTextAndUrl(t('online documentation for Admin Toolbar'), $url);
       $output = '';
       $output .= '<p>';
-      $output .= t('The Admin Toolbar Extra Tools module comes packaged with the <a href=":admin-toolbar">Admin Toolbar</a> module and adds functionality to it. The additional functionality is accessed thru extra links on the main administration Toolbar. Some links to Admin Toolbar Extra Tools administration pages are located at the bottom of this page.</a>', [':admin-toolbar' => Url::fromRoute('help.page', ['name' => 'admin_toolbar'])->toString()]);
+      $output .= t('The Admin Toolbar Extra Tools module comes packaged with the :link module and adds functionality to it. The additional functionality is accessed thru extra links on the main administration :link2.  Some links to Admin Toolbar Extra Tools administration pages are located at the bottom of this page. For more information, see the :link3', [
+        ':link' => $external_link,
+        ':link2' => $external_link2,
+        ':link3' => $external_link3,
+      ]);
       $output .= '</p>';
       $output .= '<h3>' . t('Uses') . '</h3>';
-      $output .= '<p>' . t('To use Admin Toolbar Extra Tools just install it like any other module. There is no other configuration required.') . '</p>';
+      $output .= '<p>' . t('To use Admin Toolbar Extra Tools just install it like any other module.  There is no other configuration required. The Admin Toolbar functionality can be further extended by installing complimentary modules.  See :link for a complete listing of these complimentary modules.', [':link' => $external_link]) . '</p>';
 
       return $output;
   }
@@ -71,21 +81,10 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('views')) {
     $links['admin_toolbar_tools.flush_views'] = [
       'title' => t('Flush views cache'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'admin_toolbar_tools.flush_views',
       'menu_name' => 'admin',
       'parent' => 'admin_toolbar_tools.flush',
     ];
-    // Adding a menu link to Files.
-    if ($moduleHandler->moduleExists('file') && in_array('view.files.page_1', $routes)) {
-      $links['admin_toolbar_tools.view.files'] = [
-        'title' => t('Files'),
-        'provider' => 'admin_toolbar_tools',
-        'route_name' => 'view.files.page_1',
-        'menu_name' => 'admin',
-        'parent' => 'system.admin_content',
-      ];
-    }
   }
 
   // Adds common links to entities.
@@ -100,7 +99,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
         $content_entity_bundle_root = 'entity.' . $content_entity_bundle . '.overview_form.' . $machine_name;
         $links[$content_entity_bundle_root] = [
           'title' => t($bundle->label()),
-          'provider' => 'admin_toolbar_tools',
           'route_name' => 'entity.' . $content_entity_bundle . '.overview_form',
           'menu_name' => 'admin',
           'parent' => 'entity.' . $content_entity_bundle . '.collection',
@@ -111,7 +109,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
         $key = 'entity.' . $content_entity_bundle . '.edit_form.' . $machine_name;
         $links[$key] = [
           'title' => t($bundle->label()),
-          'provider' => 'admin_toolbar_tools',
           'route_name' => 'entity.' . $content_entity_bundle . '.edit_form',
           'menu_name' => 'admin',
           'parent' => 'entity.' . $content_entity_bundle . '.collection',
@@ -129,7 +126,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
         if (in_array('entity.' . $content_entity . '.field_ui_fields', $routes)) {
           $links['entity.' . $content_entity . '.field_ui_fields' . $machine_name] = [
             'title' => t('Manage fields'),
-            'provider' => 'admin_toolbar_tools',
             'route_name' => 'entity.' . $content_entity . '.field_ui_fields',
             'menu_name' => 'admin',
             'parent' => $content_entity_bundle_root,
@@ -140,7 +136,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
         if (in_array('entity.entity_form_display.' . $content_entity . '.default', $routes)) {
           $links['entity.entity_form_display.' . $content_entity . '.default' . $machine_name] = [
             'title' => t('Manage form display'),
-            'provider' => 'admin_toolbar_tools',
             'route_name' => 'entity.entity_form_display.' . $content_entity . '.default',
             'menu_name' => 'admin',
             'parent' => $content_entity_bundle_root,
@@ -151,7 +146,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
         if (in_array('entity.entity_view_display.' . $content_entity . '.default', $routes)) {
           $links['entity.entity_view_display.' . $content_entity . '.default.' . $machine_name] = [
             'title' => t('Manage display'),
-            'provider' => 'admin_toolbar_tools',
             'route_name' => 'entity.entity_view_display.' . $content_entity . '.default',
             'menu_name' => 'admin',
             'parent' => $content_entity_bundle_root,
@@ -163,7 +157,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
       if ($moduleHandler->moduleExists('devel') && in_array('entity.' . $content_entity_bundle . '.devel_load', $routes)) {
         $links['entity.' . $content_entity_bundle . '.devel_load.' . $machine_name] = [
           'title' => t('Devel'),
-          'provider' => 'admin_toolbar_tools',
           'route_name' => 'entity.' . $content_entity_bundle . '.devel_load',
           'menu_name' => 'admin',
           'parent' => $content_entity_bundle_root,
@@ -174,7 +167,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
       if (in_array('entity.' . $content_entity_bundle . '.delete_form', $routes)) {
         $links['entity.' . $content_entity_bundle . '.delete_form.' . $machine_name] = [
           'title' => t('Delete'),
-          'provider' => 'admin_toolbar_tools',
           'route_name' => 'entity.' . $content_entity_bundle . '.delete_form',
           'menu_name' => 'admin',
           'parent' => $content_entity_bundle_root,
@@ -188,35 +180,30 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   // Add user links.
   $links['user.admin_create'] = [
     'title' => t('Add a new user'),
-    'provider' => 'admin_toolbar_tools',
     'route_name' => 'user.admin_create',
     'menu_name' => 'admin',
     'parent' => 'entity.user.collection',
   ];
   $links['user.admin_permissions'] = [
     'title' => t('Permissions'),
-    'provider' => 'admin_toolbar_tools',
     'route_name' => 'user.admin_permissions',
     'menu_name' => 'admin',
     'parent' => 'entity.user.collection',
   ];
   $links['entity.user_role.collection'] = [
     'title' => t('Roles'),
-    'provider' => 'admin_toolbar_tools',
     'route_name' => 'entity.user_role.collection',
     'menu_name' => 'admin',
     'parent' => 'entity.user.collection',
   ];
   $links['admin_toolbar_tools.user.logout'] = [
     'title' => t('Logout'),
-    'provider' => 'admin_toolbar_tools',
     'route_name' => 'user.logout',
     'parent' => 'admin_toolbar_tools.help',
     'weight' => 10,
   ];
   $links['user.role_add'] = [
     'title' => t('Add a new role'),
-    'provider' => 'admin_toolbar_tools',
     'route_name' => 'user.role_add',
     'menu_name' => 'admin',
     'parent' => 'entity.user_role.collection',
@@ -225,21 +212,18 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('field_ui')) {
     $links['entity.user.field_ui_fields_'] = [
       'title' => t('Manage fields'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.user.field_ui_fields',
       'menu_name' => 'admin',
       'parent' => 'entity.user.admin_form',
     ];
     $links['entity.entity_form_display.user.default_'] = [
       'title' => t('Manage form display'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.entity_form_display.user.default',
       'menu_name' => 'admin',
       'parent' => 'entity.user.admin_form',
     ];
     $links['entity.entity_view_display.user.default_'] = [
       'title' => t('Manage display'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.entity_view_display.user.default',
       'menu_name' => 'admin',
       'parent' => 'entity.user.admin_form',
@@ -248,7 +232,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   foreach (user_roles() as $role) {
     $links['entity.user_role.edit_form.' . $role->id()] = [
       'title' => t($role->label()),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.user_role.edit_form',
       'menu_name' => 'admin',
       'parent' => 'entity.user_role.collection',
@@ -256,7 +239,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     ];
     $links['entity.user_role.edit_permissions_form.' . $role->id()] = [
       'title' => t('Edit permissions'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.user_role.edit_permissions_form',
       'menu_name' => 'admin',
       'parent' => 'entity.user_role.edit_form.' . $role->id(),
@@ -264,7 +246,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     ];
     $links['entity.user_role.delete_form.' . $role->id()] = [
       'title' => t('Delete'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.user_role.delete_form',
       'menu_name' => 'admin',
       'parent' => 'entity.user_role.edit_form.' . $role->id(),
@@ -273,7 +254,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     if ($moduleHandler->moduleExists('devel')) {
       $links['entity.user_role.devel_load.' . $role->id()] = [
         'title' => t('Devel'),
-        'provider' => 'admin_toolbar_tools',
         'route_name' => 'entity.user_role.devel_load',
         'menu_name' => 'admin',
         'parent' => 'entity.user_role.edit_form.' . $role->id(),
@@ -287,7 +267,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     $links['admin_toolbar_tools.add_content']['parent'] = 'system.admin_content';
     $links['node.type_add'] = [
       'title' => t('Add content type'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'node.type_add',
       'menu_name' => 'admin',
       'parent' => 'entity.node_type.collection',
@@ -297,7 +276,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     foreach ($entityTypeManager->getStorage('node_type')->loadMultiple() as $type) {
       $links['node.add.' . $type->id()] = [
         'title' => t($type->label()),
-        'provider' => 'admin_toolbar_tools',
         'route_name' => 'node.add',
         'parent' => 'admin_toolbar_tools.add_content',
         'route_parameters' => ['node_type' => $type->id()],
@@ -308,14 +286,12 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('field_ui')) {
     $links['field_ui.entity_form_mode_add'] = [
       'title' => t('Add new form mode'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'field_ui.entity_form_mode_add',
       'menu_name' => 'admin',
       'parent' => 'entity.entity_form_mode.collection',
     ];
     $links['field_ui.entity_view_mode_add'] = [
       'title' => t('Add new view mode'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'field_ui.entity_view_mode_add',
       'menu_name' => 'admin',
       'parent' => 'entity.entity_view_mode.collection',
@@ -325,7 +301,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('taxonomy')) {
     $links['entity.taxonomy_vocabulary.add_form'] = [
       'title' => t('Add vocabulary'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.taxonomy_vocabulary.add_form',
       'menu_name' => 'admin',
       'parent' => 'entity.taxonomy_vocabulary.collection',
@@ -336,7 +311,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('menu_ui')) {
     $links['entity.menu.add_form'] = [
       'title' => t('Add menu'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.menu.add_form',
       'menu_name' => 'admin',
       'parent' => 'entity.menu.collection',
@@ -346,7 +320,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     foreach (menu_ui_get_menus() as $machine_name => $label) {
       $links['entity.menu.edit_form.' . $machine_name] = [
         'title' => t($label),
-        'provider' => 'admin_toolbar_tools',
         'route_name' => 'entity.menu.edit_form',
         'menu_name' => 'admin',
         'parent' => 'entity.menu.collection',
@@ -354,7 +327,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
       ];
       $links['entity.menu.delete_form.' . $machine_name] = [
         'title' => t('Delete'),
-        'provider' => 'admin_toolbar_tools',
         'route_name' => 'entity.menu.delete_form',
         'menu_name' => 'admin',
         'parent' => 'entity.menu.edit_form.' . $machine_name,
@@ -363,7 +335,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
       if ($moduleHandler->moduleExists('devel')) {
         $links['entity.menu.devel_load.' . $machine_name] = [
           'title' => t('Devel'),
-          'provider' => 'admin_toolbar_tools',
           'route_name' => 'entity.menu.devel_load',
           'menu_name' => 'admin',
           'parent' => 'entity.menu.edit_form.' . $machine_name,
@@ -372,7 +343,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
       }
       $links['entity.menu.add_link_form.' . $machine_name] = [
         'title' => t('Add link'),
-        'provider' => 'admin_toolbar_tools',
         'route_name' => 'entity.menu.add_link_form',
         'menu_name' => 'admin',
         'parent' => 'entity.menu.edit_form.' . $machine_name,
@@ -385,7 +355,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('block_content')) {
     $links['block_content.add_page'] = [
       'title' => t('Add custom block'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'block_content.add_page',
       'menu_name' => 'admin',
       'parent' => 'block.admin_display',
@@ -393,14 +362,12 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     ];
     $links['entity.block_content.collection'] = [
       'title' => t('Custom block library'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.block_content.collection',
       'menu_name' => 'admin',
       'parent' => 'block.admin_display',
     ];
     $links['entity.block_content_type.collection'] = [
       'title' => t('Types'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.block_content_type.collection',
       'menu_name' => 'admin',
       'parent' => 'block.admin_display',
@@ -411,7 +378,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('contact')) {
     $links['contact.form_add'] = [
       'title' => t('Add contact form'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'contact.form_add',
       'menu_name' => 'admin',
       'parent' => 'entity.contact_form.collection',
@@ -423,14 +389,12 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('update')) {
     $links['update.module_update'] = [
       'title' => t('Update'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'update.module_update',
       'menu_name' => 'admin',
       'parent' => 'system.modules_list',
     ];
     $links['update.module_install'] = [
       'title' => t('Install new module'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'update.module_install',
       'menu_name' => 'admin',
       'parent' => 'system.modules_list',
@@ -441,7 +405,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('devel')) {
     $links['admin_development'] = [
       'title' => t('Development'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'system.admin_config_development',
       'menu_name' => 'admin',
       'parent' => 'admin_toolbar_tools.help',
@@ -449,7 +412,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     ];
     $links['admin_toolbar_tools.devel.admin_settings'] = [
       'title' => t('Devel settings'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.admin_settings',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
@@ -458,7 +420,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     if ($moduleHandler->moduleExists('webprofiler')) {
       $links['admin_toolbar_tools.devel.webprofiler'] = [
         'title' => t('Web Profiler settings'),
-        'provider' => 'admin_toolbar_tools',
         'route_name' => 'webprofiler.settings',
         'menu_name' => 'admin',
         'parent' => 'admin_development',
@@ -466,62 +427,53 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     }
     $links['admin_toolbar_tools.devel.configs_list'] = [
       'title' => t('Config editor'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.configs_list',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
     ];
     $links['admin_toolbar_tools.devel.reinstall'] = [
       'title' => t('Reinstall modules'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.reinstall',
       'parent' => 'admin_development',
     ];
     $links['admin_toolbar_tools.devel.menu_rebuild'] = [
       'title' => t('Rebuild menu'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.menu_rebuild',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
     ];
     $links['admin_toolbar_tools.devel.state_system_page'] = [
       'title' => t('State editor'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.state_system_page',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
     ];
     $links['admin_toolbar_tools.devel.theme_registry'] = [
       'title' => t('Theme registry'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.theme_registry',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
     ];
     $links['admin_toolbar_tools.devel.entity_info_page'] = [
       'title' => t('Entity Info'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.entity_info_page',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
     ];
     $links['admin_toolbar_tools.devel.execute_php'] = [
       'title' => t('Execute PHP Code'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.execute_php',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
     ];
     $links['admin_toolbar_tools.devel.session'] = [
       'title' => t('Session viewer'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.session',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
     ];
     $links['admin_toolbar_tools.devel.elements_page'] = [
       'title' => t('Form API field types'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.elements_page',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
@@ -529,7 +481,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     // Menu link for the Toolbar module.
     $links['admin_toolbar_tools.toolbar.settings'] = [
       'title' => t('Toolbar settings'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'devel.toolbar.settings_form',
       'menu_name' => 'admin',
       'parent' => 'devel.admin_settings',
@@ -540,7 +491,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('views_ui')) {
     $links['admin_toolbar_tools.views_ui.add'] = [
       'title' => t('Add new view'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'views_ui.add',
       'menu_name' => 'admin',
       'parent' => 'entity.view.collection',
@@ -548,7 +498,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     ];
     $links['admin_toolbar_tools.views_ui.field_list'] = [
       'title' => t('Used in views'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'views_ui.reports_fields',
       'menu_name' => 'admin',
       'parent' => 'entity.field_storage_config.collection',
@@ -557,7 +506,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
 
   $links['admin_toolbar_tools.system.theme_settings'] = [
     'title' => t('Settings'),
-    'provider' => 'admin_toolbar_tools',
     'route_name' => 'system.theme_settings',
     'menu_name' => 'admin',
     'parent' => 'system.themes_page',
@@ -566,7 +514,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('webprofiler')) {
     $links['admin_toolbar_tools.devel.webprofiler'] = [
       'title' => t('Webprofiler settings'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'webprofiler.settings',
       'menu_name' => 'admin',
       'parent' => 'admin_development',
@@ -576,14 +523,12 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('update')) {
     $links['update.theme_install_'] = [
       'title' => t('Install new theme'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'update.theme_install',
       'menu_name' => 'admin',
       'parent' => 'system.themes_page',
     ];
     $links['update.theme_update_'] = [
       'title' => t('Update'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'update.theme_update',
       'menu_name' => 'admin',
       'parent' => 'system.themes_page',
@@ -593,7 +538,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     foreach ($installed_themes as $key_theme => $label_theme) {
       $links['system.theme_settings_theme.' . $key_theme] = [
         'title' => t($label_theme),
-        'provider' => 'admin_toolbar_tools',
         'route_name' => 'system.theme_settings_theme',
         'menu_name' => 'admin',
         'parent' => 'system.theme_settings_',
@@ -608,7 +552,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('language')) {
     $links['admin_toolbar_tools.language.negotiation'] = [
       'title' => t('Detection and selection'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'language.negotiation',
       'menu_name' => 'admin',
       'parent' => 'entity.configurable_language.collection',
@@ -619,16 +562,14 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('media')) {
     $links['admin_toolbar_tools.add_media'] = [
       'title' => t('Add media'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'entity.media.add_page',
       'menu_name' => 'admin',
       'parent' => 'system.admin_content',
     ];
     // Add node links for each media type.
-    foreach ($entityTypeManager->getStorage('media_type')->loadMultiple() as $type) {
-      $links['media.add.' . $type->id()] = [
+    foreach (\Drupal::entityTypeManager()->getStorage('media_type')->loadMultiple() as $type) {
+      $links['node.add.' . $type->id()] = [
         'title' => t($type->label()),
-        'provider' => 'admin_toolbar_tools',
         'route_name' => 'entity.media.add_form',
         'parent' => 'admin_toolbar_tools.add_media',
         'route_parameters' => ['media_type' => $type->id()],
@@ -640,7 +581,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
   if ($moduleHandler->moduleExists('config')) {
     $links['admin_toolbar_tools.config.import'] = [
       'title' => t('Import'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'config.import_full',
       'menu_name' => 'admin',
       'parent' => 'config.sync',
@@ -648,7 +588,6 @@ function admin_toolbar_tools_menu_links_discovered_alter(&$links) {
     ];
     $links['admin_toolbar_tools.config.export'] = [
       'title' => t('Export'),
-      'provider' => 'admin_toolbar_tools',
       'route_name' => 'config.export_full',
       'menu_name' => 'admin',
       'parent' => 'config.sync',
@@ -674,4 +613,21 @@ function admin_toolbar_tools_installed_themes() {
   }
 
   return $themes_installed;
+}
+
+/**
+ * Get all links related to entity.
+ *
+ * @param string $entity_type_id
+ *   The machine name for the entity type.
+ *
+ * @return array
+ *   The links for the entity type.
+ */
+function admin_toolbar_tools_get_links($entity_type_id) {
+  $entity = \Drupal::entityTypeManager()->getDefinition($entity_type_id);
+  // Get all links related to entity.
+  $links = $entity->getLinkTemplates();
+
+  return $links;
 }

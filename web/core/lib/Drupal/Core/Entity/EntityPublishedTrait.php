@@ -45,7 +45,8 @@ trait EntityPublishedTrait {
    * {@inheritdoc}
    */
   public function isPublished() {
-    return (bool) $this->getEntityKey('published');
+    $key = $this->getEntityType()->getKey('published');
+    return (bool) $this->get($key)->value;
   }
 
   /**

@@ -138,10 +138,10 @@ class ConfigTestForm extends EntityForm {
     $status = $entity->save();
 
     if ($status === SAVED_UPDATED) {
-      $this->messenger()->addStatus(format_string('%label configuration has been updated.', ['%label' => $entity->label()]));
+      drupal_set_message(format_string('%label configuration has been updated.', ['%label' => $entity->label()]));
     }
     else {
-      $this->messenger()->addStatus(format_string('%label configuration has been created.', ['%label' => $entity->label()]));
+      drupal_set_message(format_string('%label configuration has been created.', ['%label' => $entity->label()]));
     }
 
     $form_state->setRedirectUrl($this->entity->urlInfo('collection'));

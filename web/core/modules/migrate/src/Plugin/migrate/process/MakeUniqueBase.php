@@ -6,6 +6,7 @@ use Drupal\migrate\ProcessPluginBase;
 use Drupal\migrate\MigrateExecutableInterface;
 use Drupal\migrate\Row;
 use Drupal\migrate\MigrateException;
+use Drupal\Component\Utility\Unicode;
 
 /**
  * This plugin ensures the source value is unique.
@@ -55,7 +56,7 @@ abstract class MakeUniqueBase extends ProcessPluginBase {
       throw new MigrateException('The character length configuration key should be an integer. Omit this key to capture the entire string.');
     }
     // Use optional start or length to return a portion of the unique value.
-    $value = mb_substr($value, $start, $length);
+    $value = Unicode::substr($value, $start, $length);
     $new_value = $value;
     while ($this->exists($new_value)) {
       $new_value = $value . $postfix . $i++;

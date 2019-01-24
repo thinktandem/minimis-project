@@ -20,8 +20,6 @@ class MigrateTaxonomyTermTranslationTest extends MigrateDrupal6TestBase {
     'content_translation',
     'language',
     'menu_ui',
-    // Required for translation migrations.
-    'migrate_drupal_multilingual',
     'node',
     'taxonomy',
   ];
@@ -80,7 +78,7 @@ class MigrateTaxonomyTermTranslationTest extends MigrateDrupal6TestBase {
     $this->assertInstanceOf(TermInterface::class, $entity);
     $this->assertSame($expected_language, $entity->language()->getId());
     $this->assertSame($expected_label, $entity->label());
-    $this->assertSame($expected_vid, $entity->bundle());
+    $this->assertSame($expected_vid, $entity->getVocabularyId());
     $this->assertSame($expected_description, $entity->getDescription());
     $this->assertSame($expected_format, $entity->getFormat());
     $this->assertSame($expected_weight, $entity->getWeight());
@@ -108,12 +106,7 @@ class MigrateTaxonomyTermTranslationTest extends MigrateDrupal6TestBase {
 
     $this->assertArrayHasKey($tid, $this->treeData[$vid], "Term $tid exists in taxonomy tree");
     $term = $this->treeData[$vid][$tid];
-    // PostgreSQL, MySQL and SQLite may not return the parent terms in the same
-    // order so sort before testing.
-    sort($parent_ids);
-    $actual_terms = array_filter($term->parents);
-    sort($actual_terms);
-    $this->assertEquals($parent_ids, $actual_terms, "Term $tid has correct parents in taxonomy tree");
+    $this->assertEquals($parent_ids, array_filter($term->parents), "Term $tid has correct parents in taxonomy tree");
   }
 
   /**

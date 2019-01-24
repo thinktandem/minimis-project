@@ -11,7 +11,6 @@ use Drupal\views\Views;
  * The derivatives store all base table plugin information.
  */
 class DefaultWizardDeriver extends DeriverBase {
-
   /**
    * {@inheritdoc}
    */
@@ -26,7 +25,7 @@ class DefaultWizardDeriver extends DeriverBase {
           'id' => 'standard',
           'base_table' => $table,
           'title' => $views_info['table']['base']['title'],
-          'class' => 'Drupal\views\Plugin\views\wizard\Standard',
+          'class' => 'Drupal\views\Plugin\views\wizard\Standard'
         ];
       }
     }

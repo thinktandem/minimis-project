@@ -5,7 +5,7 @@ namespace Drupal\Tests\content_moderation\Functional;
 use Drupal\node\Entity\Node;
 use Drupal\simpletest\ContentTypeCreationTrait;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Test the content moderation actions.
@@ -15,7 +15,6 @@ use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
 class ModerationActionsTest extends BrowserTestBase {
 
   use ContentTypeCreationTrait;
-  use ContentModerationTestTrait;
 
   /**
    * Modules to enable.
@@ -39,7 +38,7 @@ class ModerationActionsTest extends BrowserTestBase {
     $standard_bundle = $this->createContentType(['type' => 'standard_bundle']);
     $standard_bundle->save();
 
-    $workflow = $this->createEditorialWorkflow();
+    $workflow = Workflow::load('editorial');
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'moderated_bundle');
     $workflow->save();
 

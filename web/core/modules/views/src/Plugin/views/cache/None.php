@@ -19,6 +19,7 @@ class None extends CachePluginBase {
     return $this->t('None');
   }
 
+
   /**
    * Overrides \Drupal\views\Plugin\views\cache\CachePluginBase::cacheGet().
    *

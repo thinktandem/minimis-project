@@ -19,12 +19,12 @@ class Twig_Node_If extends Twig_Node
 {
     public function __construct(Twig_NodeInterface $tests, Twig_NodeInterface $else = null, $lineno, $tag = null)
     {
-        $nodes = ['tests' => $tests];
+        $nodes = array('tests' => $tests);
         if (null !== $else) {
             $nodes['else'] = $else;
         }
 
-        parent::__construct($nodes, [], $lineno, $tag);
+        parent::__construct($nodes, array(), $lineno, $tag);
     }
 
     public function compile(Twig_Compiler $compiler)

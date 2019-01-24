@@ -9,7 +9,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Test updating the ContentModerationState entity default revisions.
  *
  * @group Update
- * @group legacy
  * @see content_moderation_post_update_update_cms_default_revisions
  */
 class DefaultContentModerationStateRevisionUpdateTest extends UpdatePathTestBase {

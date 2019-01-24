@@ -26,7 +26,7 @@ class TextWithSummaryItemTest extends FieldKernelTestBase {
   /**
    * Field storage entity.
    *
-   * @var \Drupal\field\Entity\FieldStorageConfig
+   * @var \Drupal\field\Entity\FieldStorageConfig.
    */
   protected $fieldStorage;
 
@@ -36,6 +36,7 @@ class TextWithSummaryItemTest extends FieldKernelTestBase {
    * @var \Drupal\field\Entity\FieldConfig
    */
   protected $field;
+
 
   protected function setUp() {
     parent::setUp();
@@ -105,7 +106,7 @@ class TextWithSummaryItemTest extends FieldKernelTestBase {
       'type' => 'text_with_summary',
       'settings' => [
         'max_length' => 10,
-      ],
+      ]
     ]);
     $this->fieldStorage->save();
     $this->field = FieldConfig::create([

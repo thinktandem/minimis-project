@@ -49,22 +49,21 @@ class ParagraphsEditModesTest extends ParagraphsTestBase {
     // Add a paragraph.
     $this->drupalPostAjaxForm('node/add/paragraphed_test', [], 'field_paragraphs_image_text_paragraph_add_more');
     $this->drupalPostAjaxForm(NULL, NULL, 'field_paragraphs_title_add_more');
-
-    $files = $this->drupalGetTestFiles('image');
-    $file_system = \Drupal::service('file_system');
+    $text = 'Trust me I am an image';
+    file_put_contents('temporary://myImage1.jpg', $text);
 
     // Create a node with an image and text.
     $edit = [
       'title[0][value]' => 'Test article',
       'field_paragraphs[0][subform][field_text][0][value]' => 'text_summary',
-      'files[field_paragraphs_0_subform_field_image_0]' => $file_system->realpath($files[0]->uri),
+      'files[field_paragraphs_0_subform_field_image_0]' => drupal_realpath('temporary://myImage1.jpg'),
       'field_paragraphs[1][subform][field_title][0][value]' => 'Title example',
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Assert the summary is correctly generated.
     $this->clickLink(t('Edit'));
-    $this->assertRaw('<div class="paragraphs-collapsed-description">' . $files[0]->filename . ', text_summary');
+    $this->assertRaw('<div class="paragraphs-collapsed-description">myImage1.jpg, text_summary');
     $this->assertRaw('<div class="paragraphs-collapsed-description">Title example');
 
     // Edit and remove alternative text.

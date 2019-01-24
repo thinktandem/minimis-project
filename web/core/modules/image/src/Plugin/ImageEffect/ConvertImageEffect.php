@@ -2,6 +2,7 @@
 
 namespace Drupal\image\Plugin\ImageEffect;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Image\ImageInterface;
 use Drupal\image\ConfigurableImageEffectBase;
@@ -40,7 +41,7 @@ class ConvertImageEffect extends ConfigurableImageEffectBase {
    */
   public function getSummary() {
     $summary = [
-      '#markup' => mb_strtoupper($this->configuration['extension']),
+      '#markup' => Unicode::strtoupper($this->configuration['extension']),
     ];
     $summary += parent::getSummary();
 
@@ -63,7 +64,7 @@ class ConvertImageEffect extends ConfigurableImageEffectBase {
     $extensions = \Drupal::service('image.toolkit.manager')->getDefaultToolkit()->getSupportedExtensions();
     $options = array_combine(
       $extensions,
-      array_map('mb_strtoupper', $extensions)
+      array_map(['\Drupal\Component\Utility\Unicode', 'strtoupper'], $extensions)
     );
     $form['extension'] = [
       '#type' => 'select',

@@ -60,7 +60,7 @@ class MigrateUpgradeImportBatch {
   /**
    * The follow-up migrations.
    *
-   * @var \Drupal\migrate\Plugin\MigrationInterface[]
+   * @var \Drupal\migrate\Plugin\MigrationInterface[];
    */
   protected static $followUpMigrations;
 
@@ -257,24 +257,24 @@ class MigrateUpgradeImportBatch {
 
     // If we had any successes log that for the user.
     if ($successes > 0) {
-      \Drupal::messenger()->addStatus(\Drupal::translation()
+      drupal_set_message(\Drupal::translation()
         ->formatPlural($successes, 'Completed 1 upgrade task successfully', 'Completed @count upgrade tasks successfully'));
     }
     // If we had failures, log them and show the migration failed.
     if ($failures > 0) {
-      \Drupal::messenger()->addError(\Drupal::translation()
+      drupal_set_message(\Drupal::translation()
         ->formatPlural($failures, '1 upgrade failed', '@count upgrades failed'));
-      \Drupal::messenger()->addError(t('Upgrade process not completed'));
+      drupal_set_message(t('Upgrade process not completed'), 'error');
     }
     else {
       // Everything went off without a hitch. We may not have had successes
       // but we didn't have failures so this is fine.
-      \Drupal::messenger()->addStatus(t('Congratulations, you upgraded Drupal!'));
+      drupal_set_message(t('Congratulations, you upgraded Drupal!'));
     }
 
     if (\Drupal::moduleHandler()->moduleExists('dblog')) {
       $url = Url::fromRoute('migrate_drupal_ui.log');
-      \Drupal::messenger()->addMessage(Link::fromTextAndUrl(new TranslatableMarkup('Review the detailed upgrade log'), $url), $failures ? 'error' : 'status');
+      drupal_set_message(Link::fromTextAndUrl(new TranslatableMarkup('Review the detailed upgrade log'), $url), $failures ? 'error' : 'status');
     }
   }
 

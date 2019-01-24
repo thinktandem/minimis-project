@@ -105,7 +105,6 @@ class RedirectRequestSubscriberTest extends UnitTestCase {
     return [
       ['non-existing', ['key' => 'val'], '/test-path', ['dummy' => 'value']],
       ['non-existing/', ['key' => 'val'], '/test-path', ['dummy' => 'value']],
-      ['system/files/file.txt', [], '/test-path', []],
     ];
   }
 
@@ -135,6 +134,9 @@ class RedirectRequestSubscriberTest extends UnitTestCase {
     $checker->expects($this->any())
       ->method('canRedirect')
       ->will($this->returnValue(TRUE));
+    $checker->expects($this->any())
+      ->method('isLoop')
+      ->will($this->returnValue(FALSE));
 
     $context = $this->getMock('Symfony\Component\Routing\RequestContext');
 
@@ -144,17 +146,7 @@ class RedirectRequestSubscriberTest extends UnitTestCase {
     $inbound_path_processor->expects($this->any())
       ->method('processInbound')
       ->with($request->getPathInfo(), $request)
-      ->willReturnCallback(function ($path, Request $request) {
-        if (strpos($path, '/system/files/') === 0 && !$request->query->has('file')) {
-          // Private files paths are split by the inbound path processor and the
-          // relative file path is moved to the 'file' query string parameter.
-          // This is because the route system does not allow an arbitrary amount
-          // of parameters.
-          // @see \Drupal\system\PathProcessor\PathProcessorFiles::processInbound()
-          $path = '/system/files';
-        }
-        return $path;
-      });
+      ->will($this->returnValue($request->getPathInfo()));
 
     $alias_manager = $this->getMockBuilder('Drupal\Core\Path\AliasManager')
       ->disableOriginalConstructor()
@@ -197,20 +189,9 @@ class RedirectRequestSubscriberTest extends UnitTestCase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    if ($method === 'findMatchingRedirect') {
-      $repository->expects($this->any())
-        ->method($method)
-        ->willReturnCallback(function ($source_path) use ($redirect) {
-          // No redirect with source path 'system/files' exists. The stored
-          // redirect has 'system/files/file.txt' as source path.
-          return $source_path === 'system/files' ? NULL : $redirect;
-        });
-    }
-    else {
-      $repository->expects($this->any())
-        ->method($method)
-        ->will($this->returnValue($redirect));
-    }
+    $repository->expects($this->any())
+      ->method($method)
+      ->will($this->returnValue($redirect));
 
     return $repository;
   }

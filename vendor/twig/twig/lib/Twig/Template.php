@@ -26,13 +26,13 @@ abstract class Twig_Template implements Twig_TemplateInterface
     /**
      * @internal
      */
-    protected static $cache = [];
+    protected static $cache = array();
 
     protected $parent;
-    protected $parents = [];
+    protected $parents = array();
     protected $env;
-    protected $blocks = [];
-    protected $traits = [];
+    protected $blocks = array();
+    protected $traits = array();
 
     public function __construct(Twig_Environment $env)
     {
@@ -63,7 +63,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      */
     public function getDebugInfo()
     {
-        return [];
+        return array();
     }
 
     /**
@@ -108,7 +108,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @param array $context
      *
-     * @return Twig_TemplateInterface|Twig_TemplateWrapper|false The parent template or false if there is no parent
+     * @return Twig_TemplateInterface|false The parent template or false if there is no parent
      *
      * @internal
      */
@@ -125,8 +125,8 @@ abstract class Twig_Template implements Twig_TemplateInterface
                 return false;
             }
 
-            if ($parent instanceof self || $parent instanceof Twig_TemplateWrapper) {
-                return $this->parents[$parent->getSourceContext()->getName()] = $parent;
+            if ($parent instanceof self) {
+                return $this->parents[$parent->getTemplateName()] = $parent;
             }
 
             if (!isset($this->parents[$parent])) {
@@ -164,7 +164,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @internal
      */
-    public function displayParentBlock($name, array $context, array $blocks = [])
+    public function displayParentBlock($name, array $context, array $blocks = array())
     {
         $name = (string) $name;
 
@@ -190,7 +190,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @internal
      */
-    public function displayBlock($name, array $context, array $blocks = [], $useBlocks = true)
+    public function displayBlock($name, array $context, array $blocks = array(), $useBlocks = true)
     {
         $name = (string) $name;
 
@@ -250,7 +250,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @internal
      */
-    public function renderParentBlock($name, array $context, array $blocks = [])
+    public function renderParentBlock($name, array $context, array $blocks = array())
     {
         ob_start();
         $this->displayParentBlock($name, $context, $blocks);
@@ -273,7 +273,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @internal
      */
-    public function renderBlock($name, array $context, array $blocks = [], $useBlocks = true)
+    public function renderBlock($name, array $context, array $blocks = array(), $useBlocks = true)
     {
         ob_start();
         $this->displayBlock($name, $context, $blocks, $useBlocks);
@@ -295,7 +295,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @internal
      */
-    public function hasBlock($name, array $context = null, array $blocks = [])
+    public function hasBlock($name, array $context = null, array $blocks = array())
     {
         if (null === $context) {
             @trigger_error('The '.__METHOD__.' method is internal and should never be called; calling it directly is deprecated since version 1.28 and won\'t be possible anymore in 2.0.', E_USER_DEPRECATED);
@@ -331,7 +331,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @internal
      */
-    public function getBlockNames(array $context = null, array $blocks = [])
+    public function getBlockNames(array $context = null, array $blocks = array())
     {
         if (null === $context) {
             @trigger_error('The '.__METHOD__.' method is internal and should never be called; calling it directly is deprecated since version 1.28 and won\'t be possible anymore in 2.0.', E_USER_DEPRECATED);
@@ -355,7 +355,11 @@ abstract class Twig_Template implements Twig_TemplateInterface
                 return $this->env->resolveTemplate($template);
             }
 
-            if ($template instanceof self || $template instanceof Twig_TemplateWrapper) {
+            if ($template instanceof self) {
+                return $template;
+            }
+
+            if ($template instanceof Twig_TemplateWrapper) {
                 return $template;
             }
 
@@ -394,7 +398,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
         return $this->blocks;
     }
 
-    public function display(array $context, array $blocks = [])
+    public function display(array $context, array $blocks = array())
     {
         $this->displayWithErrorHandling($this->env->mergeGlobals($context), array_merge($this->blocks, $blocks));
     }
@@ -422,7 +426,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
         return ob_get_clean();
     }
 
-    protected function displayWithErrorHandling(array $context, array $blocks = [])
+    protected function displayWithErrorHandling(array $context, array $blocks = array())
     {
         try {
             $this->doDisplay($context, $blocks);
@@ -450,7 +454,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
      * @param array $context An array of parameters to pass to the template
      * @param array $blocks  An array of blocks to pass to the template
      */
-    abstract protected function doDisplay(array $context, array $blocks = []);
+    abstract protected function doDisplay(array $context, array $blocks = array());
 
     /**
      * Returns a variable from the context.
@@ -502,13 +506,13 @@ abstract class Twig_Template implements Twig_TemplateInterface
      *
      * @internal
      */
-    protected function getAttribute($object, $item, array $arguments = [], $type = self::ANY_CALL, $isDefinedTest = false, $ignoreStrictCheck = false)
+    protected function getAttribute($object, $item, array $arguments = array(), $type = self::ANY_CALL, $isDefinedTest = false, $ignoreStrictCheck = false)
     {
         // array
         if (self::METHOD_CALL !== $type) {
             $arrayItem = is_bool($item) || is_float($item) ? (int) $item : $item;
 
-            if (((is_array($object) || $object instanceof ArrayObject) && (isset($object[$arrayItem]) || array_key_exists($arrayItem, $object)))
+            if ((is_array($object) && (isset($object[$arrayItem]) || array_key_exists($arrayItem, $object)))
                 || ($object instanceof ArrayAccess && isset($object[$arrayItem]))
             ) {
                 if ($isDefinedTest) {
@@ -595,7 +599,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
             // get_class_methods returns all methods accessible in the scope, but we only want public ones to be accessible in templates
             if ($object instanceof self) {
                 $ref = new ReflectionClass($class);
-                $methods = [];
+                $methods = array();
 
                 foreach ($ref->getMethods(ReflectionMethod::IS_PUBLIC) as $refMethod) {
                     // Accessing the environment from templates is forbidden to prevent untrusted changes to the environment
@@ -609,7 +613,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
             // sort values to have consistent behavior, so that "get" methods win precedence over "is" methods
             sort($methods);
 
-            $cache = [];
+            $cache = array();
 
             foreach ($methods as $method) {
                 $cache[$method] = $method;
@@ -672,7 +676,7 @@ abstract class Twig_Template implements Twig_TemplateInterface
             if (!$arguments) {
                 $ret = $object->$method();
             } else {
-                $ret = call_user_func_array([$object, $method], $arguments);
+                $ret = call_user_func_array(array($object, $method), $arguments);
             }
         } catch (BadMethodCallException $e) {
             if ($call && ($ignoreStrictCheck || !$this->env->isStrictVariables())) {

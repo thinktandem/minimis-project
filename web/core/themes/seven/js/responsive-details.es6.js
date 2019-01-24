@@ -3,7 +3,7 @@
  * Provides responsive behaviors to HTML details elements.
  */
 
-(function($, Drupal) {
+(function ($, Drupal) {
   /**
    * Initializes the responsive behaviors for details elements.
    *
@@ -14,9 +14,7 @@
    */
   Drupal.behaviors.responsiveDetails = {
     attach(context) {
-      const $details = $(context)
-        .find('details')
-        .once('responsive-details');
+      const $details = $(context).find('details').once('responsive-details');
 
       if (!$details.length) {
         return;
@@ -29,12 +27,15 @@
           $details.attr('open', true);
           $summaries.attr('aria-expanded', true);
           $summaries.on('click.details-open', false);
-        } else {
+        }
+        else {
           // If user explicitly opened one, leave it alone.
           const $notPressed = $details
             .find('> summary[aria-pressed!=true]')
             .attr('aria-expanded', false);
-          $notPressed.parent('details').attr('open', false);
+          $notPressed
+            .parent('details')
+            .attr('open', false);
           // After resize, allow user to close previously opened details.
           $summaries.off('.details-open');
         }
@@ -49,4 +50,4 @@
       detailsToggle(mql.matches);
     },
   };
-})(jQuery, Drupal);
+}(jQuery, Drupal));

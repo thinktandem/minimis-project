@@ -60,13 +60,13 @@ class FormController implements FormInterface {
     $this->condition->submitConfigurationForm($form, $form_state);
     $config = $this->condition->getConfig();
     foreach ($config['bundles'] as $bundle) {
-      \Drupal::messenger()->addStatus('Bundle: ' . $bundle);
+      drupal_set_message('Bundle: ' . $bundle);
     }
 
     $article = Node::load(1);
     $this->condition->setContextValue('node', $article);
     if ($this->condition->execute()) {
-      \Drupal::messenger()->addStatus(t('Executed successfully.'));
+      drupal_set_message(t('Executed successfully.'));
     }
   }
 

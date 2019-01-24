@@ -43,7 +43,7 @@ class DrushCommand extends BaseCommand
      */
     public function getNamespace()
     {
-        $parts = explode(':', $this->getName());
+        $parts = explode('-', $this->getName());
         return count($parts) >= 2 ? array_shift($parts) : 'global';
     }
 
@@ -53,11 +53,11 @@ class DrushCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->setName($this->command->getName())
-            ->setAliases($this->command->getAliases())
-            ->setDefinition($this->command->getDefinition())
-            ->setDescription($this->command->getDescription())
-            ->setHelp($this->buildHelpFromCommand());
+        ->setName($this->command->getName())
+        ->setAliases($this->command->getAliases())
+        ->setDefinition($this->command->getDefinition())
+        ->setDescription($this->command->getDescription())
+        ->setHelp($this->buildHelpFromCommand());
     }
 
     /**
@@ -73,20 +73,20 @@ class DrushCommand extends BaseCommand
         if (strpos($first, '@') === 0) {
             $alias = $first;
             $command = array_shift($args);
-        } else {
-            // Otherwise, default the alias to '@self' and use the first argument as the
-            // command.
+        } // Otherwise, default the alias to '@self' and use the first argument as the
+        // command.
+        else {
             $alias = '@self';
             $command = $first;
         }
 
-        $options = array_diff_assoc($input->getOptions(), $this->getDefinition()->getOptionDefaults());
+        $options = $input->getOptions();
         // Force the 'backend' option to TRUE.
         $options['backend'] = true;
 
         $return = drush_invoke_process($alias, $command, array_values($args), $options, ['interactive' => true]);
 
-        if (($return['error_status'] > 0) && !empty($return['error_log'])) {
+        if ($return['error_status'] > 0) {
             foreach ($return['error_log'] as $error_type => $errors) {
                 $output->write($errors);
             }

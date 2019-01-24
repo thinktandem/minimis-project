@@ -15,9 +15,6 @@ use Zend\Diactoros\AbstractSerializer;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
-use function preg_match;
-use function sprintf;
-
 final class Serializer extends AbstractSerializer
 {
     /**

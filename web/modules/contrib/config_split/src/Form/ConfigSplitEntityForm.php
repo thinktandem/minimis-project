@@ -49,12 +49,6 @@ class ConfigSplitEntityForm extends EntityForm {
       '#title' => $this->t('Static Settings'),
       '#description' => $this->t("These settings need a cache clear when overridden in settings.php and the split needs to be single imported before the config import for new values to take effect."),
     ];
-    $form['static_fieldset']['description'] = [
-      '#type' => 'textarea',
-      '#title' => $this->t('Description'),
-      '#description' => $this->t('Describe this config split setting. The text will be displayed on the <em>Configuration Split Setting</em> list page.'),
-      '#default_value' => $config->get('description'),
-    ];
     $form['static_fieldset']['folder'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Folder'),
@@ -229,13 +223,8 @@ class ConfigSplitEntityForm extends EntityForm {
     if (!is_array($text)) {
       $text = explode("\n", $text);
     }
-
-    foreach ($text as &$config_entry) {
-      $config_entry = strtolower($config_entry);
-    }
-
     // Filter out illegal characters.
-    return array_filter(preg_replace('/[^a-z0-9_\.\-\*]+/', '', $text));
+    return array_filter(preg_replace('/[^a-z0-9\._\*]+/', '', $text));
   }
 
   /**
@@ -247,25 +236,25 @@ class ConfigSplitEntityForm extends EntityForm {
 
     switch ($status) {
       case SAVED_NEW:
-        $this->messenger()->addStatus($this->t('Created the %label Configuration Split Setting.', [
+        drupal_set_message($this->t('Created the %label Configuration Split Setting.', [
           '%label' => $config_split->label(),
         ]));
         break;
 
       default:
-        $this->messenger()->addStatus($this->t('Saved the %label Configuration Split Setting.', [
+        drupal_set_message($this->t('Saved the %label Configuration Split Setting.', [
           '%label' => $config_split->label(),
         ]));
     }
     $folder = $form_state->getValue('folder');
-    if (!empty($folder) && !file_exists($folder)) {
-      $this->messenger()->addWarning(
+    if (!file_exists($folder)) {
+      drupal_set_message(
         $this->t('The storage path "%path" for %label Configuration Split Setting does not exist. Make sure it exists and is writable.',
           [
             '%label' => $config_split->label(),
             '%path' => $folder,
           ]
-        ));
+        ), 'warning');
     }
     $form_state->setRedirectUrl($config_split->toUrl('collection'));
   }

@@ -4,7 +4,7 @@ namespace Drupal\Tests\content_moderation\Functional;
 
 use Drupal\simpletest\ContentTypeCreationTrait;
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Test revision revert.
@@ -14,7 +14,6 @@ use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
 class ModerationRevisionRevertTest extends BrowserTestBase {
 
   use ContentTypeCreationTrait;
-  use ContentModerationTestTrait;
 
   /**
    * Modules to enable.
@@ -35,7 +34,7 @@ class ModerationRevisionRevertTest extends BrowserTestBase {
     $moderated_bundle = $this->createContentType(['type' => 'moderated_bundle']);
     $moderated_bundle->save();
 
-    $workflow = $this->createEditorialWorkflow();
+    $workflow = Workflow::load('editorial');
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'moderated_bundle');
     $workflow->save();
 

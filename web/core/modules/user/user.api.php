@@ -5,9 +5,6 @@
  * Hooks provided by the User module.
  */
 
-use Drupal\Core\Session\AccountInterface;
-use Drupal\user\UserInterface;
-
 /**
  * @addtogroup hooks
  * @{
@@ -31,7 +28,7 @@ use Drupal\user\UserInterface;
  *
  * @param array $edit
  *   The array of form values submitted by the user.
- * @param \Drupal\user\UserInterface $account
+ * @param \Drupal\Core\Session\AccountInterface $account
  *   The user object on which the operation is being performed.
  * @param string $method
  *   The account cancellation method.
@@ -39,7 +36,7 @@ use Drupal\user\UserInterface;
  * @see user_cancel_methods()
  * @see hook_user_cancel_methods_alter()
  */
-function hook_user_cancel($edit, UserInterface $account, $method) {
+function hook_user_cancel($edit, $account, $method) {
   switch ($method) {
     case 'user_cancel_block_unpublish':
       // Unpublish nodes (current revisions).
@@ -110,8 +107,7 @@ function hook_user_cancel_methods_alter(&$methods) {
  *
  * Called by $account->getDisplayName() to allow modules to alter the username
  * that is displayed. Can be used to ensure user privacy in situations where
- * $account->getDisplayName() is too revealing. This hook is invoked both for
- * user entities and the anonymous user session object.
+ * $account->getDisplayName() is too revealing.
  *
  * @param string|Drupal\Component\Render\MarkupInterface $name
  *   The username that is displayed for a user. If a hook implementation changes
@@ -119,19 +115,12 @@ function hook_user_cancel_methods_alter(&$methods) {
  *   the implementation to ensure the user's name is escaped properly. String
  *   values will be autoescaped.
  * @param \Drupal\Core\Session\AccountInterface $account
- *   The object on which the operation is being performed. This object may be a
- *   user entity. If the object is an implementation of UserInterface you can
- *   use instanceof operator before accessing user entity methods. For example:
- *   @code
- *   if ($account instanceof UserInterface) {
- *      // Access user entity methods.
- *   }
- *   @endcode
+ *   The user object on which the operation is being performed.
  *
  * @see \Drupal\Core\Session\AccountInterface::getDisplayName()
  * @see sanitization
  */
-function hook_user_format_name_alter(&$name, AccountInterface $account) {
+function hook_user_format_name_alter(&$name, $account) {
   // Display the user's uid instead of name.
   if ($account->id()) {
     $name = t('User @uid', ['@uid' => $account->id()]);
@@ -141,31 +130,24 @@ function hook_user_format_name_alter(&$name, AccountInterface $account) {
 /**
  * The user just logged in.
  *
- * @param \Drupal\user\UserInterface $account
+ * @param object $account
  *   The user object on which the operation was just performed.
  */
-function hook_user_login(UserInterface $account) {
+function hook_user_login($account) {
   $config = \Drupal::config('system.date');
   // If the user has a NULL time zone, notify them to set a time zone.
   if (!$account->getTimezone() && $config->get('timezone.user.configurable') && $config->get('timezone.user.warn')) {
-    \Drupal::messenger()
-      ->addStatus(t('Configure your <a href=":user-edit">account time zone setting</a>.', [
-        ':user-edit' => $account->url('edit-form', [
-          'query' => \Drupal::destination()
-            ->getAsArray(),
-          'fragment' => 'edit-timezone',
-        ]),
-      ]));
+    drupal_set_message(t('Configure your <a href=":user-edit">account time zone setting</a>.', [':user-edit' => $account->url('edit-form', ['query' => \Drupal::destination()->getAsArray(), 'fragment' => 'edit-timezone'])]));
   }
 }
 
 /**
  * The user just logged out.
  *
- * @param \Drupal\Core\Session\AccountInterface $account
+ * @param $account
  *   The user object on which the operation was just performed.
  */
-function hook_user_logout(AccountInterface $account) {
+function hook_user_logout($account) {
   db_insert('logouts')
     ->fields([
       'uid' => $account->id(),

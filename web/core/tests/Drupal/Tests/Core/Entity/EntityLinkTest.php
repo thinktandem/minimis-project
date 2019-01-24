@@ -58,13 +58,6 @@ class EntityLinkTest extends UnitTestCase {
    * @covers ::link
    *
    * @dataProvider providerTestLink
-   *
-   * @group legacy
-   *
-   * Note this is only a legacy test because it triggers a call to
-   * \Drupal\Core\Entity\EntityTypeInterface::getLabelCallback() which is mocked
-   * and triggers a deprecation error. Remove when ::getLabelCallback() is
-   * removed.
    */
   public function testLink($entity_label, $link_text, $expected_text, $link_rel = 'canonical', array $link_options = []) {
     $language = new Language(['id' => 'es']);
@@ -127,13 +120,6 @@ class EntityLinkTest extends UnitTestCase {
    * @covers ::toLink
    *
    * @dataProvider providerTestLink
-   *
-   * @group legacy
-   *
-   * Note this is only a legacy test because it triggers a call to
-   * \Drupal\Core\Entity\EntityTypeInterface::getLabelCallback() which is mocked
-   * and triggers a deprecation error. Remove when ::getLabelCallback() is
-   * removed.
    */
   public function testToLink($entity_label, $link_text, $expected_text, $link_rel = 'canonical', array $link_options = []) {
     $language = new Language(['id' => 'es']);

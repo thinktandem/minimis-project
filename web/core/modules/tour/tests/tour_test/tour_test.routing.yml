@@ -28,3 +28,4 @@ tour_test.3:
     _controller: '\Drupal\tour_test\Controller\TourTestController::tourTest1'
   requirements:
     _access: 'TRUE'
+

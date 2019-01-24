@@ -4,7 +4,6 @@ namespace Drupal\Component\Bridge;
 
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Zend\Feed\Reader\ExtensionManagerInterface as ReaderManagerInterface;
 use Zend\Feed\Writer\ExtensionManagerInterface as WriterManagerInterface;
 
@@ -50,11 +49,6 @@ class ZfExtensionManagerSfContainer implements ReaderManagerInterface, WriterMan
   protected $canonicalNames;
 
   /**
-   * @var \Zend\Feed\Reader\ExtensionManagerInterface|\Zend\Feed\Writer\ExtensionManagerInterface
-   */
-  protected $standalone;
-
-  /**
    * Constructs a ZfExtensionManagerSfContainer object.
    *
    * @param string $prefix
@@ -68,25 +62,14 @@ class ZfExtensionManagerSfContainer implements ReaderManagerInterface, WriterMan
    * {@inheritdoc}
    */
   public function get($extension) {
-    try {
-      return $this->container->get($this->prefix . $this->canonicalizeName($extension));
-    }
-    catch (ServiceNotFoundException $e) {
-      if ($this->standalone && $this->standalone->has($extension)) {
-        return $this->standalone->get($extension);
-      }
-      throw $e;
-    }
+    return $this->container->get($this->prefix . $this->canonicalizeName($extension));
   }
 
   /**
    * {@inheritdoc}
    */
   public function has($extension) {
-    if ($this->container->has($this->prefix . $this->canonicalizeName($extension))) {
-      return TRUE;
-    }
-    return $this->standalone && $this->standalone->has($extension);
+    return $this->container->has($this->prefix . $this->canonicalizeName($extension));
   }
 
   /**
@@ -117,16 +100,6 @@ class ZfExtensionManagerSfContainer implements ReaderManagerInterface, WriterMan
    */
   public function setContainer(ContainerInterface $container = NULL) {
     $this->container = $container;
-  }
-
-  /**
-   * @param $class
-   */
-  public function setStandalone($class) {
-    if (!is_subclass_of($class, ReaderManagerInterface::class) && !is_subclass_of($class, WriterManagerInterface::class)) {
-      throw new \RuntimeException("$class must implement Zend\Feed\Reader\ExtensionManagerInterface or Zend\Feed\Writer\ExtensionManagerInterface");
-    }
-    $this->standalone = new $class();
   }
 
 }

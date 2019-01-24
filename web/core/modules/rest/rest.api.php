@@ -56,6 +56,7 @@ function hook_rest_type_uri_alter(&$uri, $context = []) {
   }
 }
 
+
 /**
  * Alter the REST relation URI.
  *

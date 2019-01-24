@@ -10,7 +10,6 @@ use Drupal\Component\Plugin\Factory\DefaultFactory;
  * Defines a plugin manager used by Plugin API unit tests.
  */
 class TestPluginManager extends PluginManagerBase {
-
   public function __construct() {
 
     // Create the object that can be used to return definitions for all the

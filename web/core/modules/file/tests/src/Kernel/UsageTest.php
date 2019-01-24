@@ -15,7 +15,6 @@ use Drupal\node\Entity\NodeType;
  * @group file
  */
 class UsageTest extends FileManagedUnitTestBase {
-
   /**
    * Tests \Drupal\file\FileUsage\DatabaseFileUsageBackend::listUsage().
    */
@@ -27,7 +26,7 @@ class UsageTest extends FileManagedUnitTestBase {
         'module' => 'testing',
         'type' => 'foo',
         'id' => 1,
-        'count' => 1,
+        'count' => 1
       ])
       ->execute();
     db_insert('file_usage')
@@ -36,7 +35,7 @@ class UsageTest extends FileManagedUnitTestBase {
         'module' => 'testing',
         'type' => 'bar',
         'id' => 2,
-        'count' => 2,
+        'count' => 2
       ])
       ->execute();
 

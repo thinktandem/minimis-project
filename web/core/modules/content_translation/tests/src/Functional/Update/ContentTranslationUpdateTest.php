@@ -4,13 +4,12 @@ namespace Drupal\Tests\content_translation\Functional\Update;
 
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
-use Drupal\Tests\system\Functional\Entity\Traits\EntityDefinitionTestTrait;
+use Drupal\system\Tests\Entity\EntityDefinitionTestTrait;
 
 /**
  * Tests the upgrade path for the Content Translation module.
  *
  * @group Update
- * @group legacy
  */
 class ContentTranslationUpdateTest extends UpdatePathTestBase {
 

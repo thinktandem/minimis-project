@@ -2,6 +2,7 @@
 
 namespace Drupal\Core\Routing;
 
+use Drupal\Component\Utility\Unicode;
 use Symfony\Component\Routing\CompiledRoute as SymfonyCompiledRoute;
 
 /**
@@ -68,7 +69,7 @@ class CompiledRoute extends SymfonyCompiledRoute {
     // Support case-insensitive route matching by ensuring the pattern outline
     // is lowercase.
     // @see \Drupal\Core\Routing\RouteProvider::getRoutesByPath()
-    $this->patternOutline = mb_strtolower($pattern_outline);
+    $this->patternOutline = Unicode::strtolower($pattern_outline);
     $this->numParts = $num_parts;
   }
 

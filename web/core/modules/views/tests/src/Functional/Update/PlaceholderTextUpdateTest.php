@@ -11,7 +11,6 @@ use Drupal\views\Entity\View;
  * @see views_post_update_filter_placeholder_text()
  *
  * @group Update
- * @group legacy
  */
 class PlaceholderTextUpdateTest extends UpdatePathTestBase {
 

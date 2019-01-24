@@ -21,7 +21,7 @@ process:
   timezone: timezone
   langcode:
     plugin: user_langcode
-    source: entity_language
+    source: language
     fallback_to_site_default: false
   preferred_langcode:
     plugin: user_langcode

@@ -35,7 +35,6 @@
  *   any rows.
  * - no_striping: A boolean indicating that the row should receive no striping.
  * - header_columns: The number of columns in the header.
- * - thead_class: Class for the table header
  *
  * @see template_preprocess_table()
  */
@@ -43,12 +42,11 @@
 
 {%
   set table_classes = [
+    not no_striping ? 'table-striped',
     'table',
-    hover ? 'table-hover',
-    not no_striping ? 'table-striped' : 'table-bordered',
   ]
 %}
-<div class="table-responsive">
+
 <table{{ attributes.addClass(table_classes) }}>
   {% if caption %}
     <caption>{{ caption }}</caption>
@@ -67,7 +65,7 @@
   {% endfor %}
 
   {% if header %}
-    <thead class='{{ thead_class }}'>
+    <thead>
       <tr>
         {% for cell in header %}
           {%
@@ -121,4 +119,3 @@
     </tfoot>
   {% endif %}
 </table>
-</div>

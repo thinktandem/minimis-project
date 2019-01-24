@@ -12,12 +12,12 @@
 namespace Symfony\Component\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Argument\ArgumentInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ExpressionLanguage;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\ExpressionLanguage\Expression;
 
 /**
@@ -34,18 +34,15 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
     private $graph;
     private $currentDefinition;
     private $onlyConstructorArguments;
-    private $hasProxyDumper;
     private $lazy;
     private $expressionLanguage;
-    private $byConstructor;
 
     /**
      * @param bool $onlyConstructorArguments Sets this Service Reference pass to ignore method calls
      */
-    public function __construct($onlyConstructorArguments = false, $hasProxyDumper = true)
+    public function __construct($onlyConstructorArguments = false)
     {
         $this->onlyConstructorArguments = (bool) $onlyConstructorArguments;
-        $this->hasProxyDumper = (bool) $hasProxyDumper;
     }
 
     /**
@@ -65,7 +62,6 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
         $this->graph = $container->getCompiler()->getServiceReferenceGraph();
         $this->graph->clear();
         $this->lazy = false;
-        $this->byConstructor = false;
 
         foreach ($container->getAliases() as $id => $alias) {
             $targetId = $this->getDefinitionId((string) $alias);
@@ -101,9 +97,8 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
                 $targetId,
                 $targetDefinition,
                 $value,
-                $this->lazy || ($this->hasProxyDumper && $targetDefinition && $targetDefinition->isLazy()),
-                ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE === $value->getInvalidBehavior(),
-                $this->byConstructor
+                $this->lazy || ($targetDefinition && $targetDefinition->isLazy()),
+                ContainerInterface::IGNORE_ON_UNINITIALIZED_REFERENCE === $value->getInvalidBehavior()
             );
 
             return $value;
@@ -116,16 +111,11 @@ class AnalyzeServiceReferencesPass extends AbstractRecursivePass implements Repe
                 return $value;
             }
             $this->currentDefinition = $value;
-        } elseif ($this->currentDefinition === $value) {
-            return $value;
         }
         $this->lazy = false;
 
-        $byConstructor = $this->byConstructor;
-        $this->byConstructor = true;
         $this->processValue($value->getFactory());
         $this->processValue($value->getArguments());
-        $this->byConstructor = $byConstructor;
 
         if (!$this->onlyConstructorArguments) {
             $this->processValue($value->getProperties());

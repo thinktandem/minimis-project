@@ -142,7 +142,6 @@ class CheckProvider implements CheckProviderInterface, ContainerAwareInterface {
 
     return $checks;
   }
-
   /**
    * Compiles a mapping of requirement keys to access checker service IDs.
    */

@@ -11,7 +11,6 @@ use Drupal\Core\Database\IntegrityConstraintViolationException;
  * @group Database
  */
 class InvalidDataTest extends DatabaseTestBase {
-
   /**
    * Tests aborting of traditional SQL database systems with invalid data.
    */

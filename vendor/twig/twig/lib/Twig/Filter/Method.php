@@ -25,9 +25,9 @@ class Twig_Filter_Method extends Twig_Filter
     protected $extension;
     protected $method;
 
-    public function __construct(Twig_ExtensionInterface $extension, $method, array $options = [])
+    public function __construct(Twig_ExtensionInterface $extension, $method, array $options = array())
     {
-        $options['callable'] = [$extension, $method];
+        $options['callable'] = array($extension, $method);
 
         parent::__construct($options);
 

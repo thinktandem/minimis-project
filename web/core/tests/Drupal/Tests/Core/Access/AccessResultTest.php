@@ -985,7 +985,6 @@ class UncacheableTestAccessResult implements AccessResultInterface {
   public function __construct($value) {
     $this->value = $value;
   }
-
   /**
    * {@inheritdoc}
    */

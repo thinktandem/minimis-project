@@ -37,6 +37,7 @@ class Twig_Error extends Exception
     // to be renamed to name in 2.0
     protected $filename;
     protected $rawMessage;
+    protected $previous;
 
     private $sourcePath;
     private $sourceCode;
@@ -70,7 +71,12 @@ class Twig_Error extends Exception
             $this->sourceCode = $source->getCode();
             $this->sourcePath = $source->getPath();
         }
-        parent::__construct('', 0, $previous);
+        if (PHP_VERSION_ID < 50300) {
+            $this->previous = $previous;
+            parent::__construct('');
+        } else {
+            parent::__construct('', 0, $previous);
+        }
 
         $this->lineno = $lineno;
         $this->filename = $name;
@@ -209,6 +215,25 @@ class Twig_Error extends Exception
         $this->updateRepr();
     }
 
+    /**
+     * For PHP < 5.3.0, provides access to the getPrevious() method.
+     *
+     * @param string $method    The method name
+     * @param array  $arguments The parameters to be passed to the method
+     *
+     * @return Exception The previous exception or null
+     *
+     * @throws BadMethodCallException
+     */
+    public function __call($method, $arguments)
+    {
+        if ('getprevious' == strtolower($method)) {
+            return $this->previous;
+        }
+
+        throw new BadMethodCallException(sprintf('Method "Twig_Error::%s()" does not exist.', $method));
+    }
+
     public function appendMessage($rawMessage)
     {
         $this->rawMessage .= $rawMessage;
@@ -271,7 +296,12 @@ class Twig_Error extends Exception
         $template = null;
         $templateClass = null;
 
-        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS | DEBUG_BACKTRACE_PROVIDE_OBJECT);
+        if (PHP_VERSION_ID >= 50306) {
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS | DEBUG_BACKTRACE_PROVIDE_OBJECT);
+        } else {
+            $backtrace = debug_backtrace();
+        }
+
         foreach ($backtrace as $trace) {
             if (isset($trace['object']) && $trace['object'] instanceof Twig_Template && 'Twig_Template' !== get_class($trace['object'])) {
                 $currentClass = get_class($trace['object']);
@@ -302,14 +332,14 @@ class Twig_Error extends Exception
         $r = new ReflectionObject($template);
         $file = $r->getFileName();
 
-        $exceptions = [$e = $this];
-        while ($e instanceof self && $e = $e->getPrevious()) {
+        $exceptions = array($e = $this);
+        while (($e instanceof self || method_exists($e, 'getPrevious')) && $e = $e->getPrevious()) {
             $exceptions[] = $e;
         }
 
         while ($e = array_pop($exceptions)) {
             $traces = $e->getTrace();
-            array_unshift($traces, ['file' => $e->getFile(), 'line' => $e->getLine()]);
+            array_unshift($traces, array('file' => $e->getFile(), 'line' => $e->getLine()));
 
             while ($trace = array_shift($traces)) {
                 if (!isset($trace['file']) || !isset($trace['line']) || $file != $trace['file']) {

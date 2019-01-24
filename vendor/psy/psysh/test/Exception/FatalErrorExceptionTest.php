@@ -42,10 +42,4 @@ class FatalErrorExceptionTest extends \PHPUnit\Framework\TestCase
         $this->assertContains('{msg}', $e->getMessage());
         $this->assertContains('eval()\'d code', $e->getMessage());
     }
-
-    public function testNegativeOneLineNumberIgnored()
-    {
-        $e = new FatalErrorException('{msg}', 0, 1, null, -1);
-        $this->assertEquals(0, $e->getLine());
-    }
 }

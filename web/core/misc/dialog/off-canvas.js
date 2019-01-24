@@ -7,10 +7,6 @@
 
 (function ($, Drupal, debounce, displace) {
   Drupal.offCanvas = {
-    position: null,
-
-    minimumHeight: 30,
-
     minDisplaceWidth: 768,
 
     $mainCanvasWrapper: $('[data-off-canvas-main-canvas]'),
@@ -37,11 +33,7 @@
         of: window
       };
 
-      var position = settings.drupalOffCanvasPosition;
-      var height = position === 'side' ? $(window).height() : settings.height;
-      var width = position === 'side' ? settings.width : '100%';
-      settings.height = height;
-      settings.width = width;
+      settings.height = $(window).height();
     },
     beforeClose: function beforeClose(_ref2) {
       var $element = _ref2.$element;
@@ -49,7 +41,8 @@
       $('body').removeClass('js-off-canvas-dialog-open');
 
       Drupal.offCanvas.removeOffCanvasEvents($element);
-      Drupal.offCanvas.resetPadding();
+
+      Drupal.offCanvas.$mainCanvasWrapper.css('padding-' + Drupal.offCanvas.getEdge(), 0);
     },
     afterCreate: function afterCreate(_ref3) {
       var $element = _ref3.$element,
@@ -86,23 +79,11 @@
       $element.height(modalHeight - offset - scrollOffset);
     },
     resetSize: function resetSize(event) {
+      var offsets = displace.offsets;
       var $element = event.data.$element;
       var container = Drupal.offCanvas.getContainer($element);
-      var position = event.data.settings.drupalOffCanvasPosition;
 
-      if (Drupal.offCanvas.position && Drupal.offCanvas.position !== position) {
-        container.removeAttr('data-offset-' + Drupal.offCanvas.position);
-      }
-
-      if (position === 'top') {
-        $element.css('min-height', Drupal.offCanvas.minimumHeight + 'px');
-      }
-
-      displace();
-
-      var offsets = displace.offsets;
-
-      var topPosition = position === 'side' && offsets.top !== 0 ? '+' + offsets.top : '';
+      var topPosition = offsets.top !== 0 ? '+' + offsets.top : '';
       var adjustedOptions = {
         position: {
           my: Drupal.offCanvas.getEdge() + ' top',
@@ -111,38 +92,26 @@
         }
       };
 
-      var height = position === 'side' ? $(window).height() - (offsets.top + offsets.bottom) + 'px' : event.data.settings.height;
       container.css({
         position: 'fixed',
-        height: height
+        height: $(window).height() - (offsets.top + offsets.bottom) + 'px'
       });
 
       $element.dialog('option', adjustedOptions).trigger('dialogContentResize.off-canvas');
-
-      Drupal.offCanvas.position = position;
     },
     bodyPadding: function bodyPadding(event) {
-      var position = event.data.settings.drupalOffCanvasPosition;
-      if (position === 'side' && $('body').outerWidth() < Drupal.offCanvas.minDisplaceWidth) {
+      if ($('body').outerWidth() < Drupal.offCanvas.minDisplaceWidth) {
         return;
       }
-      Drupal.offCanvas.resetPadding();
       var $element = event.data.$element;
       var $container = Drupal.offCanvas.getContainer($element);
       var $mainCanvasWrapper = Drupal.offCanvas.$mainCanvasWrapper;
 
       var width = $container.outerWidth();
       var mainCanvasPadding = $mainCanvasWrapper.css('padding-' + Drupal.offCanvas.getEdge());
-      if (position === 'side' && width !== mainCanvasPadding) {
+      if (width !== mainCanvasPadding) {
         $mainCanvasWrapper.css('padding-' + Drupal.offCanvas.getEdge(), width + 'px');
         $container.attr('data-offset-' + Drupal.offCanvas.getEdge(), width);
-        displace();
-      }
-
-      var height = $container.outerHeight();
-      if (position === 'top') {
-        $mainCanvasWrapper.css('padding-top', height + 'px');
-        $container.attr('data-offset-top', height);
         displace();
       }
     },
@@ -151,11 +120,6 @@
     },
     getEdge: function getEdge() {
       return document.documentElement.dir === 'rtl' ? 'left' : 'right';
-    },
-    resetPadding: function resetPadding() {
-      Drupal.offCanvas.$mainCanvasWrapper.css('padding-' + Drupal.offCanvas.getEdge(), 0);
-      Drupal.offCanvas.$mainCanvasWrapper.css('padding-top', 0);
-      displace();
     }
   };
 

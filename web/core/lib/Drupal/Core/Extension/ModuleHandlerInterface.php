@@ -61,7 +61,7 @@ interface ModuleHandlerInterface {
    * @return \Drupal\Core\Extension\Extension
    *   An extension object.
    *
-   * @throws \Drupal\Core\Extension\Exception\UnknownExtensionException
+   * @throws \InvalidArgumentException
    *   Thrown when the requested module does not exist.
    */
   public function getModule($name);

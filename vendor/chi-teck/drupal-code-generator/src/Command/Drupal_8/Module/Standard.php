@@ -104,15 +104,10 @@ class Standard extends BaseGenerator {
     if ($options['controller']) {
       $controller_class = $class_prefix . 'Controller';
 
-      $controller_vars = [
-        'class' => $controller_class,
-        'services' => [],
-      ];
-
       $this->addFile()
         ->path("{machine_name}/src/Controller/$controller_class.php")
         ->template('d8/controller.twig')
-        ->vars($controller_vars + $vars);
+        ->vars(['class' => $controller_class] + $vars);
 
       $routing_vars = [
         'route_name' => $vars['machine_name'] . '.example',

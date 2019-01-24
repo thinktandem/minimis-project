@@ -8,7 +8,6 @@ namespace Drupal\Tests\aggregator\Functional;
  * @group aggregator
  */
 class UpdateFeedTest extends AggregatorTestBase {
-
   /**
    * Creates a feed and attempts to update it.
    */

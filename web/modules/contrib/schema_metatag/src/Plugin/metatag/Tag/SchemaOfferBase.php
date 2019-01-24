@@ -60,20 +60,4 @@ class SchemaOfferBase extends SchemaNameBase {
     return $items;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function processedTestValue($items) {
-    foreach ($items as $key => $value) {
-      switch ($key) {
-        case 'eligibleRegion':
-        case 'ineligibleRegion':
-          $items[$key] = SchemaCountryBase::processedTestValue($items[$key]);
-          break;
-
-      }
-    }
-    return $items;
-  }
-
 }

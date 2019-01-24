@@ -53,7 +53,6 @@ class ConcatTest extends MigrateProcessTestCase {
 }
 
 class TestConcat extends Concat {
-
   public function __construct() {
   }
 

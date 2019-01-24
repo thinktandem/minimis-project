@@ -32,7 +32,6 @@ class MetatagOpenGraphTagsTest extends MetatagTagsTestBase {
     'og_email',
     'og_fax_number',
     'og_image',
-    'og_image_alt',
     'og_image_height',
     'og_image_secure_url',
     'og_image_type',

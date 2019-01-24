@@ -90,11 +90,11 @@ class ConfigurableLanguageManager extends LanguageManager implements Configurabl
   protected $initialized = FALSE;
 
   /**
-   * Whether language types are in the process of language initialization.
+   * Whether already in the process of language initialization.
    *
-   * @var bool[]
+   * @var bool
    */
-  protected $initializing = [];
+  protected $initializing = FALSE;
 
   /**
    * {@inheritdoc}
@@ -213,12 +213,12 @@ class ConfigurableLanguageManager extends LanguageManager implements Configurabl
       $this->negotiatedLanguages[$type] = $this->getDefaultLanguage();
 
       if ($this->negotiator && $this->isMultilingual()) {
-        if (!isset($this->initializing[$type])) {
-          $this->initializing[$type] = TRUE;
+        if (!$this->initializing) {
+          $this->initializing = TRUE;
           $negotiation = $this->negotiator->initializeType($type);
           $this->negotiatedLanguages[$type] = reset($negotiation);
           $this->negotiatedMethods[$type] = key($negotiation);
-          unset($this->initializing[$type]);
+          $this->initializing = FALSE;
         }
         // If the current interface language needs to be retrieved during
         // initialization we return the system language. This way string

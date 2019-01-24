@@ -95,11 +95,9 @@
         widgetDefinition.upcast = function (element, data) {
           if (element.name !== 'img') {
             return;
-          }
-
-          if (element.attributes['data-cke-realelement']) {
-            return;
-          }
+          } else if (element.attributes['data-cke-realelement']) {
+              return;
+            }
 
           data['data-entity-type'] = element.attributes['data-entity-type'];
 

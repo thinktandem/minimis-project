@@ -497,7 +497,7 @@ class OverviewTerms extends FormBase {
       $vocabulary->setHierarchy($hierarchy);
       $vocabulary->save();
     }
-    $this->messenger()->addStatus($this->t('The configuration options have been saved.'));
+    drupal_set_message($this->t('The configuration options have been saved.'));
   }
 
   /**

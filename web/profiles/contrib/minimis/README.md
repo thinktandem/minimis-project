@@ -3,11 +3,17 @@ This is a D8 distro that utilizes very few modules yet is quite powerful and eas
 
 ## Install
 
+### Lando
+```bash
+git clone git@github.com:thinktandem/minimis-project.git YOUR_DIR
+cd YOUR_DIR 
+lando start
+```
+
+### Non-Lando
 ```bash
 composer create-project thinktandem/minimis-project YOUR_DIR -s dev
 ```
-
-We also recommend using the [Minimis Project](https://github.com/thinktandem/minimis-project)  It is geared towards Lando usage and is good to go out of the box for localdev.
 
 Then do whatever you need to do in your local dev stack to get this running. 
 
@@ -21,7 +27,7 @@ This distro relies mainly on contrib modules to get the job done.  It comes with
 
 ### Contrib Modules
 
-This distro only comes with 15 contrib modules.  We chose the following as they provide the best solutions for Site Building, Functionality & SEO:
+This distro only comes with 13 contrib modules.  We chose the following as they provide the best solutions for Site Building, Functionality & SEO:
 - admin_toolbar
 - adminimal_admin_toolbar
 - bootstrap_library
@@ -32,11 +38,9 @@ This distro only comes with 15 contrib modules.  We chose the following as they 
 - paragraphs
 - pathauto
 - redirect
-- schema_metatag
-- simple_sitemap
 - token
-- token_filter
 - twitter_block
+- schema_metatag
 
 ### Theme
 

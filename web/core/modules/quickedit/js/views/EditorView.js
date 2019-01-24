@@ -19,12 +19,7 @@
       return this.$el;
     },
     getQuickEditUISettings: function getQuickEditUISettings() {
-      return {
-        padding: false,
-        unifiedToolbar: false,
-        fullWidthToolbar: false,
-        popup: false
-      };
+      return { padding: false, unifiedToolbar: false, fullWidthToolbar: false, popup: false };
     },
     stateChange: function stateChange(fieldModel, state) {
       var from = fieldModel.previous('state');

@@ -21,7 +21,7 @@ class Twig_Compiler implements Twig_CompilerInterface
     protected $source;
     protected $indentation;
     protected $env;
-    protected $debugInfo = [];
+    protected $debugInfo = array();
     protected $sourceOffset;
     protected $sourceLine;
     protected $filename;
@@ -74,7 +74,7 @@ class Twig_Compiler implements Twig_CompilerInterface
     {
         $this->lastLine = null;
         $this->source = '';
-        $this->debugInfo = [];
+        $this->debugInfo = array();
         $this->sourceOffset = 0;
         // source code starts at 1 (as we then increment it when we encounter new lines)
         $this->sourceLine = 1;
@@ -175,7 +175,7 @@ class Twig_Compiler implements Twig_CompilerInterface
                 setlocale(LC_NUMERIC, 'C');
             }
 
-            $this->raw(var_export($value, true));
+            $this->raw($value);
 
             if (false !== $locale) {
                 setlocale(LC_NUMERIC, $locale);
@@ -185,7 +185,7 @@ class Twig_Compiler implements Twig_CompilerInterface
         } elseif (is_bool($value)) {
             $this->raw($value ? 'true' : 'false');
         } elseif (is_array($value)) {
-            $this->raw('[');
+            $this->raw('array(');
             $first = true;
             foreach ($value as $key => $v) {
                 if (!$first) {
@@ -196,7 +196,7 @@ class Twig_Compiler implements Twig_CompilerInterface
                 $this->raw(' => ');
                 $this->repr($v);
             }
-            $this->raw(']');
+            $this->raw(')');
         } else {
             $this->string($value);
         }

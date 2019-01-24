@@ -31,15 +31,10 @@
 wget http://robo.li/robo.phar
 ```
 
-To install globally put `robo.phar` in `/usr/bin`. (`/usr/local/bin/` in OSX 10.11+)
+To install globally put `robo.phar` in `/usr/bin`.
 
 ```
 chmod +x robo.phar && sudo mv robo.phar /usr/bin/robo
-```
-
-OSX 10.11+
-```
-chmod +x robo.phar && sudo mv robo.phar /usr/local/bin/robo
 ```
 
 Now you can use it just like `robo`.
@@ -57,7 +52,7 @@ All protected methods in traits that start with `task` prefix are tasks and can 
 ## Examples
 
 The best way to learn Robo by example is to take a look into [its own RoboFile](https://github.com/consolidation-org/Robo/blob/master/RoboFile.php)
- or [RoboFile of Codeception project](https://github.com/Codeception/Codeception/blob/2.4/RoboFile.php). There are also some basic example commands in examples/RoboFile.php.
+ or [RoboFile of Codeception project](https://github.com/Codeception/Codeception/blob/master/RoboFile.php). There are also some basic example commands in examples/RoboFile.php.
 
 Here are some snippets from them:
 
@@ -167,7 +162,7 @@ function buildPhar()
 
 ## We need more tasks!
 
-Create your own tasks and send them as Pull Requests or create packages [with `"type": "robo-tasks"` in `composer.json` on Packagist](https://packagist.org/?type=robo-tasks).
+Create your own tasks and send them as Pull Requests or create packages prefixed with `robo-` on Packagist.
 
 ## Credits
 

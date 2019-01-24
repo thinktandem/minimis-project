@@ -13,9 +13,6 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 
-use function array_key_exists;
-use function is_array;
-
 /**
  * Server-side HTTP request
  *
@@ -180,14 +177,6 @@ class ServerRequest implements ServerRequestInterface
      */
     public function withParsedBody($data)
     {
-        if (! is_array($data) && ! is_object($data) && null !== $data) {
-            throw new InvalidArgumentException(sprintf(
-                '%s expects a null, array, or object argument; received %s',
-                __METHOD__,
-                gettype($data)
-            ));
-        }
-
         $new = clone $this;
         $new->parsedBody = $data;
         return $new;

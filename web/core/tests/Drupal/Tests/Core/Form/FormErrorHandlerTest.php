@@ -3,7 +3,6 @@
 namespace Drupal\Tests\Core\Form;
 
 use Drupal\Core\Form\FormState;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -13,58 +12,31 @@ use Drupal\Tests\UnitTestCase;
 class FormErrorHandlerTest extends UnitTestCase {
 
   /**
-   * The form error handler.
-   *
-   * @var \Drupal\Core\Form\FormErrorHandler|\PHPUnit_Framework_MockObject_MockObject
-   */
-  protected $formErrorHandler;
-
-  /**
-   * The messenger.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface|\PHPUnit_Framework_MockObject_MockObject
-   */
-  protected $messenger;
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-
-    $this->messenger = $this->createMock(MessengerInterface::class);
-
-    $this->formErrorHandler = $this->getMockBuilder('Drupal\Core\Form\FormErrorHandler')
-      ->setMethods(['messenger'])
-      ->getMock();
-
-    $this->formErrorHandler->expects($this->atLeastOnce())
-      ->method('messenger')
-      ->willReturn($this->messenger);
-  }
-
-  /**
    * @covers ::handleFormErrors
    * @covers ::displayErrorMessages
    */
   public function testDisplayErrorMessages() {
-    $this->messenger->expects($this->at(0))
-      ->method('addMessage')
+    $form_error_handler = $this->getMockBuilder('Drupal\Core\Form\FormErrorHandler')
+      ->setMethods(['drupalSetMessage'])
+      ->getMock();
+
+    $form_error_handler->expects($this->at(0))
+      ->method('drupalSetMessage')
       ->with('invalid', 'error');
-    $this->messenger->expects($this->at(1))
-      ->method('addMessage')
+    $form_error_handler->expects($this->at(1))
+      ->method('drupalSetMessage')
       ->with('invalid', 'error');
-    $this->messenger->expects($this->at(2))
-      ->method('addMessage')
+    $form_error_handler->expects($this->at(2))
+      ->method('drupalSetMessage')
       ->with('invalid', 'error');
-    $this->messenger->expects($this->at(3))
-      ->method('addMessage')
+    $form_error_handler->expects($this->at(3))
+      ->method('drupalSetMessage')
       ->with('no title given', 'error');
-    $this->messenger->expects($this->at(4))
-      ->method('addMessage')
+    $form_error_handler->expects($this->at(4))
+      ->method('drupalSetMessage')
       ->with('element is invisible', 'error');
-    $this->messenger->expects($this->at(5))
-      ->method('addMessage')
+    $form_error_handler->expects($this->at(5))
+      ->method('drupalSetMessage')
       ->with('this missing element is invalid', 'error');
 
     $form = [
@@ -116,7 +88,7 @@ class FormErrorHandlerTest extends UnitTestCase {
     $form_state->setErrorByName('test5', 'no title given');
     $form_state->setErrorByName('test6', 'element is invisible');
     $form_state->setErrorByName('missing_element', 'this missing element is invalid');
-    $this->formErrorHandler->handleFormErrors($form, $form_state);
+    $form_error_handler->handleFormErrors($form, $form_state);
     $this->assertSame('invalid', $form['test1']['#errors']);
   }
 
@@ -125,6 +97,10 @@ class FormErrorHandlerTest extends UnitTestCase {
    * @covers ::setElementErrorsFromFormState
    */
   public function testSetElementErrorsFromFormState() {
+    $form_error_handler = $this->getMockBuilder('Drupal\Core\Form\FormErrorHandler')
+      ->setMethods(['drupalSetMessage'])
+      ->getMock();
+
     $form = [
       '#parents' => [],
       '#array_parents' => [],
@@ -200,7 +176,7 @@ class FormErrorHandlerTest extends UnitTestCase {
     $form_state->setErrorByName('grouping_test2', 'invalid');
     $form_state->setErrorByName('fieldset][nested_test', 'invalid');
     $form_state->setErrorByName('fieldset][nested_test2', 'invalid2');
-    $this->formErrorHandler->handleFormErrors($form, $form_state);
+    $form_error_handler->handleFormErrors($form, $form_state);
     $this->assertSame('invalid', $form['test']['#errors']);
     $this->assertSame([
       'grouping_test' => 'invalid',

@@ -219,7 +219,7 @@ class TranslateEditForm extends TranslateFormBase {
       }
     }
 
-    $this->messenger()->addStatus($this->t('The strings have been saved.'));
+    drupal_set_message($this->t('The strings have been saved.'));
 
     // Keep the user on the current pager page.
     $page = $this->getRequest()->query->get('page');

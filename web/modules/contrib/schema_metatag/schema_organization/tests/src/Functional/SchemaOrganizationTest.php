@@ -49,9 +49,6 @@ class SchemaOrganizationTest extends SchemaMetatagTagsTestBase {
     'schema_organization_potential_action' => 'SchemaOrganizationPotentialAction',
     'schema_organization_member_of' => 'SchemaOrganizationMemberOf',
     'schema_organization_accepts_reservations' => 'SchemaOrganizationAcceptsReservations',
-    'schema_organization_contact_point' => 'SchemaOrganizationContactPoint',
-    'schema_organization_additional_type' => 'SchemaOrganizationAdditionalType',
-    'schema_organization_brand' => 'SchemaOrganizationBrand',
   ];
 
 }

@@ -127,7 +127,7 @@ class EntityReferenceItemNormalizer extends FieldItemNormalizer implements UuidR
     $target_entity_type_id = $item->getFieldDefinition()->getSetting('target_type');
 
     // If the entity type is the same as the parent, we can check that. This is
-    // just a shortcut to avoid getting the entity type definition and checking
+    // just a shortcut to avoid getting the entity type defintition and checking
     // the class.
     if ($target_entity_type_id === $referencing_entity->getEntityTypeId()) {
       return $referencing_entity instanceof FieldableEntityInterface;
@@ -149,7 +149,7 @@ class EntityReferenceItemNormalizer extends FieldItemNormalizer implements UuidR
     $target_type = $field_definition->getSetting('target_type');
     $id = $this->entityResolver->resolve($this, $data, $target_type);
     if (isset($id)) {
-      return ['target_id' => $id] + array_intersect_key($data, $field_item->getProperties());
+      return ['target_id' => $id];
     }
     return NULL;
   }
@@ -168,6 +168,7 @@ class EntityReferenceItemNormalizer extends FieldItemNormalizer implements UuidR
 
     return $normalized;
   }
+
 
   /**
    * {@inheritdoc}

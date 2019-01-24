@@ -60,30 +60,11 @@ class CommentTest extends MigrateSqlSourceTestBase {
         'translate' => '0',
       ],
     ];
-    $tests[0]['source_data']['field_config'] = [
-      [
-        'id' => '1',
-        'translatable' => '0',
-      ],
-      [
-        'id' => '2',
-        'translatable' => '1',
-      ],
-    ];
     $tests[0]['source_data']['field_config_instance'] = [
       [
         'id' => '14',
         'field_id' => '1',
         'field_name' => 'comment_body',
-        'entity_type' => 'comment',
-        'bundle' => 'comment_node_test_content_type',
-        'data' => 'a:0:{}',
-        'deleted' => '0',
-      ],
-      [
-        'id' => '15',
-        'field_id' => '2',
-        'field_name' => 'subject_field',
         'entity_type' => 'comment',
         'bundle' => 'comment_node_test_content_type',
         'data' => 'a:0:{}',
@@ -103,26 +84,6 @@ class CommentTest extends MigrateSqlSourceTestBase {
         'comment_body_format' => 'filtered_html',
       ],
     ];
-    $tests[0]['source_data']['field_data_subject_field'] = [
-      [
-        'entity_type' => 'comment',
-        'bundle' => 'comment_node_test_content_type',
-        'deleted' => '0',
-        'entity_id' => '1',
-        'revision_id' => '1',
-        'language' => 'und',
-        'delta' => '0',
-        'subject_field_value' => 'A comment (subject_field)',
-        'subject_field_format' => NULL,
-      ],
-    ];
-    $tests[0]['source_data']['system'] = [
-      [
-        'name' => 'title',
-        'type' => 'module',
-        'status' => 1,
-      ],
-    ];
 
     // The expected results.
     $tests[0]['expected_data'] = [
@@ -131,7 +92,7 @@ class CommentTest extends MigrateSqlSourceTestBase {
         'pid' => '0',
         'nid' => '1',
         'uid' => '1',
-        'subject' => 'A comment (subject_field)',
+        'subject' => 'A comment',
         'hostname' => '::1',
         'created' => '1421727536',
         'changed' => '1421727536',

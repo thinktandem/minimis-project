@@ -3,6 +3,7 @@
 namespace Drupal\Component\Render;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
 
 /**
@@ -106,7 +107,7 @@ class FormattableMarkup implements MarkupInterface, \Countable {
    *   The length of the string.
    */
   public function count() {
-    return mb_strlen($this->string);
+    return Unicode::strlen($this->string);
   }
 
   /**

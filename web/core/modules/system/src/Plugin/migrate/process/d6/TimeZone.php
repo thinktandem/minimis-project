@@ -14,7 +14,6 @@ use Drupal\migrate\Row;
  * )
  */
 class TimeZone extends ProcessPluginBase {
-
   /**
    * {@inheritdoc}
    */

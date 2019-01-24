@@ -235,13 +235,13 @@ function template_preprocess_fieldset(&$variables) {
  * @param array $variables
  *   An associative array containing:
  *   - element: An associative array containing the properties of the element.
- *     Properties used: #attributes, #children, #description, #required,
- *     #summary_attributes, #title, #value.
+ *     Properties used: #attributes, #children, #open,
+ *     #description, #id, #title, #value, #optional.
  */
 function template_preprocess_details(&$variables) {
   $element = $variables['element'];
   $variables['attributes'] = $element['#attributes'];
-  $variables['summary_attributes'] = new Attribute($element['#summary_attributes']);
+  $variables['summary_attributes'] = new Attribute();
   if (!empty($element['#title'])) {
     $variables['summary_attributes']['role'] = 'button';
     if (!empty($element['#attributes']['id'])) {
@@ -251,11 +251,6 @@ function template_preprocess_details(&$variables) {
     $variables['summary_attributes']['aria-pressed'] = $variables['summary_attributes']['aria-expanded'];
   }
   $variables['title'] = (!empty($element['#title'])) ? $element['#title'] : '';
-  // If the element title is a string, wrap it a render array so that markup
-  // will not be escaped (but XSS-filtered).
-  if (is_string($variables['title']) && $variables['title'] !== '') {
-    $variables['title'] = ['#markup' => $variables['title']];
-  }
   $variables['description'] = (!empty($element['#description'])) ? $element['#description'] : '';
   $variables['children'] = (isset($element['#children'])) ? $element['#children'] : '';
   $variables['value'] = (isset($element['#value'])) ? $element['#value'] : '';

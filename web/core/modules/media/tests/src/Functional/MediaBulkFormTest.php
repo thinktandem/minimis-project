@@ -39,7 +39,7 @@ class MediaBulkFormTest extends MediaFunctionalTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->testMediaType = $this->createMediaType('test');
+    $this->testMediaType = $this->createMediaType();
 
     // Create some test media items.
     $this->mediaItems = [];
@@ -63,7 +63,7 @@ class MediaBulkFormTest extends MediaFunctionalTestBase {
     // Check that all created items are present in the test view.
     $view = Views::getView('test_media_bulk_form');
     $view->execute();
-    $this->assertSame($view->total_rows, 5);
+    $this->assertEquals($view->total_rows, 5);
 
     // Check the operations are accessible to the logged in user.
     $this->drupalGet('test-media-bulk-form');

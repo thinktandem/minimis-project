@@ -10,7 +10,6 @@ use Drupal\file\Entity\File;
  * @group file
  */
 class MoveTest extends FileManagedUnitTestBase {
-
   /**
    * Move a normal file.
    */

@@ -120,47 +120,43 @@
 
     if (fieldIDs.length === 0) {
       return false;
-    }
+    } else if (hasFieldWithPermission(fieldIDs)) {
+        var entityModel = new Drupal.quickedit.EntityModel({
+          el: contextualLink.region,
+          entityID: contextualLink.entityID,
+          entityInstanceID: contextualLink.entityInstanceID,
+          id: contextualLink.entityID + '[' + contextualLink.entityInstanceID + ']',
+          label: Drupal.quickedit.metadata.get(contextualLink.entityID, 'label')
+        });
+        Drupal.quickedit.collections.entities.add(entityModel);
 
-    if (hasFieldWithPermission(fieldIDs)) {
-      var entityModel = new Drupal.quickedit.EntityModel({
-        el: contextualLink.region,
-        entityID: contextualLink.entityID,
-        entityInstanceID: contextualLink.entityInstanceID,
-        id: contextualLink.entityID + '[' + contextualLink.entityInstanceID + ']',
-        label: Drupal.quickedit.metadata.get(contextualLink.entityID, 'label')
-      });
-      Drupal.quickedit.collections.entities.add(entityModel);
+        var entityDecorationView = new Drupal.quickedit.EntityDecorationView({
+          el: contextualLink.region,
+          model: entityModel
+        });
+        entityModel.set('entityDecorationView', entityDecorationView);
 
-      var entityDecorationView = new Drupal.quickedit.EntityDecorationView({
-        el: contextualLink.region,
-        model: entityModel
-      });
-      entityModel.set('entityDecorationView', entityDecorationView);
+        _.each(fields, function (field) {
+          initializeField(field.el, field.fieldID, contextualLink.entityID, contextualLink.entityInstanceID);
+        });
+        fieldsAvailableQueue = _.difference(fieldsAvailableQueue, fields);
 
-      _.each(fields, function (field) {
-        initializeField(field.el, field.fieldID, contextualLink.entityID, contextualLink.entityInstanceID);
-      });
-      fieldsAvailableQueue = _.difference(fieldsAvailableQueue, fields);
+        var initContextualLink = _.once(function () {
+          var $links = $(contextualLink.el).find('.contextual-links');
+          var contextualLinkView = new Drupal.quickedit.ContextualLinkView($.extend({
+            el: $('<li class="quickedit"><a href="" role="button" aria-pressed="false"></a></li>').prependTo($links),
+            model: entityModel,
+            appModel: Drupal.quickedit.app.model
+          }, options));
+          entityModel.set('contextualLinkView', contextualLinkView);
+        });
 
-      var initContextualLink = _.once(function () {
-        var $links = $(contextualLink.el).find('.contextual-links');
-        var contextualLinkView = new Drupal.quickedit.ContextualLinkView($.extend({
-          el: $('<li class="quickedit"><a href="" role="button" aria-pressed="false"></a></li>').prependTo($links),
-          model: entityModel,
-          appModel: Drupal.quickedit.app.model
-        }, options));
-        entityModel.set('contextualLinkView', contextualLinkView);
-      });
+        loadMissingEditors(initContextualLink);
 
-      loadMissingEditors(initContextualLink);
-
-      return true;
-    }
-
-    if (allMetadataExists(fieldIDs)) {
-      return true;
-    }
+        return true;
+      } else if (allMetadataExists(fieldIDs)) {
+          return true;
+        }
 
     return false;
   }
@@ -202,26 +198,16 @@
       return;
     }
 
-    if (Drupal.quickedit.collections.entities.findWhere({
-      entityID: entityID,
-      entityInstanceID: entityInstanceID
-    })) {
+    if (Drupal.quickedit.collections.entities.findWhere({ entityID: entityID, entityInstanceID: entityInstanceID })) {
       initializeField(fieldElement, fieldID, entityID, entityInstanceID);
     } else {
-        fieldsAvailableQueue.push({
-          el: fieldElement,
-          fieldID: fieldID,
-          entityID: entityID,
-          entityInstanceID: entityInstanceID
-        });
+        fieldsAvailableQueue.push({ el: fieldElement, fieldID: fieldID, entityID: entityID, entityInstanceID: entityInstanceID });
       }
   }
 
   function deleteContainedModelsAndQueues($context) {
     $context.find('[data-quickedit-entity-id]').addBack('[data-quickedit-entity-id]').each(function (index, entityElement) {
-      var entityModel = Drupal.quickedit.collections.entities.findWhere({
-        el: entityElement
-      });
+      var entityModel = Drupal.quickedit.collections.entities.findWhere({ el: entityElement });
       if (entityModel) {
         var contextualLinkView = entityModel.get('contextualLinkView');
         contextualLinkView.undelegateEvents();

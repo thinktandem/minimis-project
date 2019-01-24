@@ -25,10 +25,7 @@ class DrupalTranslator implements TranslatorInterface {
   public function trans($id, array $parameters = [], $domain = NULL, $locale = NULL) {
     // If a TranslatableMarkup object is passed in as $id, return it since the
     // message has already been translated.
-    if ($id instanceof TranslatableMarkup) {
-      return $id;
-    }
-    return new TranslatableMarkup($id, $this->processParameters($parameters), $this->getOptions($domain, $locale));
+    return $id instanceof TranslatableMarkup ? $id : t($id, $this->processParameters($parameters), $this->getOptions($domain, $locale));
   }
 
   /**
@@ -70,7 +67,7 @@ class DrupalTranslator implements TranslatorInterface {
   }
 
   /**
-   * Processes the parameters array for use with TranslatableMarkup.
+   * Processes the parameters array for use with t().
    */
   protected function processParameters(array $parameters) {
     $return = [];
@@ -82,8 +79,7 @@ class DrupalTranslator implements TranslatorInterface {
         $value = (string) $value;
       }
       if (is_object($value)) {
-        // TranslatableMarkup does not work with objects being passed as
-        // replacement strings.
+        // t() does not work with objects being passed as replacement strings.
       }
       // Check for symfony replacement patterns in the form "{{ name }}".
       elseif (strpos($key, '{{ ') === 0 && strrpos($key, ' }}') == strlen($key) - 3) {
@@ -99,12 +95,11 @@ class DrupalTranslator implements TranslatorInterface {
   }
 
   /**
-   * Returns options suitable for use with TranslatableMarkup.
+   * Returns options suitable for use with t().
    */
   protected function getOptions($domain = NULL, $locale = NULL) {
     // We do not support domains, so we ignore this parameter.
-    // If locale is left NULL, TranslatableMarkup will default to the interface
-    // language.
+    // If locale is left NULL, t() will default to the interface language.
     $locale = isset($locale) ? $locale : $this->locale;
     return ['langcode' => $locale];
   }

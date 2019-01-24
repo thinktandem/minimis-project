@@ -5,7 +5,7 @@ namespace Drupal\Tests\content_moderation\Kernel;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * @coversDefaultClass \Drupal\content_moderation\EntityOperations
@@ -13,8 +13,6 @@ use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
  * @group content_moderation
  */
 class EntityOperationsTest extends KernelTestBase {
-
-  use ContentModerationTestTrait;
 
   /**
    * {@inheritdoc}
@@ -50,7 +48,7 @@ class EntityOperationsTest extends KernelTestBase {
       'label' => 'Page',
     ]);
     $node_type->save();
-    $workflow = $this->createEditorialWorkflow();
+    $workflow = Workflow::load('editorial');
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'page');
     $workflow->save();
   }

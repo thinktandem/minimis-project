@@ -8,6 +8,7 @@ use Drupal\Core\Test\TestDatabase;
 use Drupal\Core\Test\TestSetupTrait;
 use Drupal\TestSite\TestSetupInterface;
 use Drupal\Tests\RandomGeneratorTrait;
+use Drupal\Tests\SessionTestTrait;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -25,6 +26,7 @@ class TestSiteInstallCommand extends Command {
     installParameters as protected installParametersTrait;
   }
   use RandomGeneratorTrait;
+  use SessionTestTrait;
   use TestSetupTrait {
     changeDatabasePrefix as protected changeDatabasePrefixTrait;
   }
@@ -102,7 +104,6 @@ class TestSiteInstallCommand extends Command {
       $output->writeln(json_encode([
         'db_prefix' => $this->databasePrefix,
         'user_agent' => $user_agent,
-        'site_path' => $this->siteDirectory,
       ]));
     }
     else {
@@ -111,7 +112,6 @@ class TestSiteInstallCommand extends Command {
       $io->table([], [
         ['Database prefix', $this->databasePrefix],
         ['User agent', $user_agent],
-        ['Site path', $this->siteDirectory],
       ]);
     }
   }

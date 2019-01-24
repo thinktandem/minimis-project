@@ -2,7 +2,7 @@
 
 namespace Drupal\KernelTests\Component\Utility;
 
-use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Url;
 use Drupal\KernelTests\KernelTestBase;
 
@@ -28,7 +28,7 @@ class SafeMarkupKernelTest extends KernelTestBase {
   }
 
   /**
-   * Gets arguments for FormattableMarkup based on Url::fromUri() parameters.
+   * Gets arguments for SafeMarkup::format() based on Url::fromUri() parameters.
    *
    * @param string $uri
    *   The URI of the resource.
@@ -38,8 +38,6 @@ class SafeMarkupKernelTest extends KernelTestBase {
    * @return array
    *   Array containing:
    *   - ':url': A URL string.
-   *
-   * @see \Drupal\Component\Render\FormattableMarkup
    */
   protected static function getSafeMarkupUriArgs($uri, $options = []) {
     $args[':url'] = Url::fromUri($uri, $options)->toString();
@@ -47,13 +45,13 @@ class SafeMarkupKernelTest extends KernelTestBase {
   }
 
   /**
-   * Tests URL ":placeholders" in \Drupal\Component\Render\FormattableMarkup.
+   * Tests URL ":placeholders" in SafeMarkup::format().
    *
    * @dataProvider providerTestSafeMarkupUri
    */
   public function testSafeMarkupUri($string, $uri, $options, $expected) {
     $args = self::getSafeMarkupUriArgs($uri, $options);
-    $this->assertEquals($expected, new FormattableMarkup($string, $args));
+    $this->assertEquals($expected, SafeMarkup::format($string, $args));
   }
 
   /**
@@ -115,7 +113,7 @@ class SafeMarkupKernelTest extends KernelTestBase {
     $this->setExpectedException(\InvalidArgumentException::class);
     $args = self::getSafeMarkupUriArgs($uri);
 
-    new FormattableMarkup($string, $args);
+    SafeMarkup::format($string, $args);
   }
 
   /**

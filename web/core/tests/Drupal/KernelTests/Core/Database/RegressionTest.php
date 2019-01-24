@@ -2,6 +2,8 @@
 
 namespace Drupal\KernelTests\Core\Database;
 
+use Drupal\Core\Database\Database;
+
 /**
  * Regression tests cases for the database layer.
  *
@@ -37,8 +39,8 @@ class RegressionTest extends DatabaseTestBase {
    * Tests the db_table_exists() function.
    */
   public function testDBTableExists() {
-    $this->assertSame(TRUE, $this->connection->schema()->tableExists('test'), 'Returns true for existent table.');
-    $this->assertSame(FALSE, $this->connection->schema()->tableExists('nosuchtable'), 'Returns false for nonexistent table.');
+    $this->assertSame(TRUE, db_table_exists('test'), 'Returns true for existent table.');
+    $this->assertSame(FALSE, db_table_exists('nosuchtable'), 'Returns false for nonexistent table.');
   }
 
   /**
@@ -55,6 +57,18 @@ class RegressionTest extends DatabaseTestBase {
   public function testDBIndexExists() {
     $this->assertSame(TRUE, db_index_exists('test', 'ages'), 'Returns true for existent index.');
     $this->assertSame(FALSE, db_index_exists('test', 'nosuchindex'), 'Returns false for nonexistent index.');
+  }
+
+  /**
+   * Tests the db_set_active() function.
+   *
+   * @group legacy
+   *
+   * @expectedDeprecation db_set_active() is deprecated in Drupal 8.0.x and will be removed before Drupal 9.0.0. Use \Drupal\Core\Database\Database::setActiveConnection() instead. See https://www.drupal.org/node/2944084.
+   */
+  public function testDBIsActive() {
+    $get_active_db = Database::getConnection()->getKey();
+    $this->assert(db_set_active($get_active_db), 'Database connection is active');
   }
 
 }

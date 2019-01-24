@@ -2,7 +2,8 @@
 
 namespace Drupal\Tests\field\Kernel\Timestamp;
 
-use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\entity_test\Entity\EntityTest;
@@ -54,7 +55,7 @@ class TimestampFormatterTest extends KernelTestBase {
 
     $this->entityType = 'entity_test';
     $this->bundle = $this->entityType;
-    $this->fieldName = mb_strtolower($this->randomMachineName());
+    $this->fieldName = Unicode::strtolower($this->randomMachineName());
 
     $field_storage = FieldStorageConfig::create([
       'field_name' => $this->fieldName,
@@ -155,7 +156,7 @@ class TimestampFormatterTest extends KernelTestBase {
 
       // Test a timestamp in the past
       $value = $request_time - 87654321;
-      $expected = new FormattableMarkup($past_format, ['@interval' => \Drupal::service('date.formatter')->formatTimeDiffSince($value, ['granularity' => $granularity])]);
+      $expected = SafeMarkup::format($past_format, ['@interval' => \Drupal::service('date.formatter')->formatTimeDiffSince($value, ['granularity' => $granularity])]);
 
       $component = $this->display->getComponent($this->fieldName);
       $component['type'] = 'timestamp_ago';
@@ -170,7 +171,7 @@ class TimestampFormatterTest extends KernelTestBase {
 
       // Test a timestamp in the future
       $value = $request_time + 87654321;
-      $expected = new FormattableMarkup($future_format, ['@interval' => \Drupal::service('date.formatter')->formatTimeDiffUntil($value, ['granularity' => $granularity])]);
+      $expected = SafeMarkup::format($future_format, ['@interval' => \Drupal::service('date.formatter')->formatTimeDiffUntil($value, ['granularity' => $granularity])]);
 
       $component = $this->display->getComponent($this->fieldName);
       $component['type'] = 'timestamp_ago';

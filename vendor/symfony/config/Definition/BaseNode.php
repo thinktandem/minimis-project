@@ -242,7 +242,12 @@ abstract class BaseNode implements NodeInterface
     final public function merge($leftSide, $rightSide)
     {
         if (!$this->allowOverwrite) {
-            throw new ForbiddenOverwriteException(sprintf('Configuration path "%s" cannot be overwritten. You have to define all options for this path, and any of its sub-paths in one configuration section.', $this->getPath()));
+            throw new ForbiddenOverwriteException(sprintf(
+                'Configuration path "%s" cannot be overwritten. You have to '
+               .'define all options for this path, and any of its sub-paths in '
+               .'one configuration section.',
+                $this->getPath()
+            ));
         }
 
         $this->validateType($leftSide);
@@ -282,7 +287,7 @@ abstract class BaseNode implements NodeInterface
      *
      * @param $value
      *
-     * @return The normalized array value
+     * @return $value The normalized array value
      */
     protected function preNormalize($value)
     {

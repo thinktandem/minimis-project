@@ -15,8 +15,6 @@ use Drupal\Core\Render\Element;
  * - #title: The title of the details container. Defaults to "Details".
  * - #open: Indicates whether the container should be open by default.
  *   Defaults to FALSE.
- * - #summary_attributes: An array of attributes to apply to the <summary>
- *   element.
  *
  * Usage example:
  * @code
@@ -45,7 +43,6 @@ class Details extends RenderElement {
     $class = get_class($this);
     return [
       '#open' => FALSE,
-      '#summary_attributes' => [],
       '#value' => NULL,
       '#process' => [
         [$class, 'processGroup'],

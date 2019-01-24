@@ -8,7 +8,6 @@ namespace Drupal\Core\Ajax;
  * @ingroup ajax
  */
 class OpenModalDialogCommand extends OpenDialogCommand {
-
   /**
    * Constructs an OpenModalDialog object.
    *

@@ -22,11 +22,6 @@ function adminimal_admin_toolbar_page_attachments_alter(array &$page) {
   // Attaches css assets globally.
   if (_adminimal_admin_toolbar_is_access()) {
     $page['#attached']['library'][] = 'adminimal_admin_toolbar/adminimal-admin-toolbar';
-
-    // Add Open Sans css file.
-    if (!(\Drupal::config('adminimal_admin_toolbar.settings')->get('avoid_custom_font'))) {
-      $page['#attached']['library'][] = 'adminimal_admin_toolbar/google-fonts';
-    }
   }
 }
 
@@ -36,13 +31,12 @@ function adminimal_admin_toolbar_page_attachments_alter(array &$page) {
 function adminimal_admin_toolbar_toolbar_alter(&$items) {
   // Add class to the user tab so it can be moved to the right.
   if (_adminimal_admin_toolbar_is_access()) {
-    $items['user']['#wrapper_attributes']['class'] = ['user-toolbar-tab'];
+    $items['user']['#wrapper_attributes']['class'] = array('user-toolbar-tab');
   }
 }
 
 /**
  * Helper function for checking user permission.
- *
  * We reallly only want to add styling and changes to toolbar when the user has
  * access.
  *

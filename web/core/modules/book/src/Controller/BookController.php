@@ -154,7 +154,7 @@ class BookController extends ControllerBase {
 
     // @todo Convert the custom export functionality to serializer.
     if (!method_exists($this->bookExport, $method)) {
-      $this->messenger()->addStatus(t('Unknown export format.'));
+      drupal_set_message(t('Unknown export format.'));
       throw new NotFoundHttpException();
     }
 

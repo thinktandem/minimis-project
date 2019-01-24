@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\standard\FunctionalJavascript;
 
-use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
+use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
 use Drupal\node\Entity\Node;
 
 /**
@@ -10,7 +10,7 @@ use Drupal\node\Entity\Node;
  *
  * @group standard
  */
-class StandardJavascriptTest extends WebDriverTestBase {
+class StandardJavascriptTest extends JavascriptTestBase {
 
   /**
    * {@inheritdoc}
@@ -30,7 +30,7 @@ class StandardJavascriptTest extends WebDriverTestBase {
     $node = Node::create(['type' => 'article'])
       ->setTitle($this->randomMachineName())
       ->setPromoted(TRUE)
-      ->setPublished();
+      ->setPublished(TRUE);
     $node->save();
 
     // Front page: one placeholder, for messages.

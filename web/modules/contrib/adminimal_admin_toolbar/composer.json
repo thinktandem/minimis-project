@@ -8,8 +8,20 @@
     "homepage": "https://www.drupal.org/u/energee"
   }],
   "support": {
-    "issues": "https://www.drupal.org/project/issues/adminimal_admin_toolbar",
-    "source": "http://cgit.drupalcode.org/adminimal_admin_toolbar"
+    "issues": "https://www.drupal.org/project/issues/adminimal_admin_toolbar"
   },
-  "license": "GPL-2.0+"
+  "license": "GPL-2.0+",
+  "repositories": [{
+    "type": "package",
+    "package": {
+      "name": "drupal/adminimal_admin_toolbar",
+      "version": "8.0.0",
+      "type": "drupal-module",
+      "source": {
+        "url": "https://git.drupal.org/project/adminimal_admin_toolbar.git",
+        "type": "git",
+        "reference": "refs/heads/8.x-1.x"
+      }
+    }
+  }]
 }

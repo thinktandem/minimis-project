@@ -333,6 +333,7 @@ class Inspector {
     return FALSE;
   }
 
+
   /**
    * Asserts that all members are strings matching a regular expression.
    *

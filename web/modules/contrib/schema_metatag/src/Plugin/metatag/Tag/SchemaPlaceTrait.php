@@ -61,7 +61,6 @@ trait SchemaPlaceTrait {
       '#empty_value' => '',
       '#options' => [
         'Place' => $this->t('Place'),
-        'AdministrativeArea' => $this->t('AdministrativeArea'),
       ],
       '#required' => $input_values['#required'],
       '#weight' => -10,

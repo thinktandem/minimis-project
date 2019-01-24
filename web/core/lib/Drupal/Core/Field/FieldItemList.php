@@ -400,11 +400,4 @@ class FieldItemList extends ItemList implements FieldItemListInterface {
     return $value1 == $value2;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function hasAffectingChanges(FieldItemListInterface $original_items, $langcode) {
-    return !$this->equals($original_items);
-  }
-
 }

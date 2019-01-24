@@ -9,7 +9,6 @@ namespace Drupal\Tests\comment\Functional;
  * @group comment
  */
 class CommentTitleTest extends CommentTestBase {
-
   /**
    * Tests markup for comments with empty titles.
    */

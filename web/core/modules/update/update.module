@@ -185,18 +185,17 @@ function update_page_top() {
     foreach (['core', 'contrib'] as $report_type) {
       $type = 'update_' . $report_type;
       // hook_requirements() supports render arrays therefore we need to render
-      // them before using
-      // \Drupal\Core\Messenger\MessengerInterface::addStatus().
+      // them before using drupal_set_message().
       if (isset($status[$type]['description']) && is_array($status[$type]['description'])) {
         $status[$type]['description'] = \Drupal::service('renderer')->renderPlain($status[$type]['description']);
       }
       if (!empty($verbose)) {
         if (isset($status[$type]['severity'])) {
           if ($status[$type]['severity'] == REQUIREMENT_ERROR) {
-            \Drupal::messenger()->addError($status[$type]['description']);
+            drupal_set_message($status[$type]['description'], 'error');
           }
           elseif ($status[$type]['severity'] == REQUIREMENT_WARNING) {
-            \Drupal::messenger()->addWarning($status[$type]['description']);
+            drupal_set_message($status[$type]['description'], 'warning');
           }
         }
       }
@@ -206,7 +205,7 @@ function update_page_top() {
         if (isset($status[$type])
             && isset($status[$type]['reason'])
             && $status[$type]['reason'] === UPDATE_NOT_SECURE) {
-          \Drupal::messenger()->addError($status[$type]['description']);
+          drupal_set_message($status[$type]['description'], 'error');
         }
       }
     }
@@ -409,45 +408,6 @@ function update_get_available($refresh = FALSE) {
 }
 
 /**
- * Identifies equivalent security releases with a hardcoded list.
- *
- * Generally, only the latest minor version of Drupal 8 is supported. However,
- * when security fixes are backported to an old branch, and the site owner
- * updates to the release containing the backported fix, they should not
- * see "Security update required!" again if the only other security releases
- * are releases for the same advisories.
- *
- * @return string[]
- *   A list of security release numbers that are equivalent to this release
- *   (i.e. covered by the same advisory), for backported security fixes only.
- *
- * @internal
- *
- * @deprecated in Drupal 8.6.0 and will be removed before Drupal 9.0.0. Use the
- *   'Insecure' release type tag in update XML provided by Drupal.org to
- *   determine if releases are insecure.
- */
-function _update_equivalent_security_releases() {
-  trigger_error("_update_equivalent_security_releases() was a temporary fix and will be removed before 9.0.0. Use the 'Insecure' release type tag in update XML provided by Drupal.org to determine if releases are insecure.", E_USER_DEPRECATED);
-  switch (\Drupal::VERSION) {
-    case '8.3.8':
-      return ['8.4.5', '8.5.0-rc1'];
-    case '8.3.9':
-      return ['8.4.6', '8.5.1'];
-    case '8.4.5':
-      return ['8.5.0-rc1'];
-    case '8.4.6':
-      return ['8.5.1'];
-    case '8.4.7':
-      return ['8.5.2'];
-    case '8.4.8':
-      return ['8.5.3'];
-  }
-
-  return [];
-}
-
-/**
  * Adds a task to the queue for fetching release history data for a project.
  *
  * We only create a new fetch task if there's no task already in the queue for
@@ -495,15 +455,15 @@ function update_fetch_data_finished($success, $results) {
   if ($success) {
     if (!empty($results)) {
       if (!empty($results['updated'])) {
-        \Drupal::messenger()->addStatus(\Drupal::translation()->formatPlural($results['updated'], 'Checked available update data for one project.', 'Checked available update data for @count projects.'));
+        drupal_set_message(\Drupal::translation()->formatPlural($results['updated'], 'Checked available update data for one project.', 'Checked available update data for @count projects.'));
       }
       if (!empty($results['failures'])) {
-        \Drupal::messenger()->addError(\Drupal::translation()->formatPlural($results['failures'], 'Failed to get available update data for one project.', 'Failed to get available update data for @count projects.'));
+        drupal_set_message(\Drupal::translation()->formatPlural($results['failures'], 'Failed to get available update data for one project.', 'Failed to get available update data for @count projects.'), 'error');
       }
     }
   }
   else {
-    \Drupal::messenger()->addError(t('An error occurred trying to get available update data.'), 'error');
+    drupal_set_message(t('An error occurred trying to get available update data.'), 'error');
   }
 }
 

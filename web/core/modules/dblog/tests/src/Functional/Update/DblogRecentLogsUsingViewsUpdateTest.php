@@ -5,10 +5,9 @@ namespace Drupal\Tests\dblog\Functional\Update;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
 
 /**
- * Ensures that update hook that creates the watchdog view ran successfully.
+ * Ensures that update hook that creates the watchdog view ran sucessfully.
  *
  * @group Update
- * @group legacy
  */
 class DblogRecentLogsUsingViewsUpdateTest extends UpdatePathTestBase {
 
@@ -25,7 +24,7 @@ class DblogRecentLogsUsingViewsUpdateTest extends UpdatePathTestBase {
    * Ensures that update hook is run for dblog module.
    */
   public function testUpdate() {
-    // Make sure the watchdog view doesn't exist before the updates.
+    // Make sure the watchog view doesn't exist before the updates.
     $view = \Drupal::entityTypeManager()->getStorage('view')->load('watchdog');
     $this->assertNull($view);
 

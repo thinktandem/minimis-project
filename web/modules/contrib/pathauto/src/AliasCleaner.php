@@ -104,7 +104,7 @@ class AliasCleaner implements AliasCleanerInterface {
     // Trim duplicate, leading, and trailing separators. Do this before cleaning
     // backslashes since a pattern like "[token1]/[token2]-[token3]/[token4]"
     // could end up like "value1/-/value2" and if backslashes were cleaned first
-    // this would result in a duplicate backslash.
+    // this would result in a duplicate blackslash.
     $output = $this->getCleanSeparators($output);
 
     // Trim duplicate, leading, and trailing backslashes.
@@ -247,7 +247,7 @@ class AliasCleaner implements AliasCleanerInterface {
     // Get rid of words that are on the ignore list.
     if ($this->cleanStringCache['ignore_words_regex']) {
       $words_removed = $this->cleanStringCache['ignore_words_callback']($this->cleanStringCache['ignore_words_regex'], '', $output);
-      if (mb_strlen(trim($words_removed)) > 0) {
+      if (Unicode::strlen(trim($words_removed)) > 0) {
         $output = $words_removed;
       }
     }
@@ -260,7 +260,7 @@ class AliasCleaner implements AliasCleanerInterface {
 
     // Optionally convert to lower case.
     if ($this->cleanStringCache['lowercase']) {
-      $output = mb_strtolower($output);
+      $output = Unicode::strtolower($output);
     }
 
     // Shorten to a logical place based on word boundaries.
@@ -335,9 +335,7 @@ class AliasCleaner implements AliasCleanerInterface {
   public function cleanTokenValues(&$replacements, $data = array(), $options = array()) {
     foreach ($replacements as $token => $value) {
       // Only clean non-path tokens.
-      $config = $this->configFactory->get('pathauto.settings');
-      $safe_tokens = implode('|', (array) $config->get('safe_tokens'));
-      if (!preg_match('/:(' . $safe_tokens . ')(:|\]$)/', $token)) {
+      if (!preg_match('/(path|alias|url|url-brief)\]$/', $token)) {
         $replacements[$token] = $this->cleanString($value, $options);
       }
     }

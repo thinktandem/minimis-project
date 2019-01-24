@@ -10,7 +10,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * @see https://www.drupal.org/node/2664780
  *
  * @group rest
- * @group legacy
  */
 class EntityResourcePermissionsUpdateTest extends UpdatePathTestBase {
 

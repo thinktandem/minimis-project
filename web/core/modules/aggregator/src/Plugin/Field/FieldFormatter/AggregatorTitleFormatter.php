@@ -21,7 +21,6 @@ use Drupal\Core\Url;
  * )
  */
 class AggregatorTitleFormatter extends FormatterBase {
-
   /**
    * {@inheritdoc}
    */

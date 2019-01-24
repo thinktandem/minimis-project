@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\node\Kernel;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Datetime\Entity\DateFormat;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
@@ -71,6 +72,9 @@ class SummaryLengthTest extends KernelTestBase {
       'label' => 'Fallback',
       'pattern' => 'Y-m-d',
     ])->save();
+
+    // Enable multibyte support.
+    Unicode::setStatus(Unicode::STATUS_MULTIBYTE);
   }
 
   /**

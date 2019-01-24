@@ -7,8 +7,8 @@ use Drupal\migrate\Audit\AuditResult;
 use Drupal\migrate\Audit\IdAuditor;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
 use Drupal\Tests\migrate_drupal\Traits\CreateTestContentEntitiesTrait;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Tests the migration auditor for ID conflicts.
@@ -19,7 +19,6 @@ class MigrateDrupal6AuditIdsTest extends MigrateDrupal6TestBase {
 
   use FileSystemModuleDiscoveryDataProviderTrait;
   use CreateTestContentEntitiesTrait;
-  use ContentModerationTestTrait;
 
   /**
    * {@inheritdoc}
@@ -45,7 +44,7 @@ class MigrateDrupal6AuditIdsTest extends MigrateDrupal6TestBase {
     $this->installEntitySchema('content_moderation_state');
     $this->installConfig('content_moderation');
     NodeType::create(['type' => 'page'])->save();
-    $workflow = $this->createEditorialWorkflow();
+    $workflow = Workflow::load('editorial');
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'page');
     $workflow->save();
   }
@@ -59,7 +58,7 @@ class MigrateDrupal6AuditIdsTest extends MigrateDrupal6TestBase {
     $node->moderation_state->value = 'published';
     $node->save();
 
-    // Insert data in the d6_node:page migration mapping table to simulate a
+    // Insert data in the d6_node:page migration mappping table to simulate a
     // previously migrated node.
     $id_map = $this->getMigration('d6_node:page')->getIdMap();
     $table_name = $id_map->mapTableName();
@@ -158,8 +157,8 @@ class MigrateDrupal6AuditIdsTest extends MigrateDrupal6TestBase {
     $node->setNewRevision(TRUE);
     $node->save();
 
-    // Insert data in the d6_node_revision:page migration mapping table to
-    // simulate a previously migrated node revision.
+    // Insert data in the d6_node_revision:page migration mappping table to
+    // simulate a previously migrated node revison.
     $id_map = $this->getMigration('d6_node_revision:page')->getIdMap();
     $table_name = $id_map->mapTableName();
     $id_map->getDatabase()->insert($table_name)

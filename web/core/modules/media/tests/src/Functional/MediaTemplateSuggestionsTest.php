@@ -22,7 +22,8 @@ class MediaTemplateSuggestionsTest extends MediaFunctionalTestBase {
    * Tests template suggestions from media_theme_suggestions_media().
    */
   public function testMediaThemeHookSuggestions() {
-    $media_type = $this->createMediaType('test', [
+    $media_type = $this->createMediaType([
+      'new_revision' => FALSE,
       'queue_thumbnail_downloads' => FALSE,
     ]);
 
@@ -39,7 +40,7 @@ class MediaTemplateSuggestionsTest extends MediaFunctionalTestBase {
 
     $variables['elements'] = $build;
     $suggestions = \Drupal::moduleHandler()->invokeAll('theme_suggestions_media', [$variables]);
-    $this->assertSame($suggestions, ['media__full', 'media__' . $media_type->id(), 'media__' . $media_type->id() . '__full', 'media__source_' . $media_type->getSource()->getPluginId()], 'Found expected media suggestions.');
+    $this->assertEquals($suggestions, ['media__full', 'media__' . $media_type->id(), 'media__' . $media_type->id() . '__full'], 'Found expected media suggestions.');
   }
 
 }

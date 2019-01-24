@@ -8,9 +8,8 @@ use Drupal\Core\Executable\ExecutableManagerInterface;
 use Drupal\Core\Executable\ExecutableInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\CategorizingPluginManagerTrait;
+use Drupal\Core\Plugin\Context\ContextAwarePluginManagerTrait;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\Core\Plugin\FilteredPluginManagerInterface;
-use Drupal\Core\Plugin\FilteredPluginManagerTrait;
 
 /**
  * A plugin manager for condition plugins.
@@ -21,10 +20,10 @@ use Drupal\Core\Plugin\FilteredPluginManagerTrait;
  *
  * @ingroup plugin_api
  */
-class ConditionManager extends DefaultPluginManager implements ExecutableManagerInterface, CategorizingPluginManagerInterface, FilteredPluginManagerInterface {
+class ConditionManager extends DefaultPluginManager implements ExecutableManagerInterface, CategorizingPluginManagerInterface {
 
   use CategorizingPluginManagerTrait;
-  use FilteredPluginManagerTrait;
+  use ContextAwarePluginManagerTrait;
 
   /**
    * Constructs a ConditionManager object.
@@ -42,13 +41,6 @@ class ConditionManager extends DefaultPluginManager implements ExecutableManager
     $this->setCacheBackend($cache_backend, 'condition_plugins');
 
     parent::__construct('Plugin/Condition', $namespaces, $module_handler, 'Drupal\Core\Condition\ConditionInterface', 'Drupal\Core\Condition\Annotation\Condition');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getType() {
-    return 'condition';
   }
 
   /**

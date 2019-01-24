@@ -132,11 +132,11 @@ class TermForm extends ContentEntityForm {
     $view_link = $term->link($term->getName());
     switch ($result) {
       case SAVED_NEW:
-        $this->messenger()->addStatus($this->t('Created new term %term.', ['%term' => $view_link]));
+        drupal_set_message($this->t('Created new term %term.', ['%term' => $view_link]));
         $this->logger('taxonomy')->notice('Created new term %term.', ['%term' => $term->getName(), 'link' => $edit_link]);
         break;
       case SAVED_UPDATED:
-        $this->messenger()->addStatus($this->t('Updated term %term.', ['%term' => $view_link]));
+        drupal_set_message($this->t('Updated term %term.', ['%term' => $view_link]));
         $this->logger('taxonomy')->notice('Updated term %term.', ['%term' => $term->getName(), 'link' => $edit_link]);
         break;
     }

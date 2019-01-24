@@ -2,7 +2,7 @@
  * Implements hook_path_insert().
  */
 function {{ machine_name }}_path_insert($path) {
-  \Drupal::database()->insert('mytable')
+  db_insert('mytable')
     ->fields([
       'alias' => $path['alias'],
       'pid' => $path['pid'],

@@ -355,7 +355,6 @@ class User extends ContentEntityBase implements UserInterface {
   public function isAuthenticated() {
     return $this->id() > 0;
   }
-
   /**
    * {@inheritdoc}
    */
@@ -428,7 +427,7 @@ class User extends ContentEntityBase implements UserInterface {
         'name' => [LanguageInterface::LANGCODE_DEFAULT => ''],
         // Explicitly set the langcode to ensure that field definitions do not
         // need to be fetched to figure out a default.
-        'langcode' => [LanguageInterface::LANGCODE_DEFAULT => LanguageInterface::LANGCODE_NOT_SPECIFIED],
+        'langcode' => [LanguageInterface::LANGCODE_DEFAULT => LanguageInterface::LANGCODE_NOT_SPECIFIED]
       ], $entity_type->id());
     }
     return clone static::$anonymousUser;

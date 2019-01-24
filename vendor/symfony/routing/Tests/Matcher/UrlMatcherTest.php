@@ -15,9 +15,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\RequestContext;
 
 class UrlMatcherTest extends TestCase
 {
@@ -500,31 +500,6 @@ class UrlMatcherTest extends TestCase
 
         $matcher = $this->getUrlMatcher($coll);
         $matcher->match('/');
-    }
-
-    public function testSlashAndVerbPrecedence()
-    {
-        $coll = new RouteCollection();
-        $coll->add('a', new Route('/api/customers/{customerId}/contactpersons/', array(), array(), array(), '', array(), array('post')));
-        $coll->add('b', new Route('/api/customers/{customerId}/contactpersons', array(), array(), array(), '', array(), array('get')));
-
-        $matcher = $this->getUrlMatcher($coll);
-        $expected = array(
-            '_route' => 'b',
-            'customerId' => '123',
-        );
-        $this->assertEquals($expected, $matcher->match('/api/customers/123/contactpersons'));
-
-        $coll = new RouteCollection();
-        $coll->add('a', new Route('/api/customers/{customerId}/contactpersons/', array(), array(), array(), '', array(), array('get')));
-        $coll->add('b', new Route('/api/customers/{customerId}/contactpersons', array(), array(), array(), '', array(), array('post')));
-
-        $matcher = $this->getUrlMatcher($coll, new RequestContext('', 'POST'));
-        $expected = array(
-            '_route' => 'b',
-            'customerId' => '123',
-        );
-        $this->assertEquals($expected, $matcher->match('/api/customers/123/contactpersons'));
     }
 
     protected function getUrlMatcher(RouteCollection $routes, RequestContext $context = null)

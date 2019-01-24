@@ -1,31 +1,31 @@
-{% import 'lib/di.twig' as di %}
 <?php
 
 namespace Drupal\{{ machine_name }}\Controller;
 
-{% sort %}
 use Drupal\Core\Controller\ControllerBase;
-  {% if services %}
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-{{ di.use(services) }}
-  {% endif %}
-{% endsort %}
 
 /**
  * Returns responses for {{ name }} routes.
  */
 class {{ class }} extends ControllerBase {
 
-{% if services %}
-{{ di.properties(services) }}
+  /**
+   * The date formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
 
   /**
-   * The controller constructor.
+   * Constructs the controller object.
    *
-{{ di.annotation(services) }}
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date formatter service.
    */
-  public function __construct({{ di.signature(services) }}) {
-{{ di.assignment(services) }}
+  public function __construct(DateFormatterInterface $date_formatter) {
+    $this->dateFormatter = $date_formatter;
   }
 
   /**
@@ -33,11 +33,10 @@ class {{ class }} extends ControllerBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-{{ di.container(services) }}
+      $container->get('date.formatter')
     );
   }
 
-{% endif %}
   /**
    * Builds the response.
    */
@@ -45,7 +44,14 @@ class {{ class }} extends ControllerBase {
 
     $build['content'] = [
       '#type' => 'item',
-      '#markup' => $this->t('It works!'),
+      '#title' => $this->t('Content'),
+      '#markup' => $this->t('Hello world!'),
+    ];
+
+    $build['date'] = [
+      '#type' => 'item',
+      '#title' => $this->t('Date'),
+      '#markup' => $this->dateFormatter->format(REQUEST_TIME),
     ];
 
     return $build;

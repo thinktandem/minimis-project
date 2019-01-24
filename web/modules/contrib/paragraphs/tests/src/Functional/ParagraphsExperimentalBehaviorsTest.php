@@ -82,7 +82,6 @@ class ParagraphsExperimentalBehaviorsTest extends BrowserTestBase {
     $this->assertTrue(count($bolded_elements), 'Test plugin added a CSS class.');
 
     // Check that non-empty leaves are saved in the behavior settings.
-    \Drupal::entityTypeManager()->getStorage('paragraph')->resetCache();
     $node = $this->getNodeByTitle('Test Node', TRUE);
     /** @var \Drupal\paragraphs\ParagraphInterface $paragraph */
     $paragraph = $node->get('field_paragraphs')->entity;

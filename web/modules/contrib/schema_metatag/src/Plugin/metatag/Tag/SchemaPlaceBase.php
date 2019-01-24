@@ -64,23 +64,4 @@ class SchemaPlaceBase extends SchemaAddressBase {
     return $items;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function processedTestValue($items) {
-    foreach ($items as $key => $value) {
-      switch ($key) {
-        case 'address':
-          $items[$key] = SchemaAddressBase::processedTestValue($items[$key]);
-          break;
-
-        case 'geo':
-          $items[$key] = SchemaGeoBase::processedTestValue($items[$key]);
-          break;
-
-      }
-    }
-    return $items;
-  }
-
 }

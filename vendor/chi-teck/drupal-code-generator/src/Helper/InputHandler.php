@@ -42,17 +42,16 @@ class InputHandler extends Helper {
    */
   public function collectVars(InputInterface $input, OutputInterface $output, array $questions, array $vars = []) {
 
-    // A user can pass answers through the command line option.
-    $answers = NULL;
+    // A user can pass answers through command line option.
     if ($answers_raw = $input->getOption('answers')) {
       $answers = json_decode($answers_raw, TRUE);
       if (!is_array($answers)) {
         throw new InvalidOptionException('Answers should be encoded in JSON format.');
       }
     }
-
-    /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-    $question_helper = $this->getHelperSet()->get('question');
+    else {
+      $answers = [];
+    }
 
     /** @var \DrupalCodeGenerator\Command\GeneratorInterface $command */
     $command = $this->getHelperSet()->getCommand();
@@ -86,28 +85,27 @@ class InputHandler extends Helper {
           $default_value = call_user_func($default_value, $vars);
         }
       }
+
       // Default value may have tokens.
       $default_value = Utils::tokenReplace($default_value, $vars);
+
       $this->setQuestionDefault($question, $default_value);
 
-      if ($answers) {
-        if (array_key_exists($name, $answers)) {
-          $answer = $answers[$name];
-          // Validate provided answer.
-          if ($validator = $question->getValidator()) {
-            $validator($answer);
-          }
-          // Turn 'yes/no' string into boolean.
-          if ($question instanceof ConfirmationQuestion && !is_bool($answer)) {
-            $answer = strcasecmp($answer, 'yes') == 0;
-          }
-        }
-        else {
+      if (array_key_exists($name, $answers)) {
+        $answer = $answers[$name];
+        // Null stands for default value.
+        if ($answer === NULL) {
           $answer = $default_value;
+        }
+        // Turn 'yes/no' string into boolean.
+        elseif ($question instanceof ConfirmationQuestion && !is_bool($answer)) {
+          $answer = strcasecmp($answer, 'yes') == 0;
         }
       }
       else {
         $this->formatQuestionText($question);
+        /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+        $question_helper = $this->getHelperSet()->get('question');
         $answer = $question_helper->ask($input, $output, $question);
       }
 

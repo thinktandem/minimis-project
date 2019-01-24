@@ -33,14 +33,11 @@ use Drupal\Core\Entity\EntityTypeInterface;
  *     "add-form" = "/admin/config/development/configuration/config-split/add",
  *     "edit-form" = "/admin/config/development/configuration/config-split/{config_split}/edit",
  *     "delete-form" = "/admin/config/development/configuration/config-split/{config_split}/delete",
- *     "enable" = "/admin/config/development/configuration/config-split/{config_split}/enable",
- *     "disable" = "/admin/config/development/configuration/config-split/{config_split}/disable",
  *     "collection" = "/admin/config/development/configuration/config-split"
  *   },
  *   config_export = {
  *     "id",
  *     "label",
- *     "description",
  *     "folder",
  *     "module",
  *     "theme",
@@ -68,13 +65,6 @@ class ConfigSplitEntity extends ConfigEntityBase implements ConfigSplitEntityInt
    * @var string
    */
   protected $label;
-
-  /**
-   * The Configuration Split Setting description.
-   *
-   * @var string
-   */
-  protected $description = '';
 
   /**
    * The folder to export to.

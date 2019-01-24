@@ -24,8 +24,5 @@
     "psr-0": {
       "Egulias\\": "src/"
     }
-  },
-  "scripts": {
-    "test": "phpunit"
   }
 }

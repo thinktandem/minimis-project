@@ -3,7 +3,7 @@
 namespace Drupal\Tests\content_moderation\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Tests moderated content administration page functionality.
@@ -11,8 +11,6 @@ use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
  * @group content_moderation
  */
 class ModeratedContentViewTest extends BrowserTestBase {
-
-  use ContentModerationTestTrait;
 
   /**
    * A user with permission to bypass access content.
@@ -36,7 +34,7 @@ class ModeratedContentViewTest extends BrowserTestBase {
     $this->drupalCreateContentType(['type' => 'article', 'name' => 'Article'])->save();
     $this->drupalCreateContentType(['type' => 'unmoderated_type', 'name' => 'Unmoderated type'])->save();
 
-    $workflow = $this->createEditorialWorkflow();
+    $workflow = Workflow::load('editorial');
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'page');
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'article');
     $workflow->save();

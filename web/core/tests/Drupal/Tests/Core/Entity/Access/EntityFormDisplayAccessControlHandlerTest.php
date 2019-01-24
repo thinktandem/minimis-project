@@ -69,6 +69,7 @@ class EntityFormDisplayAccessControlHandlerTest extends UnitTestCase {
    */
   protected $entity;
 
+
   /**
    * Returns a mock Entity Type Manager.
    *

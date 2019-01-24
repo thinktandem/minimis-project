@@ -11,7 +11,6 @@ use Drupal\views\Entity\View;
  * @see views_post_update_boolean_filter_values()
  *
  * @group Update
- * @group legacy
  */
 class BooleanFilterValuesUpdateTest extends UpdatePathTestBase {
 

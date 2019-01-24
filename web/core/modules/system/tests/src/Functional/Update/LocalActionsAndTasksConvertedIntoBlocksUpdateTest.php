@@ -11,7 +11,6 @@ use Drupal\node\Entity\Node;
  * @see https://www.drupal.org/node/507488
  *
  * @group system
- * @group legacy
  */
 class LocalActionsAndTasksConvertedIntoBlocksUpdateTest extends UpdatePathTestBase {
 

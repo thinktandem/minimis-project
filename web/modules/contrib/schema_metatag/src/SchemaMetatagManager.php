@@ -49,7 +49,7 @@ class SchemaMetatagManager implements SchemaMetatagManagerInterface {
     // If some group has been found, render the JSON LD,
     // otherwise return nothing.
     if (!empty($items)) {
-      return json_encode($items, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
+      return json_encode($items, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
     }
     else {
       return '';

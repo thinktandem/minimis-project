@@ -56,6 +56,7 @@ class ConstraintManager extends DefaultPluginManager {
     return $this->discovery;
   }
 
+
   /**
    * Creates a validation constraint.
    *

@@ -46,6 +46,7 @@ abstract class ImageToolkitBase extends PluginBase implements ImageToolkitInterf
    */
   protected $logger;
 
+
   /**
    * Constructs an ImageToolkitBase object.
    *

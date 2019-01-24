@@ -23,13 +23,6 @@ use Drupal\media\MediaSourceBase;
 class File extends MediaSourceBase {
 
   /**
-   * Key for "Name" metadata attribute.
-   *
-   * @var string
-   */
-  const METADATA_ATTRIBUTE_NAME = 'name';
-
-  /**
    * Key for "MIME type" metadata attribute.
    *
    * @var string
@@ -43,12 +36,12 @@ class File extends MediaSourceBase {
    */
   const METADATA_ATTRIBUTE_SIZE = 'filesize';
 
+
   /**
    * {@inheritdoc}
    */
   public function getMetadataAttributes() {
     return [
-      static::METADATA_ATTRIBUTE_NAME => $this->t('Name'),
       static::METADATA_ATTRIBUTE_MIME => $this->t('MIME type'),
       static::METADATA_ATTRIBUTE_SIZE => $this->t('File size'),
     ];
@@ -65,15 +58,14 @@ class File extends MediaSourceBase {
       return parent::getMetadata($media, $attribute_name);
     }
     switch ($attribute_name) {
-      case static::METADATA_ATTRIBUTE_NAME:
-      case 'default_name':
-        return $file->getFilename();
-
-      case static::METADATA_ATTRIBUTE_MIME:
+      case 'mimetype':
         return $file->getMimeType();
 
-      case static::METADATA_ATTRIBUTE_SIZE:
+      case 'filesize':
         return $file->getSize();
+
+      case 'default_name':
+        return $file->getFilename();
 
       case 'thumbnail_uri':
         return $this->getThumbnail($file) ?: parent::getMetadata($media, $attribute_name);

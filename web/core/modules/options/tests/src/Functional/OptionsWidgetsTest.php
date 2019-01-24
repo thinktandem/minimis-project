@@ -4,8 +4,8 @@ namespace Drupal\Tests\options\Functional;
 
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Tests\FieldTestBase;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\Tests\field\Functional\FieldTestBase;
 
 /**
  * Tests the Options widgets.
@@ -34,6 +34,7 @@ class OptionsWidgetsTest extends FieldTestBase {
    * @var \Drupal\field\Entity\FieldStorageConfig
    */
   protected $card2;
+
 
   protected function setUp() {
     parent::setUp();
@@ -254,13 +255,13 @@ class OptionsWidgetsTest extends FieldTestBase {
     // Display form.
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
     // A required field without any value has a "none" option.
-    $this->assertTrue($this->xpath('//select[@id=:id]//option[@value="_none" and text()=:label]', [':id' => 'edit-card-1', ':label' => '- Select a value -']), 'A required select list has a "Select a value" choice.');
+    $this->assertTrue($this->xpath('//select[@id=:id]//option[@value="_none" and text()=:label]', [':id' => 'edit-card-1', ':label' => t('- Select a value -')]), 'A required select list has a "Select a value" choice.');
 
     // With no field data, nothing is selected.
-    $this->assertTrue($this->assertSession()->optionExists('card_1', '_none')->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 0)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 1)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 2)->isSelected());
+    $this->assertNoOptionSelected('edit-card-1', '_none');
+    $this->assertNoOptionSelected('edit-card-1', 0);
+    $this->assertNoOptionSelected('edit-card-1', 1);
+    $this->assertNoOptionSelected('edit-card-1', 2);
     $this->assertRaw('Some dangerous &amp; unescaped markup', 'Option text was properly filtered.');
 
     // Submit form: select invalid 'none' option.
@@ -277,9 +278,9 @@ class OptionsWidgetsTest extends FieldTestBase {
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
     // A required field with a value has no 'none' option.
     $this->assertFalse($this->xpath('//select[@id=:id]//option[@value="_none"]', [':id' => 'edit-card-1']), 'A required select list with an actual value has no "none" choice.');
-    $this->assertTrue($this->assertSession()->optionExists('card_1', 0)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 1)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 2)->isSelected());
+    $this->assertOptionSelected('edit-card-1', 0);
+    $this->assertNoOptionSelected('edit-card-1', 1);
+    $this->assertNoOptionSelected('edit-card-1', 2);
 
     // Make the field non required.
     $field->setRequired(FALSE);
@@ -288,7 +289,7 @@ class OptionsWidgetsTest extends FieldTestBase {
     // Display form.
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
     // A non-required field has a 'none' option.
-    $this->assertTrue($this->xpath('//select[@id=:id]//option[@value="_none" and text()=:label]', [':id' => 'edit-card-1', ':label' => '- None -']), 'A non-required select list has a "None" choice.');
+    $this->assertTrue($this->xpath('//select[@id=:id]//option[@value="_none" and text()=:label]', [':id' => 'edit-card-1', ':label' => t('- None -')]), 'A non-required select list has a "None" choice.');
     // Submit form: Unselect the option.
     $edit = ['card_1' => '_none'];
     $this->drupalPostForm('entity_test/manage/' . $entity->id() . '/edit', $edit, t('Save'));
@@ -302,9 +303,9 @@ class OptionsWidgetsTest extends FieldTestBase {
 
     // Display form: with no field data, nothing is selected
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 0)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 1)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 2)->isSelected());
+    $this->assertNoOptionSelected('edit-card-1', 0);
+    $this->assertNoOptionSelected('edit-card-1', 1);
+    $this->assertNoOptionSelected('edit-card-1', 2);
     $this->assertRaw('Some dangerous &amp; unescaped markup', 'Option text was properly filtered.');
     $this->assertRaw('More &lt;script&gt;dangerous&lt;/script&gt; markup', 'Option group text was properly filtered.');
     $this->assertRaw('Group 1', 'Option groups are displayed.');
@@ -316,9 +317,9 @@ class OptionsWidgetsTest extends FieldTestBase {
 
     // Display form: check that the right options are selected.
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
-    $this->assertTrue($this->assertSession()->optionExists('card_1', 0)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 1)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_1', 2)->isSelected());
+    $this->assertOptionSelected('edit-card-1', 0);
+    $this->assertNoOptionSelected('edit-card-1', 1);
+    $this->assertNoOptionSelected('edit-card-1', 2);
 
     // Submit form: Unselect the option.
     $edit = ['card_1' => '_none'];
@@ -352,10 +353,10 @@ class OptionsWidgetsTest extends FieldTestBase {
 
     // Display form: with no field data, nothing is selected.
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
-    $this->assertTrue($this->assertSession()->optionExists('card_2', '_none')->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 0)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 1)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 2)->isSelected());
+    $this->assertOptionSelected("edit-card-2", '_none');
+    $this->assertNoOptionSelected('edit-card-2', 0);
+    $this->assertNoOptionSelected('edit-card-2', 1);
+    $this->assertNoOptionSelected('edit-card-2', 2);
     $this->assertRaw('Some dangerous &amp; unescaped markup', 'Option text was properly filtered.');
 
     // Submit form: select first and third options.
@@ -365,9 +366,9 @@ class OptionsWidgetsTest extends FieldTestBase {
 
     // Display form: check that the right options are selected.
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
-    $this->assertTrue($this->assertSession()->optionExists('card_2', 0)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 1)->isSelected());
-    $this->assertTrue($this->assertSession()->optionExists('card_2', 2)->isSelected());
+    $this->assertOptionSelected('edit-card-2', 0);
+    $this->assertNoOptionSelected('edit-card-2', 1);
+    $this->assertOptionSelected('edit-card-2', 2);
 
     // Submit form: select only first option.
     $edit = ['card_2[]' => [0 => 0]];
@@ -376,9 +377,9 @@ class OptionsWidgetsTest extends FieldTestBase {
 
     // Display form: check that the right options are selected.
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
-    $this->assertTrue($this->assertSession()->optionExists('card_2', 0)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 1)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 2)->isSelected());
+    $this->assertOptionSelected('edit-card-2', 0);
+    $this->assertNoOptionSelected('edit-card-2', 1);
+    $this->assertNoOptionSelected('edit-card-2', 2);
 
     // Submit form: select the three options while the field accepts only 2.
     $edit = ['card_2[]' => [0 => 0, 1 => 1, 2 => 2]];
@@ -423,9 +424,9 @@ class OptionsWidgetsTest extends FieldTestBase {
 
     // Display form: with no field data, nothing is selected.
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 0)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 1)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 2)->isSelected());
+    $this->assertNoOptionSelected('edit-card-2', 0);
+    $this->assertNoOptionSelected('edit-card-2', 1);
+    $this->assertNoOptionSelected('edit-card-2', 2);
     $this->assertRaw('Some dangerous &amp; unescaped markup', 'Option text was properly filtered.');
     $this->assertRaw('More &lt;script&gt;dangerous&lt;/script&gt; markup', 'Option group text was properly filtered.');
     $this->assertRaw('Group 1', 'Option groups are displayed.');
@@ -437,9 +438,9 @@ class OptionsWidgetsTest extends FieldTestBase {
 
     // Display form: check that the right options are selected.
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
-    $this->assertTrue($this->assertSession()->optionExists('card_2', 0)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 1)->isSelected());
-    $this->assertFalse($this->assertSession()->optionExists('card_2', 2)->isSelected());
+    $this->assertOptionSelected('edit-card-2', 0);
+    $this->assertNoOptionSelected('edit-card-2', 1);
+    $this->assertNoOptionSelected('edit-card-2', 2);
 
     // Submit form: Unselect the option.
     $edit = ['card_2[]' => ['_none' => '_none']];
@@ -487,7 +488,7 @@ class OptionsWidgetsTest extends FieldTestBase {
     // Display form: check that _none options are present and has label.
     $this->drupalGet('entity_test/manage/' . $entity->id() . '/edit');
     // A required field without any value has a "none" option.
-    $this->assertTrue($this->xpath('//select[@id=:id]//option[@value="_none" and text()=:label]', [':id' => 'edit-card-1', ':label' => '- None -']), 'A test select has a "None" choice.');
+    $this->assertTrue($this->xpath('//select[@id=:id]//option[@value="_none" and text()=:label]', [':id' => 'edit-card-1', ':label' => t('- None -')]), 'A test select has a "None" choice.');
   }
 
 }

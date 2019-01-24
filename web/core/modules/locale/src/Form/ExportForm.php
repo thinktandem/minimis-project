@@ -180,7 +180,7 @@ class ExportForm extends FormBase {
       $form_state->setResponse($response);
     }
     else {
-      $this->messenger()->addStatus($this->t('Nothing to export.'));
+      drupal_set_message($this->t('Nothing to export.'));
     }
   }
 

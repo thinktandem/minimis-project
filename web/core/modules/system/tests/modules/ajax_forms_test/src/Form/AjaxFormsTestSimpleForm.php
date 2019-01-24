@@ -65,7 +65,7 @@ class AjaxFormsTestSimpleForm extends FormBase {
       $form['select_' . $key . '_callback'] = [
         '#type' => 'select',
         '#title' => $this->t('Test %key callbacks', ['%key' => $key]),
-        '#options' => ['red' => 'red', 'green' => 'green'],
+        '#options' => ['red' => 'red'],
         '#ajax' => ['callback' => $value],
       ];
     }

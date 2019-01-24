@@ -7,7 +7,6 @@ use Drupal\Core\Config\PreExistingConfigException;
 use Drupal\Core\Config\UnmetDependenciesException;
 use Drupal\Core\Access\AccessManagerInterface;
 use Drupal\Core\Extension\Extension;
-use Drupal\Core\Extension\InfoParserException;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Form\FormBase;
@@ -144,14 +143,8 @@ class ModulesListForm extends FormBase {
     ];
 
     // Sort all modules by their names.
-    try {
-      $modules = system_rebuild_module_data();
-      uasort($modules, 'system_sort_modules_by_info_name');
-    }
-    catch (InfoParserException $e) {
-      $this->messenger()->addError($this->t('Modules could not be listed due to an error: %error', ['%error' => $e->getMessage()]));
-      $modules = [];
-    }
+    $modules = system_rebuild_module_data();
+    uasort($modules, 'system_sort_modules_by_info_name');
 
     // Iterate over each of the modules.
     $form['modules']['#tree'] = TRUE;
@@ -457,28 +450,30 @@ class ModulesListForm extends FormBase {
       try {
         $this->moduleInstaller->install(array_keys($modules['install']));
         $module_names = array_values($modules['install']);
-        $this->messenger()->addStatus($this->formatPlural(count($module_names), 'Module %name has been enabled.', '@count modules have been enabled: %names.', [
+        drupal_set_message($this->formatPlural(count($module_names), 'Module %name has been enabled.', '@count modules have been enabled: %names.', [
           '%name' => $module_names[0],
           '%names' => implode(', ', $module_names),
         ]));
       }
       catch (PreExistingConfigException $e) {
         $config_objects = $e->flattenConfigObjects($e->getConfigObjects());
-        $this->messenger()->addError(
+        drupal_set_message(
           $this->formatPlural(
             count($config_objects),
             'Unable to install @extension, %config_names already exists in active configuration.',
             'Unable to install @extension, %config_names already exist in active configuration.',
             [
               '%config_names' => implode(', ', $config_objects),
-              '@extension' => $modules['install'][$e->getExtension()],
-            ])
+              '@extension' => $modules['install'][$e->getExtension()]
+            ]),
+          'error'
         );
         return;
       }
       catch (UnmetDependenciesException $e) {
-        $this->messenger()->addError(
-          $e->getTranslatedMessage($this->getStringTranslation(), $modules['install'][$e->getExtension()])
+        drupal_set_message(
+          $e->getTranslatedMessage($this->getStringTranslation(), $modules['install'][$e->getExtension()]),
+          'error'
         );
         return;
       }

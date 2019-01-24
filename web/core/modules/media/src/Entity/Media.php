@@ -29,7 +29,7 @@ use Drupal\user\UserInterface;
  *   ),
  *   bundle_label = @Translation("Media type"),
  *   handlers = {
- *     "storage" = "Drupal\media\MediaStorage",
+ *     "storage" = "Drupal\Core\Entity\Sql\SqlContentEntityStorage",
  *     "view_builder" = "Drupal\Core\Entity\EntityViewBuilder",
  *     "list_builder" = "Drupal\media\MediaListBuilder",
  *     "access" = "Drupal\media\MediaAccessControlHandler",
@@ -91,14 +91,15 @@ class Media extends EditorialContentEntityBase implements MediaInterface {
    * {@inheritdoc}
    */
   public function getName() {
-    $name = $this->getEntityKey('label');
+    $name = $this->get('name');
 
-    if (empty($name)) {
+    if ($name->isEmpty()) {
       $media_source = $this->getSource();
       return $media_source->getMetadata($this, $media_source->getPluginDefinition()['default_name_metadata_attribute']);
     }
-
-    return $name;
+    else {
+      return $name->value;
+    }
   }
 
   /**
@@ -180,64 +181,45 @@ class Media extends EditorialContentEntityBase implements MediaInterface {
    *   https://www.drupal.org/node/2878119
    */
   protected function updateThumbnail($from_queue = FALSE) {
-    $this->thumbnail->target_id = $this->loadThumbnail($this->getThumbnailUri($from_queue))->id();
+    $file_storage = \Drupal::service('entity_type.manager')->getStorage('file');
+    $thumbnail_uri = $this->getThumbnailUri($from_queue);
+    $existing = $file_storage->getQuery()
+      ->condition('uri', $thumbnail_uri)
+      ->execute();
 
-    // Set the thumbnail alt.
-    $media_source = $this->getSource();
-    $plugin_definition = $media_source->getPluginDefinition();
-
-    $this->thumbnail->alt = '';
-    if (!empty($plugin_definition['thumbnail_alt_metadata_attribute'])) {
-      $this->thumbnail->alt = $media_source->getMetadata($this, $plugin_definition['thumbnail_alt_metadata_attribute']);
-    }
-
-    return $this;
-  }
-
-  /**
-   * Loads the file entity for the thumbnail.
-   *
-   * If the file entity does not exist, it will be created.
-   *
-   * @param string $thumbnail_uri
-   *   (optional) The URI of the thumbnail, used to load or create the file
-   *   entity. If omitted, the default thumbnail URI will be used.
-   *
-   * @return \Drupal\file\FileInterface
-   *   The thumbnail file entity.
-   */
-  protected function loadThumbnail($thumbnail_uri = NULL) {
-    $values = [
-      'uri' => $thumbnail_uri ?: $this->getDefaultThumbnailUri(),
-    ];
-
-    $file_storage = $this->entityTypeManager()->getStorage('file');
-
-    $existing = $file_storage->loadByProperties($values);
     if ($existing) {
-      $file = reset($existing);
+      $this->thumbnail->target_id = reset($existing);
     }
     else {
       /** @var \Drupal\file\FileInterface $file */
-      $file = $file_storage->create($values);
+      $file = $file_storage->create(['uri' => $thumbnail_uri]);
       if ($owner = $this->getOwner()) {
         $file->setOwner($owner);
       }
       $file->setPermanent();
       $file->save();
+      $this->thumbnail->target_id = $file->id();
     }
-    return $file;
-  }
 
-  /**
-   * Returns the URI of the default thumbnail.
-   *
-   * @return string
-   *   The default thumbnail URI.
-   */
-  protected function getDefaultThumbnailUri() {
-    $default_thumbnail_filename = $this->getSource()->getPluginDefinition()['default_thumbnail_filename'];
-    return \Drupal::config('media.settings')->get('icon_base_uri') . '/' . $default_thumbnail_filename;
+    // Set the thumbnail alt.
+    $media_source = $this->getSource();
+    $plugin_definition = $media_source->getPluginDefinition();
+    if (!empty($plugin_definition['thumbnail_alt_metadata_attribute'])) {
+      $this->thumbnail->alt = $media_source->getMetadata($this, $plugin_definition['thumbnail_alt_metadata_attribute']);
+    }
+    else {
+      $this->thumbnail->alt = $this->t('Thumbnail', [], ['langcode' => $this->langcode->value]);
+    }
+
+    // Set the thumbnail title.
+    if (!empty($plugin_definition['thumbnail_title_metadata_attribute'])) {
+      $this->thumbnail->title = $media_source->getMetadata($this, $plugin_definition['thumbnail_title_metadata_attribute']);
+    }
+    else {
+      $this->thumbnail->title = $this->label();
+    }
+
+    return $this;
   }
 
   /**
@@ -275,14 +257,17 @@ class Media extends EditorialContentEntityBase implements MediaInterface {
   protected function getThumbnailUri($from_queue) {
     $thumbnails_queued = $this->bundle->entity->thumbnailDownloadsAreQueued();
     if ($thumbnails_queued && $this->isNew()) {
-      return $this->getDefaultThumbnailUri();
+      $default_thumbnail_filename = $this->getSource()->getPluginDefinition()['default_thumbnail_filename'];
+      $thumbnail_uri = \Drupal::service('config.factory')->get('media.settings')->get('icon_base_uri') . '/' . $default_thumbnail_filename;
     }
     elseif ($thumbnails_queued && !$from_queue) {
-      return $this->get('thumbnail')->entity->getFileUri();
+      $thumbnail_uri = $this->get('thumbnail')->entity->getFileUri();
+    }
+    else {
+      $thumbnail_uri = $this->getSource()->getMetadata($this, $this->getSource()->getPluginDefinition()['thumbnail_uri_metadata_attribute']);
     }
 
-    $source = $this->getSource();
-    return $source->getMetadata($this, $source->getPluginDefinition()['thumbnail_uri_metadata_attribute']);
+    return $thumbnail_uri;
   }
 
   /**
@@ -320,9 +305,30 @@ class Media extends EditorialContentEntityBase implements MediaInterface {
   public function preSave(EntityStorageInterface $storage) {
     parent::preSave($storage);
 
-    // If no thumbnail has been explicitly set, use the default thumbnail.
-    if ($this->get('thumbnail')->isEmpty()) {
-      $this->thumbnail->target_id = $this->loadThumbnail()->id();
+    $media_source = $this->getSource();
+    foreach ($this->translations as $langcode => $data) {
+      if ($this->hasTranslation($langcode)) {
+        $translation = $this->getTranslation($langcode);
+        // Try to set fields provided by the media source and mapped in
+        // media type config.
+        foreach ($translation->bundle->entity->getFieldMap() as $metadata_attribute_name => $entity_field_name) {
+          // Only save value in entity field if empty. Do not overwrite existing
+          // data.
+          if ($translation->hasField($entity_field_name) && ($translation->get($entity_field_name)->isEmpty() || $translation->hasSourceFieldChanged())) {
+            $translation->set($entity_field_name, $media_source->getMetadata($translation, $metadata_attribute_name));
+          }
+        }
+
+        // Try to set a default name for this media item if no name is provided.
+        if ($translation->get('name')->isEmpty()) {
+          $translation->setName($translation->getName());
+        }
+
+        // Set thumbnail.
+        if ($translation->shouldUpdateThumbnail()) {
+          $translation->updateThumbnail();
+        }
+      }
     }
   }
 
@@ -360,61 +366,6 @@ class Media extends EditorialContentEntityBase implements MediaInterface {
 
     if ($is_new_revision) {
       $record->revision_created = self::getRequestTime();
-    }
-  }
-
-  /**
-   * Sets the media entity's field values from the source's metadata.
-   *
-   * Fetching the metadata could be slow (e.g., if requesting it from a remote
-   * API), so this is called by \Drupal\media\MediaStorage::save() prior to it
-   * beginning the database transaction, whereas static::preSave() executes
-   * after the transaction has already started.
-   *
-   * @internal
-   *   Expose this as an API in
-   *   https://www.drupal.org/project/drupal/issues/2992426.
-   */
-  public function prepareSave() {
-    // @todo If the source plugin talks to a remote API (e.g. oEmbed), this code
-    // might be performing a fair number of HTTP requests. This is dangerously
-    // brittle and should probably be handled by a queue, to avoid doing HTTP
-    // operations during entity save. See
-    // https://www.drupal.org/project/drupal/issues/2976875 for more.
-
-    // In order for metadata to be mapped correctly, $this->original must be
-    // set. However, that is only set once parent::save() is called, so work
-    // around that by setting it here.
-    if (!isset($this->original) && $id = $this->id()) {
-      $this->original = $this->entityTypeManager()
-        ->getStorage('media')
-        ->loadUnchanged($id);
-    }
-
-    $media_source = $this->getSource();
-    foreach ($this->translations as $langcode => $data) {
-      if ($this->hasTranslation($langcode)) {
-        $translation = $this->getTranslation($langcode);
-        // Try to set fields provided by the media source and mapped in
-        // media type config.
-        foreach ($translation->bundle->entity->getFieldMap() as $metadata_attribute_name => $entity_field_name) {
-          // Only save value in entity field if empty. Do not overwrite existing
-          // data.
-          if ($translation->hasField($entity_field_name) && ($translation->get($entity_field_name)->isEmpty() || $translation->hasSourceFieldChanged())) {
-            $translation->set($entity_field_name, $media_source->getMetadata($translation, $metadata_attribute_name));
-          }
-        }
-
-        // Try to set a default name for this media item if no name is provided.
-        if ($translation->get('name')->isEmpty()) {
-          $translation->setName($translation->getName());
-        }
-
-        // Set thumbnail.
-        if ($translation->shouldUpdateThumbnail($this->isNew())) {
-          $translation->updateThumbnail();
-        }
-      }
     }
   }
 

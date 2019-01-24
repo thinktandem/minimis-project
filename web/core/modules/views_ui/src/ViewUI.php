@@ -51,7 +51,7 @@ class ViewUI implements ViewEntityInterface {
    * \Drupal\Core\TempStore\SharedTempStore::getMetadata(). Which can be a stdClass or
    * NULL.
    *
-   * @var object
+   * @var stdClass
    */
   public $lock;
 
@@ -713,7 +713,7 @@ class ViewUI implements ViewEntityInterface {
                 'data' => [
                   '#markup' => $path,
                 ],
-              ],
+              ]
             ];
           }
           if ($show_stats) {
@@ -790,7 +790,7 @@ class ViewUI implements ViewEntityInterface {
     else {
       foreach ($errors as $display_errors) {
         foreach ($display_errors as $error) {
-          \Drupal::messenger()->addError($error);
+          drupal_set_message($error, 'error');
         }
       }
       $preview = ['#markup' => t('Unable to preview due to validation errors.')];
@@ -859,7 +859,7 @@ class ViewUI implements ViewEntityInterface {
    */
   public function cacheSet() {
     if ($this->isLocked()) {
-      \Drupal::messenger()->addError(t('Changes cannot be made to a locked view.'));
+      drupal_set_message(t('Changes cannot be made to a locked view.'), 'error');
       return;
     }
 

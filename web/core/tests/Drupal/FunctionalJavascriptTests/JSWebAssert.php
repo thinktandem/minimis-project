@@ -100,7 +100,6 @@ JS;
 
     return $result;
   }
-
   /**
    * Waits for a button (input[type=submit|image|button|reset], button) with
    * specified locator and returns it.

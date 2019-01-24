@@ -6,7 +6,6 @@
  */
 
 use Drupal\metatag\Entity\MetatagDefaults;
-use Drupal\schema_metatag\SchemaMetatagManager;
 
 /**
  * Implementions of hook_update_N().
@@ -145,30 +144,4 @@ function schema_metatag_update_8106() {
     }
   }
   return (string) t("Deleted some unneeded tags.");
-}
-
-/**
- * Update the schema_product_brand tag.
- */
-function schema_metatag_update_8107() {
-  /* @var $configs Drupal\metatag\Entity\MetatagDefaults */
-  $configs = MetatagDefaults::loadMultiple();
-
-  foreach ($configs as $config) {
-    $tags = $config->get('tags');
-    foreach ($tags as $tag_name => $tag) {
-      if ($tag_name == 'schema_product_brand') {
-        $value = [
-          '@type' => 'Brand',
-          'name' => $tag,
-        ];
-        $new_tag = SchemaMetatagManager::serialize($value);
-        $tags[$tag_name] = $new_tag;
-        $config->set('tags', $tags);
-        $config->save();
-      }
-    }
-  }
-  return (string) t("Options for Product brands have been expanded and brand options have been added to Organization and Person, please review and update your configuration if you use brands.");
-
 }

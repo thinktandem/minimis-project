@@ -263,19 +263,9 @@
   };
 
   Drupal.EditorFeatureHTMLRule = function () {
-    this.required = {
-      tags: [],
-      attributes: [],
-      styles: [],
-      classes: []
-    };
+    this.required = { tags: [], attributes: [], styles: [], classes: [] };
 
-    this.allowed = {
-      tags: [],
-      attributes: [],
-      styles: [],
-      classes: []
-    };
+    this.allowed = { tags: [], attributes: [], styles: [], classes: [] };
 
     this.raw = null;
   };

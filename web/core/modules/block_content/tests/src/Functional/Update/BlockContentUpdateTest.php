@@ -9,7 +9,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests update functions for the Block Content module.
  *
  * @group Update
- * @group legacy
  */
 class BlockContentUpdateTest extends UpdatePathTestBase {
 

@@ -56,14 +56,17 @@
  * @see template_preprocess_search_result()
  */
 #}
+{{ attach_library('bootstrap_barrio/search-results') }}
 {{ title_prefix }}
-<h3{{ title_attributes }}>
+<h3{{ title_attributes.addClass('search-result__title') }}>
   <a href="{{ url }}">{{ title }}</a>
 </h3>
 {{ title_suffix }}
-{% if snippet %}
-  <p{{ content_attributes }}>{{ snippet }}</p>
-{% endif %}
-{% if info %}
-  <p><em>{{ info }}</em></p>
-{% endif %}
+<div class="search-result__snippet-info">
+  {% if snippet %}
+    <p{{ content_attributes.addClass('search-result__snippet') }}>{{ snippet }}</p>
+  {% endif %}
+  {% if info %}
+    <p class="search-result__info">{{ info }}</p>
+  {% endif %}
+</div>

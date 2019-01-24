@@ -4,7 +4,7 @@ namespace Drupal\Tests;
 
 use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Config\Schema\SchemaCheckTrait;
-use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\SafeMarkup;
 
 /**
  * Provides a class for checking configuration schema.
@@ -28,19 +28,19 @@ trait SchemaCheckTestTrait {
     if ($errors === FALSE) {
       // @todo Since the use of this trait is under TestBase, it works.
       //   Can be fixed as part of https://www.drupal.org/node/2260053.
-      $this->fail(new FormattableMarkup('No schema for @config_name', ['@config_name' => $config_name]));
+      $this->fail(SafeMarkup::format('No schema for @config_name', ['@config_name' => $config_name]));
       return;
     }
     elseif ($errors === TRUE) {
       // @todo Since the use of this trait is under TestBase, it works.
       //   Can be fixed as part of https://www.drupal.org/node/2260053.
-      $this->pass(new FormattableMarkup('Schema found for @config_name and values comply with schema.', ['@config_name' => $config_name]));
+      $this->pass(SafeMarkup::format('Schema found for @config_name and values comply with schema.', ['@config_name' => $config_name]));
     }
     else {
       foreach ($errors as $key => $error) {
         // @todo Since the use of this trait is under TestBase, it works.
         //   Can be fixed as part of https://www.drupal.org/node/2260053.
-        $this->fail(new FormattableMarkup('Schema key @key failed with: @error', ['@key' => $key, '@error' => $error]));
+        $this->fail(SafeMarkup::format('Schema key @key failed with: @error', ['@key' => $key, '@error' => $error]));
       }
     }
   }

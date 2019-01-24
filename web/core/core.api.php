@@ -413,7 +413,7 @@
  * \Drupal\Core\Cache\CacheBackendInterface.
  *
  * The Cache API is used to store data that takes a long time to compute.
- * Caching can either be permanent or valid only for a certain time span, and
+ * Caching can either be permanent or valid only for a certain timespan, and
  * the cache can contain any type of data.
  *
  * To use the Cache API:
@@ -558,7 +558,7 @@
  * This also is the case when you define your own entity types: you'll get the
  * exact same cache tag invalidation as any of the built-in entity types, with
  * the ability to override any of the default behavior if needed.
- * See \Drupal\Core\Cache\CacheableDependencyInterface::getCacheTags(),
+ * See \Drupal\Core\Cache\CacheableDepenencyInterface::getCacheTags(),
  * \Drupal\Core\Entity\EntityTypeInterface::getListCacheTags(),
  * \Drupal\Core\Entity\Entity::invalidateTagsOnSave() and
  * \Drupal\Core\Entity\Entity::invalidateTagsOnDelete().
@@ -569,7 +569,7 @@
  * logged-in user who is viewing a page, the language the page is being rendered
  * in, the theme being used, etc. When caching the output of such a calculation,
  * you must cache each variation separately, along with information about which
- * variation of the contextual data was used in the calculation. The next time
+ * variation of the contextual data was used in the calculatation. The next time
  * the computed data is needed, if the context matches that for an existing
  * cached data set, the cached data can be reused; if no context matches, a new
  * data set can be calculated and cached for later use.
@@ -1226,7 +1226,7 @@
  * under development. While PHP type hinting does this for objects and arrays,
  * runtime assertions do this for scalars (strings, integers, floats, etc.) and
  * complex data structures such as cache and render arrays. They ensure that
- * methods' return values are the documented data types. They also verify that
+ * methods' return values are the documented datatypes. They also verify that
  * objects have been properly configured and set up by the service container.
  * They supplement unit tests by checking scenarios that do not have unit tests
  * written for them.
@@ -2003,12 +2003,12 @@ function hook_data_type_info_alter(&$data_types) {
  * Alter cron queue information before cron runs.
  *
  * Called by \Drupal\Core\Cron to allow modules to alter cron queue settings
- * before any jobs are processed.
+ * before any jobs are processesed.
  *
  * @param array $queues
  *   An array of cron queue information.
  *
- * @see \Drupal\Core\Queue\QueueWorkerInterface
+ * @see \Drupal\Core\QueueWorker\QueueWorkerInterface
  * @see \Drupal\Core\Annotation\QueueWorker
  * @see \Drupal\Core\Cron
  */
@@ -2021,7 +2021,7 @@ function hook_queue_info_alter(&$queues) {
 /**
  * Alter an email message created with MailManagerInterface->mail().
  *
- * Hook hook_mail_alter() allows modification of email messages created and sent
+ * hook_mail_alter() allows modification of email messages created and sent
  * with MailManagerInterface->mail(). Usage examples include adding and/or
  * changing message text, message fields, and message headers.
  *
@@ -2259,12 +2259,12 @@ function hook_rebuild() {
  *   they will be processed. Each callable item defined in $sync_steps should
  *   either be a global function or a public static method. The callable should
  *   accept a $context array by reference. For example:
- *   @code
+ *   <code>
  *     function _additional_configuration_step(&$context) {
  *       // Do stuff.
  *       // If finished set $context['finished'] = 1.
  *     }
- *   @endcode
+ *   </code>
  *   For more information on creating batches, see the
  *   @link batch Batch operations @endlink documentation.
  *
@@ -2426,8 +2426,7 @@ function hook_validation_constraint_alter(array &$definitions) {
  * markup or a set of Ajax commands. If you choose to return HTML markup, you
  * can return it as a string or a renderable array, and it will be placed in
  * the defined 'wrapper' element (see documentation above in @ref sub_form).
- * In addition, any messages returned by
- * \Drupal\Core\Messenger\Messenger::all(), themed as in
+ * In addition, any messages returned by drupal_get_messages(), themed as in
  * status-messages.html.twig, will be prepended.
  *
  * To return commands, you need to set up an object of class

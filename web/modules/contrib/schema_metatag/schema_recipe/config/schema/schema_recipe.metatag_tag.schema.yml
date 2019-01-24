@@ -49,6 +49,3 @@ metatag.metatag_tag.schema_recipe_review:
 metatag.metatag_tag.schema_recipe_nutrition:
   type: label
   label: 'nutrition'
-metatag.metatag_tag.schema_recipe_recipe_cuisine:
-  type: label
-  label: 'recipeCuisine'

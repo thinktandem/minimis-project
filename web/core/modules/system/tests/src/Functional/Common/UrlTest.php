@@ -306,15 +306,15 @@ class UrlTest extends BrowserTestBase {
 
     // Verify external URL can be extended with a query string.
     $url = $test_url;
-    $query = ['awesome' => 'drupal'];
+    $query = [$this->randomMachineName(5) => $this->randomMachineName(5)];
     $result = Url::fromUri($url, ['query' => $query])->toString();
-    $this->assertSame('https://www.drupal.org/?awesome=drupal', $result);
+    $this->assertEqual($url . '?' . http_build_query($query, '', '&'), $result, 'External URL can be extended with a query string in $options.');
 
     // Verify query string can be extended in an external URL.
     $url = $test_url . '?drupal=awesome';
-    $query = ['awesome' => 'drupal'];
+    $query = [$this->randomMachineName(5) => $this->randomMachineName(5)];
     $result = Url::fromUri($url, ['query' => $query])->toString();
-    $this->assertEqual('https://www.drupal.org/?drupal=awesome&awesome=drupal', $result);
+    $this->assertEqual($url . '&' . http_build_query($query, '', '&'), $result);
   }
 
 }

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\block\Functional;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\Tests\BrowserTestBase;
 
@@ -61,7 +62,7 @@ class BlockLanguageCacheTest extends BrowserTestBase {
 
     // Create a menu in the default language.
     $edit['label'] = $this->randomMachineName();
-    $edit['id'] = mb_strtolower($edit['label']);
+    $edit['id'] = Unicode::strtolower($edit['label']);
     $this->drupalPostForm('admin/structure/menu/add', $edit, t('Save'));
     $this->assertText(t('Menu @label has been added.', ['@label' => $edit['label']]));
 

@@ -180,7 +180,7 @@ class EmailValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidEmailsWithWarningsCheck($warnings, $email)
     {
-        $this->assertFalse($this->validator->isValid($email, true));
+        $this->assertTrue($this->validator->isValid($email, true));
 
         $this->assertEquals($warnings, $this->validator->getWarnings());
     }

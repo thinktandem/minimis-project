@@ -23,7 +23,7 @@ class BrowserTestBaseTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['test_page_test', 'form_test', 'system_test', 'node'];
+  public static $modules = ['test_page_test', 'form_test', 'system_test'];
 
   /**
    * Tests basic page test.
@@ -68,21 +68,6 @@ class BrowserTestBaseTest extends BrowserTestBase {
   }
 
   /**
-   * Tests drupalGet().
-   */
-  public function testDrupalGet() {
-    $this->drupalGet('test-page');
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->addressEquals('test-page');
-    $this->drupalGet('/test-page');
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->addressEquals('test-page');
-    $this->drupalGet('/test-page/');
-    $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->addressEquals('/test-page/');
-  }
-
-  /**
    * Tests basic form functionality.
    */
   public function testForm() {
@@ -114,7 +99,6 @@ class BrowserTestBaseTest extends BrowserTestBase {
 
     // Test drupalPostForm().
     $edit = ['bananas' => 'red'];
-    // Submit the form using the button label.
     $result = $this->drupalPostForm('form-test/object-builder', $edit, 'Save');
     $this->assertSame($this->getSession()->getPage()->getContent(), $result);
     $value = $config_factory->get('form_test.object')->get('bananas');
@@ -124,32 +108,9 @@ class BrowserTestBaseTest extends BrowserTestBase {
     $value = $config_factory->get('form_test.object')->get('bananas');
     $this->assertSame('', $value);
 
-    // Submit the form using the button id.
-    $edit = ['bananas' => 'blue'];
-    $result = $this->drupalPostForm('form-test/object-builder', $edit, 'edit-submit');
-    $this->assertSame($this->getSession()->getPage()->getContent(), $result);
-    $value = $config_factory->get('form_test.object')->get('bananas');
-    $this->assertSame('blue', $value);
-
-    // Submit the form using the button name.
-    $edit = ['bananas' => 'purple'];
-    $result = $this->drupalPostForm('form-test/object-builder', $edit, 'op');
-    $this->assertSame($this->getSession()->getPage()->getContent(), $result);
-    $value = $config_factory->get('form_test.object')->get('bananas');
-    $this->assertSame('purple', $value);
-
     // Test drupalPostForm() with no-html response.
     $values = Json::decode($this->drupalPostForm('form_test/form-state-values-clean', [], t('Submit')));
     $this->assertTrue(1000, $values['beer']);
-
-    // Test drupalPostForm() with form by HTML id.
-    $this->drupalCreateContentType(['type' => 'page']);
-    $this->drupalLogin($this->drupalCreateUser(['create page content']));
-    $this->drupalGet('form-test/two-instances-of-same-form');
-    $this->getSession()->getPage()->fillField('edit-title-0-value', 'form1');
-    $this->getSession()->getPage()->fillField('edit-title-0-value--2', 'form2');
-    $this->drupalPostForm(NULL, [], 'Save', [], 'node-page-form--2');
-    $this->assertSession()->pageTextContains('Page form2 has been created.');
   }
 
   /**
@@ -235,7 +196,7 @@ class BrowserTestBaseTest extends BrowserTestBase {
     $this->assertText($sanitized);
 
     // Test getRawContent().
-    $this->assertSame($this->getSession()->getPage()->getContent(), $this->getSession()->getPage()->getContent());
+    $this->assertSame($this->getSession()->getPage()->getContent(), $this->getRawContent());
   }
 
   /**
@@ -591,7 +552,7 @@ class BrowserTestBaseTest extends BrowserTestBase {
     $this->assertFieldChecked('edit-checkbox-enabled');
     $this->assertNoFieldChecked('edit-checkbox-disabled');
 
-    // Test that the assertion fails correctly with non-existent field id.
+    // Test that the assertion fails correctly with non-existant field id.
     try {
       $this->assertNoFieldChecked('incorrect_checkbox_id');
       $this->fail('The "incorrect_checkbox_id" field was found');

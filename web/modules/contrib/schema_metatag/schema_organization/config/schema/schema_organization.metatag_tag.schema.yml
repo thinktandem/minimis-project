@@ -1,9 +1,6 @@
 # The 'type' should be "label" for short meta tags and "text" for ones which
 # could get longer, especially ones which use a textarea field instead of a
 # textfield.
-metatag.metatag_tag.schema_organization_additional_type:
-  type: label
-  label: 'additionalType'
 metatag.metatag_tag.schema_organization_address:
   type: text
   label: 'address'
@@ -61,9 +58,3 @@ metatag.metatag_tag.schema_organization_accepts_reservations:
 metatag.metatag_tag.schema_organization_opening_hours_specification:
   type: label
   label: 'openingHoursSpecification'
-metatag.metatag_tag.schema_organization_contact_point:
-  type: label
-  label: 'contactPoint'
-metatag.metatag_tag.schema_organization_brand:
-  type: text
-  label: 'brand'

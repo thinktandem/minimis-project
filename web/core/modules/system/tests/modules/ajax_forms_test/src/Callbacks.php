@@ -27,8 +27,7 @@ class Callbacks {
    */
   public function dateCallback($form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
-    $date = $form_state->getValue('date');
-    $response->addCommand(new HtmlCommand('#ajax_date_value', sprintf('<div>%s</div>', $date)));
+    $response->addCommand(new HtmlCommand('#ajax_date_value', $form_state->getValue('date')));
     $response->addCommand(new DataCommand('#ajax_date_value', 'form_state_value_date', $form_state->getValue('date')));
     return $response;
   }
@@ -40,7 +39,7 @@ class Callbacks {
     $datetime = $form_state->getValue('datetime')['date'] . ' ' . $form_state->getValue('datetime')['time'];
 
     $response = new AjaxResponse();
-    $response->addCommand(new HtmlCommand('#ajax_datetime_value', sprintf('<div>%s</div>', $datetime)));
+    $response->addCommand(new HtmlCommand('#ajax_datetime_value', $datetime));
     $response->addCommand(new DataCommand('#ajax_datetime_value', 'form_state_value_datetime', $datetime));
     return $response;
   }
@@ -50,7 +49,7 @@ class Callbacks {
    */
   public function checkboxCallback($form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
-    $response->addCommand(new HtmlCommand('#ajax_checkbox_value', $form_state->getValue('checkbox') ? 'checked' : 'unchecked'));
+    $response->addCommand(new HtmlCommand('#ajax_checkbox_value', (int) $form_state->getValue('checkbox')));
     $response->addCommand(new DataCommand('#ajax_checkbox_value', 'form_state_value_select', (int) $form_state->getValue('checkbox')));
     return $response;
   }

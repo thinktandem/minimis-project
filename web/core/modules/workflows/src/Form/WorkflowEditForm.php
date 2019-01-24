@@ -77,7 +77,7 @@ class WorkflowEditForm extends EntityForm {
     $header = [
       'state' => $this->t('State'),
       'weight' => $this->t('Weight'),
-      'operations' => $this->t('Operations'),
+      'operations' => $this->t('Operations')
     ];
     $form['states_container'] = [
       '#type' => 'details',
@@ -103,28 +103,28 @@ class WorkflowEditForm extends EntityForm {
 
     // Warn the user if there are no states.
     if (empty($states)) {
-      $this->messenger()->addWarning(
+      drupal_set_message(
         $this->t(
           'This workflow has no states and will be disabled until there is at least one, <a href=":add-state">add a new state.</a>',
           [':add-state' => $workflow->toUrl('add-state-form')->toString()]
-        )
+        ),
+        'warning'
       );
     }
 
-    $state_weight_delta = round(count($states) / 2);
     foreach ($states as $state) {
       $links = [
         'edit' => [
           'title' => $this->t('Edit'),
           'url' => Url::fromRoute('entity.workflow.edit_state_form', ['workflow' => $workflow->id(), 'workflow_state' => $state->id()]),
-        ],
+        ]
       ];
       if ($this->entity->access('delete-state:' . $state->id())) {
         $links['delete'] = [
           'title' => t('Delete'),
           'url' => Url::fromRoute('entity.workflow.delete_state_form', [
             'workflow' => $workflow->id(),
-            'workflow_state' => $state->id(),
+            'workflow_state' => $state->id()
           ]),
         ];
       }
@@ -138,7 +138,6 @@ class WorkflowEditForm extends EntityForm {
           '#title_display' => 'invisible',
           '#default_value' => $state->weight(),
           '#attributes' => ['class' => ['state-weight']],
-          '#delta' => $state_weight_delta,
         ],
         'operations' => [
           '#type' => 'operations',
@@ -155,7 +154,7 @@ class WorkflowEditForm extends EntityForm {
       'weight' => $this->t('Weight'),
       'from' => $this->t('From'),
       'to' => $this->t('To'),
-      'operations' => $this->t('Operations'),
+      'operations' => $this->t('Operations')
     ];
     $form['transitions_container'] = [
       '#type' => 'details',
@@ -175,10 +174,7 @@ class WorkflowEditForm extends EntityForm {
         ],
       ],
     ];
-
-    $transitions = $workflow->getTypePlugin()->getTransitions();
-    $transition_weight_delta = round(count($transitions) / 2);
-    foreach ($transitions as $transition) {
+    foreach ($workflow->getTypePlugin()->getTransitions() as $transition) {
       $links['edit'] = [
         'title' => $this->t('Edit'),
         'url' => Url::fromRoute('entity.workflow.edit_transition_form', ['workflow' => $workflow->id(), 'workflow_transition' => $transition->id()]),
@@ -197,7 +193,6 @@ class WorkflowEditForm extends EntityForm {
           '#title_display' => 'invisible',
           '#default_value' => $transition->weight(),
           '#attributes' => ['class' => ['transition-weight']],
-          '#delta' => $transition_weight_delta,
         ],
         'from' => [
           '#theme' => 'item_list',
@@ -260,7 +255,7 @@ class WorkflowEditForm extends EntityForm {
     }
 
     $workflow->save();
-    $this->messenger()->addStatus($this->t('Saved the %label Workflow.', ['%label' => $workflow->label()]));
+    drupal_set_message($this->t('Saved the %label Workflow.', ['%label' => $workflow->label()]));
   }
 
   /**

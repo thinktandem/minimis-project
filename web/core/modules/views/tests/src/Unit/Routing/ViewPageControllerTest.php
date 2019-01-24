@@ -182,8 +182,6 @@ class ViewPageControllerTest extends UnitTestCase {
 namespace Drupal\views\Routing;
 
 if (!function_exists('views_add_contextual_links')) {
-
   function views_add_contextual_links() {
   }
-
 }

@@ -3,6 +3,7 @@
 namespace Drupal\redirect\Entity;
 
 use Drupal\Component\Utility\Crypt;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
@@ -24,7 +25,7 @@ use Drupal\link\LinkItemInterface;
  *       "delete" = "Drupal\redirect\Form\RedirectDeleteForm",
  *       "edit" = "Drupal\redirect\Form\RedirectForm"
  *     },
- *     "views_data" = "Drupal\redirect\RedirectViewsData",
+ *     "views_data" = "Drupal\views\EntityViewsData",
  *     "storage_schema" = "\Drupal\redirect\RedirectStorageSchema"
  *   },
  *   base_table = "redirect",
@@ -61,7 +62,7 @@ class Redirect extends ContentEntityBase {
    */
   public static function generateHash($source_path, array $source_query, $language) {
     $hash = array(
-      'source' => mb_strtolower($source_path),
+      'source' => Unicode::strtolower($source_path),
       'language' => $language,
     );
 
@@ -85,9 +86,7 @@ class Redirect extends ContentEntityBase {
    * {@inheritdoc}
    */
   public function preSave(EntityStorageInterface $storage_controller) {
-    // Get the language code directly from the field as language() might not
-    // be up to date if the language was just changed.
-    $this->set('hash', Redirect::generateHash($this->redirect_source->path, (array) $this->redirect_source->query, $this->get('language')->value));
+    $this->set('hash', Redirect::generateHash($this->redirect_source->path, (array) $this->redirect_source->query, $this->language()->getId()));
   }
 
   /**
@@ -206,9 +205,7 @@ class Redirect extends ContentEntityBase {
    */
   public function setRedirect($url, array $query = array(), array $options = array()) {
     $uri = $url . ($query ? '?' . UrlHelper::buildQuery($query) : '');
-    $external = UrlHelper::isValid($url, TRUE);
-    $uri = ($external ? $url : 'internal:/' . ltrim($uri, '/'));
-    $this->redirect_redirect->set(0, ['uri' => $uri, 'options' => $options]);
+    $this->redirect_redirect->set(0, ['uri' => 'internal:/' . ltrim($uri, '/'), 'options' => $options]);
   }
 
   /**

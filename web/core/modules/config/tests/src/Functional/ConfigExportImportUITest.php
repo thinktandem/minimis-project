@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\config\Functional;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Archiver\ArchiveTar;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
@@ -101,7 +102,7 @@ class ConfigExportImportUITest extends BrowserTestBase {
     $this->contentType = $this->drupalCreateContentType();
 
     // Create a field.
-    $this->fieldName = mb_strtolower($this->randomMachineName());
+    $this->fieldName = Unicode::strtolower($this->randomMachineName());
     $this->fieldStorage = FieldStorageConfig::create([
       'field_name' => $this->fieldName,
       'entity_type' => 'node',
@@ -134,7 +135,7 @@ class ConfigExportImportUITest extends BrowserTestBase {
 
     // Export the configuration.
     $this->drupalPostForm('admin/config/development/configuration/full/export', [], 'Export');
-    $this->tarball = $this->getSession()->getPage()->getContent();
+    $this->tarball = $this->getRawContent();
 
     $this->config('system.site')
       ->set('slogan', $this->originalSlogan)
@@ -224,7 +225,7 @@ class ConfigExportImportUITest extends BrowserTestBase {
 
     // Export the configuration.
     $this->drupalPostForm('admin/config/development/configuration/full/export', [], 'Export');
-    $this->tarball = $this->getSession()->getPage()->getContent();
+    $this->tarball = $this->getRawContent();
     $filename = file_directory_temp() . '/' . $this->randomMachineName();
     file_put_contents($filename, $this->tarball);
 

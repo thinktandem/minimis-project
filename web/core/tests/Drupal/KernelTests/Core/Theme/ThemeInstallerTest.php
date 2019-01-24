@@ -4,7 +4,6 @@ namespace Drupal\KernelTests\Core\Theme;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Extension\ExtensionNameLengthException;
-use Drupal\Core\Extension\Exception\UnknownExtensionException;
 use Drupal\KernelTests\KernelTestBase;
 
 /**
@@ -111,11 +110,11 @@ class ThemeInstallerTest extends KernelTestBase {
     $this->assertFalse(array_keys($themes));
 
     try {
-      $message = 'ThemeHandler::install() throws UnknownExtensionException upon installing a non-existing theme.';
+      $message = 'ThemeHandler::install() throws InvalidArgumentException upon installing a non-existing theme.';
       $this->themeInstaller()->install([$name]);
       $this->fail($message);
     }
-    catch (UnknownExtensionException $e) {
+    catch (\InvalidArgumentException $e) {
       $this->pass(get_class($e) . ': ' . $e->getMessage());
     }
 
@@ -248,11 +247,11 @@ class ThemeInstallerTest extends KernelTestBase {
     $this->assertFalse(array_keys($themes));
 
     try {
-      $message = 'ThemeHandler::uninstall() throws UnknownExtensionException upon uninstalling a non-existing theme.';
+      $message = 'ThemeHandler::uninstall() throws InvalidArgumentException upon uninstalling a non-existing theme.';
       $this->themeInstaller()->uninstall([$name]);
       $this->fail($message);
     }
-    catch (UnknownExtensionException $e) {
+    catch (\InvalidArgumentException $e) {
       $this->pass(get_class($e) . ': ' . $e->getMessage());
     }
 
@@ -292,11 +291,11 @@ class ThemeInstallerTest extends KernelTestBase {
     $name = 'test_basetheme';
 
     try {
-      $message = 'ThemeHandler::uninstall() throws UnknownExtensionException upon uninstalling a theme that is not installed.';
+      $message = 'ThemeHandler::uninstall() throws InvalidArgumentException upon uninstalling a theme that is not installed.';
       $this->themeInstaller()->uninstall([$name]);
       $this->fail($message);
     }
-    catch (UnknownExtensionException $e) {
+    catch (\InvalidArgumentException $e) {
       $this->pass(get_class($e) . ': ' . $e->getMessage());
     }
   }

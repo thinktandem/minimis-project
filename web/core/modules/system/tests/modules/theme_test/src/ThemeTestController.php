@@ -119,6 +119,7 @@ class ThemeTestController extends ControllerBase {
     return ['#theme' => 'theme_test_function_suggestions'];
   }
 
+
   /**
    * Menu callback for testing includes with suggestion alter hooks.
    */

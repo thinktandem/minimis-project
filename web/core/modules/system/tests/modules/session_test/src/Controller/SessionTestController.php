@@ -110,7 +110,7 @@ class SessionTestController extends ControllerBase {
    *   A notification message.
    */
   public function setMessage() {
-    $this->messenger()->addStatus($this->t('This is a dummy message.'));
+    drupal_set_message($this->t('This is a dummy message.'));
     return new Response($this->t('A message was set.'));
     // Do not return anything, so the current request does not result in a themed
     // page with messages. The message will be displayed in the following request

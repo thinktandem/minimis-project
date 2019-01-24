@@ -54,7 +54,6 @@ class UserUpdate7002 extends ProcessPluginBase implements ContainerFactoryPlugin
       $container->get('config.factory')->get('system.date')
     );
   }
-
   /**
    * {@inheritdoc}
    */

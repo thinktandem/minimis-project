@@ -13,9 +13,9 @@ class Twig_Tests_LegacyIntegrationTest extends Twig_Test_IntegrationTestCase
 {
     public function getExtensions()
     {
-        return [
+        return array(
             new LegacyTwigTestExtension(),
-        ];
+        );
     }
 
     public function getFixturesDir()
@@ -26,7 +26,7 @@ class Twig_Tests_LegacyIntegrationTest extends Twig_Test_IntegrationTestCase
     public function getTests($name, $legacyTests = false)
     {
         if (!$legacyTests) {
-            return [['', '', '', [], '', []]];
+            return array(array('', '', '', array(), '', array()));
         }
 
         return parent::getTests($name, true);
@@ -37,9 +37,9 @@ class LegacyTwigTestExtension extends Twig_Extension
 {
     public function getTests()
     {
-        return [
+        return array(
             'multi word' => new Twig_Test_Method($this, 'is_multi_word'),
-        ];
+        );
     }
 
     public function is_multi_word($value)

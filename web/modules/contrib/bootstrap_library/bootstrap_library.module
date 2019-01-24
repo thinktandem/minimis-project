@@ -30,18 +30,13 @@ function bootstrap_library_page_attachments(array &$page) {
     $page['#attached']['library'][] = 'bootstrap_library/bootstrap-cdn';
   }
   else {
-    $variant_options = ['source', 'minified', 'composer'];
-    $variant = $variant_options[$config->get('minimized.options')];
-    switch ($variant) {
-      case 'minified':
-        $page['#attached']['library'][] = 'bootstrap_library/bootstrap';
-        break;
-      case 'source':
-        $page['#attached']['library'][] = 'bootstrap_library/bootstrap-dev';
-        break;
-      case 'composer':
-        $page['#attached']['library'][] = 'bootstrap_library/bootstrap-composer';
-        break;
+    $variant = ($config->get('minimized.options')) ? 'minified' : 'source';
+    // Add and initialise bootstrap.
+    if ($variant == 'minified') {
+      $page['#attached']['library'][] = 'bootstrap_library/bootstrap';
+    }
+    else {
+      $page['#attached']['library'][] = 'bootstrap_library/bootstrap-dev';
     }
   }
 }
@@ -57,9 +52,7 @@ function bootstrap_library_library_info_build() {
     $data = ($config->get('cdn.options'));
     $cdn_options = json_decode($data);
     $list = _bootstrap_library_object_to_array($cdn_options->bootstrap);
-    if (!is_array($list[$cdn]['js'])) {
-      $list[$cdn]['js'] = array($list[$cdn]['js']);
-    }
+    $js_uri = $list[$cdn]['js'];
     $css_uri = $list[$cdn]['css'];
     $libraries['bootstrap-cdn'] = [
       'dependencies' => [
@@ -69,11 +62,9 @@ function bootstrap_library_library_info_build() {
     $libraries['bootstrap-cdn']['css']['base'][$css_uri] = [
       'type' => 'external',
     ];
-    foreach ($list[$cdn]['js'] as $js_uri) {
-      $libraries['bootstrap-cdn']['js'][$js_uri] = [
-        'type' => 'external',
-      ];
-    }
+    $libraries['bootstrap-cdn']['js'][$js_uri] = [
+      'type' => 'external',
+    ];
   }
   return $libraries;
 }

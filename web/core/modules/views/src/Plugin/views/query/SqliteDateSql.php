@@ -3,7 +3,6 @@
 namespace Drupal\views\Plugin\views\query;
 
 use Drupal\Core\Database\Connection;
-use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 
 /**
  * SQLite-specific date handling.
@@ -14,8 +13,6 @@ use Drupal\Core\DependencyInjection\DependencySerializationTrait;
  * @see \Drupal\views\Plugin\views\query\Sql
  */
 class SqliteDateSql implements DateSqlInterface {
-
-  use DependencySerializationTrait;
 
   /**
    * The database connection.

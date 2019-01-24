@@ -101,7 +101,7 @@ class RedirectDeleteMultipleForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getConfirmText() {
-    return $this->t('Delete');
+    return t('Delete');
   }
 
   /**

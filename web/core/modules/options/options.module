@@ -122,7 +122,8 @@ function options_field_storage_config_update_forbid(FieldStorageConfigInterface 
  */
 function _options_values_in_use($entity_type, $field_name, $values) {
   if ($values) {
-    $result = \Drupal::entityQuery($entity_type)
+    $factory = \Drupal::service('entity.query');
+    $result = $factory->get($entity_type)
       ->condition($field_name . '.value', $values, 'IN')
       ->count()
       ->accessCheck(FALSE)

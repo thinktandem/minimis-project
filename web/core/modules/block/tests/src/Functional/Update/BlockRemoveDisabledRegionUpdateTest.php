@@ -10,7 +10,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * @see https://www.drupal.org/node/2513534
  *
  * @group Update
- * @group legacy
  */
 class BlockRemoveDisabledRegionUpdateTest extends UpdatePathTestBase {
 

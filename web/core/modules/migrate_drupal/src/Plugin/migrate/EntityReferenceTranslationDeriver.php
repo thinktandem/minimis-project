@@ -109,7 +109,6 @@ class EntityReferenceTranslationDeriver extends DeriverBase implements Container
           $derivative_key = $entity_type . '__' . $bundle;
 
           $derivative = $base_plugin_definition;
-          $entity_type_definition = $this->entityTypeManager->getDefinition($entity_type);
 
           // Set the migration label.
           $derivative['label'] = $this->t('@label (@derivative)', [
@@ -119,11 +118,10 @@ class EntityReferenceTranslationDeriver extends DeriverBase implements Container
 
           // Set the source plugin.
           $derivative['source']['plugin'] = 'content_entity' . PluginBase::DERIVATIVE_SEPARATOR . $entity_type;
-          if ($entity_type_definition->hasKey('bundle')) {
-            $derivative['source']['bundle'] = $bundle;
-          }
+          $derivative['source']['bundle'] = $bundle;
 
           // Set the process pipeline.
+          $entity_type_definition = $this->entityTypeManager->getDefinition($entity_type);
           $id_key = $entity_type_definition->getKey('id');
           $derivative['process'][$id_key] = $id_key;
           if ($entity_type_definition->isRevisionable()) {
@@ -137,9 +135,7 @@ class EntityReferenceTranslationDeriver extends DeriverBase implements Container
 
           // Set the destination plugin.
           $derivative['destination']['plugin'] = 'entity' . PluginBase::DERIVATIVE_SEPARATOR . $entity_type;
-          if ($entity_type_definition->hasKey('bundle')) {
-            $derivative['destination']['default_bundle'] = $bundle;
-          }
+          $derivative['destination']['default_bundle'] = $bundle;
           if ($entity_type_definition->isTranslatable()) {
             $derivative['destination']['translations'] = TRUE;
           }

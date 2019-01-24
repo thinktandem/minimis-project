@@ -48,6 +48,7 @@ class AnnotatedClassDiscoveryAutomatedProviders extends AnnotatedClassDiscovery 
     $this->finder = new ClassFinder();
   }
 
+
   /**
    * {@inheritdoc}
    */

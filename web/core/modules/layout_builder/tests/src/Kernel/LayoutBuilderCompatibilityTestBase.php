@@ -23,7 +23,7 @@ abstract class LayoutBuilderCompatibilityTestBase extends EntityKernelTestBase {
   /**
    * The entity view display.
    *
-   * @var \Drupal\layout_builder\Entity\LayoutEntityDisplayInterface
+   * @var \Drupal\field_layout\Display\EntityDisplayWithLayoutInterface
    */
   protected $display;
 
@@ -86,21 +86,13 @@ abstract class LayoutBuilderCompatibilityTestBase extends EntityKernelTestBase {
   /**
    * Installs the Layout Builder.
    *
-   * Also configures and reloads the entity display.
+   * Also configures and reloads the entity display, and reloads the entity.
    */
   protected function installLayoutBuilder() {
     $this->container->get('module_installer')->install(['layout_builder']);
     $this->refreshServices();
 
     $this->display = $this->reloadEntity($this->display);
-    $this->display->enableLayoutBuilder()->save();
-    $this->entity = $this->reloadEntity($this->entity);
-  }
-
-  /**
-   * Enables overrides for the display and reloads the entity.
-   */
-  protected function enableOverrides() {
     $this->display->setOverridable()->save();
     $this->entity = $this->reloadEntity($this->entity);
   }
@@ -112,6 +104,9 @@ abstract class LayoutBuilderCompatibilityTestBase extends EntityKernelTestBase {
    *   The entity to render.
    * @param array $attributes
    *   An array of field attributes to assert.
+   *
+   * @return string
+   *   The rendered string output (typically HTML).
    */
   protected function assertFieldAttributes(EntityInterface $entity, array $attributes) {
     $view_builder = $this->container->get('entity_type.manager')->getViewBuilder($entity->getEntityTypeId());

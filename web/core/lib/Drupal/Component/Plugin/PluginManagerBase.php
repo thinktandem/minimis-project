@@ -29,7 +29,7 @@ abstract class PluginManagerBase implements PluginManagerInterface {
   /**
    * The object that returns the preconfigured plugin instance appropriate for a particular runtime condition.
    *
-   * @var \Drupal\Component\Plugin\Mapper\MapperInterface|null
+   * @var \Drupal\Component\Plugin\Mapper\MapperInterface
    */
   protected $mapper;
 
@@ -76,7 +76,8 @@ abstract class PluginManagerBase implements PluginManagerInterface {
         return $this->getFactory()->createInstance($plugin_id, $configuration);
       }
       catch (PluginNotFoundException $e) {
-        return $this->handlePluginNotFound($plugin_id, $configuration);
+        $fallback_id = $this->getFallbackPluginId($plugin_id, $configuration);
+        return $this->getFactory()->createInstance($fallback_id, $configuration);
       }
     }
     else {
@@ -85,28 +86,9 @@ abstract class PluginManagerBase implements PluginManagerInterface {
   }
 
   /**
-   * Allows plugin managers to specify custom behavior if a plugin is not found.
-   *
-   * @param string $plugin_id
-   *   The ID of the missing requested plugin.
-   * @param array $configuration
-   *   An array of configuration relevant to the plugin instance.
-   *
-   * @return object
-   *   A fallback plugin instance.
-   */
-  protected function handlePluginNotFound($plugin_id, array $configuration) {
-    $fallback_id = $this->getFallbackPluginId($plugin_id, $configuration);
-    return $this->getFactory()->createInstance($fallback_id, $configuration);
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function getInstance(array $options) {
-    if (!$this->mapper) {
-      throw new \BadMethodCallException(sprintf('%s does not support this method unless %s::$mapper is set.', static::class, static::class));
-    }
     return $this->mapper->getInstance($options);
   }
 

@@ -53,7 +53,6 @@ class ConfigSplitEntityListBuilder extends ConfigEntityListBuilder {
   public function buildHeader() {
     $header['label'] = $this->t('Configuration Split Setting');
     $header['id'] = $this->t('Machine name');
-    $header['description'] = $this->t('Description');
     $header['status'] = $this->t('Status');
     return $header + parent::buildHeader();
   }
@@ -65,36 +64,12 @@ class ConfigSplitEntityListBuilder extends ConfigEntityListBuilder {
     $row['label'] = $entity->label();
     $row['id'] = $entity->id();
     $config = $this->configFactory->get('config_split.config_split.' . $entity->id());
-    $row['description'] = $config->get('description');
     $row['status'] = $config->get('status') ? 'active' : 'inactive';
     if ($config->get('status') != $entity->status()) {
       $row['status'] .= ' (overwritten)';
     }
 
     return $row + parent::buildRow($entity);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getDefaultOperations(EntityInterface $entity) {
-    /** @var \Drupal\Core\Config\Entity\ConfigEntityInterface $entity */
-    $operations = parent::getDefaultOperations($entity);
-    if (!$entity->get('status') && $entity->hasLinkTemplate('enable')) {
-      $operations['enable'] = [
-        'title' => t('Enable'),
-        'weight' => 40,
-        'url' => $entity->toUrl('enable'),
-      ];
-    }
-    elseif ($entity->hasLinkTemplate('disable')) {
-      $operations['disable'] = [
-        'title' => t('Disable'),
-        'weight' => 50,
-        'url' => $entity->toUrl('disable'),
-      ];
-    }
-    return $operations;
   }
 
 }

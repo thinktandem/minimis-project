@@ -2,7 +2,6 @@
 
 namespace Drupal\block_content\Entity;
 
-use Drupal\block_content\Access\RefinableDependentAccessTrait;
 use Drupal\Core\Entity\EditorialContentEntityBase;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -78,8 +77,6 @@ use Drupal\user\UserInterface;
  */
 class BlockContent extends EditorialContentEntityBase implements BlockContentInterface {
 
-  use RefinableDependentAccessTrait;
-
   /**
    * The theme the block is being created in.
    *
@@ -121,9 +118,7 @@ class BlockContent extends EditorialContentEntityBase implements BlockContentInt
    */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
-    if ($this->isReusable() || (isset($this->original) && $this->original->isReusable())) {
-      static::invalidateBlockPluginCache();
-    }
+    static::invalidateBlockPluginCache();
   }
 
   /**
@@ -131,14 +126,7 @@ class BlockContent extends EditorialContentEntityBase implements BlockContentInt
    */
   public static function postDelete(EntityStorageInterface $storage, array $entities) {
     parent::postDelete($storage, $entities);
-    /** @var \Drupal\block_content\BlockContentInterface $block */
-    foreach ($entities as $block) {
-      if ($block->isReusable()) {
-        // If any deleted blocks are reusable clear the block cache.
-        static::invalidateBlockPluginCache();
-        return;
-      }
-    }
+    static::invalidateBlockPluginCache();
   }
 
   /**
@@ -211,13 +199,6 @@ class BlockContent extends EditorialContentEntityBase implements BlockContentInt
       ->setDescription(t('The time that the custom block was last edited.'))
       ->setTranslatable(TRUE)
       ->setRevisionable(TRUE);
-
-    $fields['reusable'] = BaseFieldDefinition::create('boolean')
-      ->setLabel(t('Reusable'))
-      ->setDescription(t('A boolean indicating whether this block is reusable.'))
-      ->setTranslatable(FALSE)
-      ->setRevisionable(FALSE)
-      ->setDefaultValue(TRUE);
 
     return $fields;
   }
@@ -299,27 +280,6 @@ class BlockContent extends EditorialContentEntityBase implements BlockContentInt
   public function setRevisionLogMessage($revision_log_message) {
     $this->set('revision_log', $revision_log_message);
     return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isReusable() {
-    return (bool) $this->get('reusable')->value;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setReusable() {
-    return $this->set('reusable', TRUE);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setNonReusable() {
-    return $this->set('reusable', FALSE);
   }
 
   /**

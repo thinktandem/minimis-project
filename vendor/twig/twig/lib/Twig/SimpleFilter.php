@@ -21,13 +21,13 @@ class Twig_SimpleFilter
     protected $name;
     protected $callable;
     protected $options;
-    protected $arguments = [];
+    protected $arguments = array();
 
-    public function __construct($name, $callable, array $options = [])
+    public function __construct($name, $callable, array $options = array())
     {
         $this->name = $name;
         $this->callable = $callable;
-        $this->options = array_merge([
+        $this->options = array_merge(array(
             'needs_environment' => false,
             'needs_context' => false,
             'is_variadic' => false,
@@ -38,7 +38,7 @@ class Twig_SimpleFilter
             'node_class' => 'Twig_Node_Expression_Filter',
             'deprecated' => false,
             'alternative' => null,
-        ], $options);
+        ), $options);
     }
 
     public function getName()

@@ -174,27 +174,29 @@ class ModulesListConfirmForm extends ConfirmFormBase {
       }
       catch (PreExistingConfigException $e) {
         $config_objects = $e->flattenConfigObjects($e->getConfigObjects());
-        $this->messenger()->addError(
+        drupal_set_message(
           $this->formatPlural(
             count($config_objects),
             'Unable to install @extension, %config_names already exists in active configuration.',
             'Unable to install @extension, %config_names already exist in active configuration.',
             [
               '%config_names' => implode(', ', $config_objects),
-              '@extension' => $this->modules['install'][$e->getExtension()],
-            ])
+              '@extension' => $this->modules['install'][$e->getExtension()]
+            ]),
+          'error'
         );
         return;
       }
       catch (UnmetDependenciesException $e) {
-        $this->messenger()->addError(
-          $e->getTranslatedMessage($this->getStringTranslation(), $this->modules['install'][$e->getExtension()])
+        drupal_set_message(
+          $e->getTranslatedMessage($this->getStringTranslation(), $this->modules['install'][$e->getExtension()]),
+          'error'
         );
         return;
       }
 
       $module_names = array_values($this->modules['install']);
-      $this->messenger()->addStatus($this->formatPlural(count($module_names), 'Module %name has been enabled.', '@count modules have been enabled: %names.', [
+      drupal_set_message($this->formatPlural(count($module_names), 'Module %name has been enabled.', '@count modules have been enabled: %names.', [
         '%name' => $module_names[0],
         '%names' => implode(', ', $module_names),
       ]));

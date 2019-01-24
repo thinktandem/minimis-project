@@ -145,14 +145,37 @@ class ContentTranslationController extends ControllerBase {
           $translations = $entity->getTranslationLanguages();
         }
 
-        $options = ['language' => $language];
-        $add_url = $entity->toUrl('drupal:content-translation-add', $options)
-          ->setRouteParameter('source', $original)
-          ->setRouteParameter('target', $language->getId());
-        $edit_url = $entity->toUrl('drupal:content-translation-edit', $options)
-          ->setRouteParameter('language', $language->getId());
-        $delete_url = $entity->toUrl('drupal:content-translation-delete', $options)
-          ->setRouteParameter('language', $language->getId());
+        $add_url = new Url(
+          "entity.$entity_type_id.content_translation_add",
+          [
+            'source' => $original,
+            'target' => $language->getId(),
+            $entity_type_id => $entity->id(),
+          ],
+          [
+            'language' => $language,
+          ]
+        );
+        $edit_url = new Url(
+          "entity.$entity_type_id.content_translation_edit",
+          [
+            'language' => $language->getId(),
+            $entity_type_id => $entity->id(),
+          ],
+          [
+            'language' => $language,
+          ]
+        );
+        $delete_url = new Url(
+          "entity.$entity_type_id.content_translation_delete",
+          [
+            'language' => $language->getId(),
+            $entity_type_id => $entity->id(),
+          ],
+          [
+            'language' => $language,
+          ]
+        );
         $operations = [
           'data' => [
             '#type' => 'operations',

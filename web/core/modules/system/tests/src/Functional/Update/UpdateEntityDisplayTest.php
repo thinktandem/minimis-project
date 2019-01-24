@@ -7,10 +7,9 @@ use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
 
 /**
- * Tests updates for entity displays.
+ * Tests system_post_update_add_region_to_entity_displays().
  *
  * @group Update
- * @group legacy
  */
 class UpdateEntityDisplayTest extends UpdatePathTestBase {
 
@@ -25,10 +24,8 @@ class UpdateEntityDisplayTest extends UpdatePathTestBase {
 
   /**
    * Tests that entity displays are updated with regions for their fields.
-   *
-   * @see system_post_update_add_region_to_entity_displays()
    */
-  public function testRegionUpdate() {
+  public function testUpdate() {
     // No region key appears pre-update.
     $entity_form_display = EntityFormDisplay::load('node.article.default');
     $options = $entity_form_display->getComponent('body');
@@ -48,24 +45,6 @@ class UpdateEntityDisplayTest extends UpdatePathTestBase {
     $entity_view_display = EntityViewDisplay::load('node.article.default');
     $options = $entity_view_display->getComponent('body');
     $this->assertIdentical('content', $options['region']);
-  }
-
-  /**
-   * Tests that entity displays are updated to properly store extra fields.
-   *
-   * @see system_post_update_extra_fields()
-   */
-  public function testExtraFieldsUpdate() {
-    $assertion = function ($expected_keys) {
-      $entity_view_display = EntityViewDisplay::load('node.article.default');
-      $this->assertEquals($expected_keys, array_keys($entity_view_display->getComponent('links')));
-    };
-
-    // Before the update extra fields are missing additional configuration.
-    $assertion(['weight', 'region']);
-    $this->runUpdates();
-    // After the update the additional configuration is present.
-    $assertion(['weight', 'region', 'settings', 'third_party_settings']);
   }
 
 }

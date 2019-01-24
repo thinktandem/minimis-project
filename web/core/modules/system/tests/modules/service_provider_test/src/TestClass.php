@@ -36,7 +36,7 @@ class TestClass implements EventSubscriberInterface, DestructableInterface, Cont
    * A simple kernel listener method.
    */
   public function onKernelRequestTest(GetResponseEvent $event) {
-    \Drupal::messenger()->addStatus(t('The service_provider_test event subscriber fired!'));
+    drupal_set_message(t('The service_provider_test event subscriber fired!'));
   }
 
   /**

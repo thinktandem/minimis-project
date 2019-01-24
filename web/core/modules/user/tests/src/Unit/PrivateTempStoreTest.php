@@ -96,6 +96,7 @@ class PrivateTempStoreTest extends UnitTestCase {
     $this->otherObject->owner = 2;
   }
 
+
   /**
    * Tests the get() method.
    *

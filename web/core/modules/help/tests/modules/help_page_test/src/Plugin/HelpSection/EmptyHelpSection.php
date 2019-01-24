@@ -14,7 +14,6 @@ use Drupal\help\Plugin\HelpSection\HelpSectionPluginBase;
  * )
  */
 class EmptyHelpSection extends HelpSectionPluginBase {
-
   /**
    * {@inheritdoc}
    */

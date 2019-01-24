@@ -36,7 +36,7 @@ class ConfigTranslationEditForm extends ConfigTranslationFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
-    $this->messenger()->addStatus($this->t('Successfully updated @language translation.', ['@language' => $this->language->getName()]));
+    drupal_set_message($this->t('Successfully updated @language translation.', ['@language' => $this->language->getName()]));
   }
 
 }

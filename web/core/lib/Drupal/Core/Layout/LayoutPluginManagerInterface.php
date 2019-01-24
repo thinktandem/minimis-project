@@ -3,12 +3,11 @@
 namespace Drupal\Core\Layout;
 
 use Drupal\Component\Plugin\CategorizingPluginManagerInterface;
-use Drupal\Core\Plugin\FilteredPluginManagerInterface;
 
 /**
  * Provides the interface for a plugin manager of layouts.
  */
-interface LayoutPluginManagerInterface extends CategorizingPluginManagerInterface, FilteredPluginManagerInterface {
+interface LayoutPluginManagerInterface extends CategorizingPluginManagerInterface {
 
   /**
    * Gets theme implementations for layouts.

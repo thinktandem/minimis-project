@@ -47,12 +47,8 @@
 @media screen and (min-width: 60rem) { /* 960px */
   .view-promoted-items--single > .view-content {
     flex: 0 0 50%;
-    margin-right: 14px; /* LTR */
+    margin-right: 14px;
     display: flex;
-  }
-  [dir=rtl] .view-promoted-items--single > .view-content {
-    margin-right: 0;
-    margin-left: 14px;
   }
 }
 
@@ -76,12 +72,8 @@
 /* Large */
 @media screen and (min-width: 60rem) { /* 960px */
   .view-promoted-items--single > .attachment-after {
-    margin-left: 14px; /* LTR */
+    margin-left: 14px;
     display: flex;
-  }
-  [dir=rtl] .view-promoted-items--single > .attachment-after {
-    margin-left: 0;
-    margin-right: 14px;
   }
 }
 

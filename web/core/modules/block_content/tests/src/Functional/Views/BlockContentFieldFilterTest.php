@@ -31,6 +31,7 @@ class BlockContentFieldFilterTest extends BlockContentTestBase {
    */
   public $blockContentInfos = [];
 
+
   /**
    * {@inheritdoc}
    */

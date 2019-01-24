@@ -13,8 +13,7 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  *
  * This entity type starts out non-revisionable and non-translatable, but during
  * an update test it can be made revisionable and translatable using the helper
- * methods from
- * \Drupal\Tests\system\Functional\Entity\Traits\EntityDefinitionTestTrait.
+ * methods from \Drupal\system\Tests\Entity\EntityDefinitionTestTrait.
  *
  * @ContentEntityType(
  *   id = "entity_test_update",

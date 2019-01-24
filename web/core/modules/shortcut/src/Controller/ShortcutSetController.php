@@ -65,10 +65,10 @@ class ShortcutSetController extends ControllerBase {
 
       try {
         $shortcut->save();
-        $this->messenger()->addStatus($this->t('Added a shortcut for %title.', ['%title' => $shortcut->label()]));
+        drupal_set_message($this->t('Added a shortcut for %title.', ['%title' => $shortcut->label()]));
       }
       catch (\Exception $e) {
-        $this->messenger()->addError($this->t('Unable to add a shortcut for %title.', ['%title' => $shortcut->label()]));
+        drupal_set_message($this->t('Unable to add a shortcut for %title.', ['%title' => $shortcut->label()]), 'error');
       }
 
       return $this->redirect('<front>');

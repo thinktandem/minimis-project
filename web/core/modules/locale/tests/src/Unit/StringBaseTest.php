@@ -21,6 +21,7 @@ class StringBaseTest extends UnitTestCase {
     $string->save();
   }
 
+
   /**
    * @covers ::delete
    */

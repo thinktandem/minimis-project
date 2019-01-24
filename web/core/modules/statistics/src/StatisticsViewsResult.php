@@ -23,9 +23,9 @@ class StatisticsViewsResult {
   protected $timestamp;
 
   public function __construct($total_count, $day_count, $timestamp) {
-    $this->totalCount = (int) $total_count;
-    $this->dayCount = (int) $day_count;
-    $this->timestamp = (int) $timestamp;
+    $this->totalCount = $total_count;
+    $this->dayCount = $day_count;
+    $this->timestamp = $timestamp;
   }
 
   /**
@@ -37,6 +37,7 @@ class StatisticsViewsResult {
     return $this->totalCount;
   }
 
+
   /**
    * Total number of times the entity has been viewed "today".
    *
@@ -45,6 +46,7 @@ class StatisticsViewsResult {
   public function getDayCount() {
     return $this->dayCount;
   }
+
 
   /**
    * Timestamp of when the entity was last viewed.

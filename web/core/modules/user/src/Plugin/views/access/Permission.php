@@ -100,6 +100,7 @@ class Permission extends AccessPluginBase implements CacheableDependencyInterfac
     return $this->t($this->options['perm']);
   }
 
+
   protected function defineOptions() {
     $options = parent::defineOptions();
     $options['perm'] = ['default' => 'access content'];

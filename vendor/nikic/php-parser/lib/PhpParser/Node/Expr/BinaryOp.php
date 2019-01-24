@@ -12,7 +12,7 @@ abstract class BinaryOp extends Expr
     public $right;
 
     /**
-     * Constructs a binary operator node.
+     * Constructs a bitwise and node.
      *
      * @param Expr  $left       The left hand side expression
      * @param Expr  $right      The right hand side expression

@@ -2,7 +2,6 @@
 
 namespace Drupal\layout_builder\Controller;
 
-use Drupal\Core\Ajax\AjaxHelperTrait;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Plugin\PluginFormInterface;
@@ -25,7 +24,6 @@ class LayoutBuilderController implements ContainerInjectionInterface {
 
   use LayoutBuilderContextTrait;
   use StringTranslationTrait;
-  use AjaxHelperTrait;
 
   /**
    * The layout tempstore repository.
@@ -92,11 +90,6 @@ class LayoutBuilderController implements ContainerInjectionInterface {
     $this->prepareLayout($section_storage, $is_rebuilding);
 
     $output = [];
-    if ($this->isAjax()) {
-      $output['status_messages'] = [
-        '#type' => 'status_messages',
-      ];
-    }
     $count = 0;
     for ($i = 0; $i < $section_storage->count(); $i++) {
       $output[] = $this->buildAddSectionLink($section_storage, $count);
@@ -121,11 +114,6 @@ class LayoutBuilderController implements ContainerInjectionInterface {
    *   Indicates if the layout is rebuilding.
    */
   protected function prepareLayout(SectionStorageInterface $section_storage, $is_rebuilding) {
-    // If the layout has pending changes, add a warning.
-    if ($this->layoutTempstoreRepository->has($section_storage)) {
-      $this->messenger->addWarning($this->t('You have unsaved changes.'));
-    }
-
     // Only add sections if the layout is new and empty.
     if (!$is_rebuilding && $section_storage->count() === 0) {
       $sections = [];
@@ -173,7 +161,7 @@ class LayoutBuilderController implements ContainerInjectionInterface {
           ],
           [
             'attributes' => [
-              'class' => ['use-ajax', 'new-section__link'],
+              'class' => ['use-ajax', 'add-section__link'],
               'data-dialog-type' => 'dialog',
               'data-dialog-renderer' => 'off_canvas',
             ],
@@ -182,7 +170,7 @@ class LayoutBuilderController implements ContainerInjectionInterface {
       ],
       '#type' => 'container',
       '#attributes' => [
-        'class' => ['new-section'],
+        'class' => ['add-section'],
       ],
     ];
   }
@@ -238,7 +226,7 @@ class LayoutBuilderController implements ContainerInjectionInterface {
           ],
           [
             'attributes' => [
-              'class' => ['use-ajax', 'new-block__link'],
+              'class' => ['use-ajax', 'add-block__link'],
               'data-dialog-type' => 'dialog',
               'data-dialog-renderer' => 'off_canvas',
             ],
@@ -246,7 +234,7 @@ class LayoutBuilderController implements ContainerInjectionInterface {
         ),
       ];
       $build[$region]['layout_builder_add_block']['#type'] = 'container';
-      $build[$region]['layout_builder_add_block']['#attributes'] = ['class' => ['new-block']];
+      $build[$region]['layout_builder_add_block']['#attributes'] = ['class' => ['add-block']];
       $build[$region]['layout_builder_add_block']['#weight'] = 1000;
       $build[$region]['#attributes']['data-region'] = $region;
       $build[$region]['#attributes']['class'][] = 'layout-builder--layout__region';
@@ -281,7 +269,7 @@ class LayoutBuilderController implements ContainerInjectionInterface {
       ],
       'remove' => [
         '#type' => 'link',
-        '#title' => $this->t('Remove section <span class="visually-hidden">@section</span>', ['@section' => $delta + 1]),
+        '#title' => $this->t('Remove section'),
         '#url' => Url::fromRoute('layout_builder.remove_section', [
           'section_storage_type' => $storage_type,
           'section_storage' => $storage_id,

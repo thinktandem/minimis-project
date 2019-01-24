@@ -9,7 +9,6 @@ use Drupal\Core\Extension\ExtensionDiscovery;
 use Drupal\Core\Extension\ExtensionList;
 use Drupal\Core\Extension\InfoParserInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Extension\Exception\UnknownExtensionException;
 use Drupal\Core\State\StateInterface;
 use Drupal\Tests\UnitTestCase;
 use org\bovigo\vfs\vfsStream;
@@ -32,7 +31,7 @@ class ExtensionListTest extends UnitTestCase {
     $extension_discovery->scan('test_extension')->willReturn([]);
     $test_extension_list->setExtensionDiscovery($extension_discovery->reveal());
 
-    $this->setExpectedException(UnknownExtensionException::class);
+    $this->setExpectedException(\InvalidArgumentException::class);
     $test_extension_list->getName('test_name');
   }
 
@@ -56,7 +55,7 @@ class ExtensionListTest extends UnitTestCase {
     $extension_discovery->scan('test_extension')->willReturn([]);
     $test_extension_list->setExtensionDiscovery($extension_discovery->reveal());
 
-    $this->setExpectedException(UnknownExtensionException::class);
+    $this->setExpectedException(\InvalidArgumentException::class);
     $test_extension_list->get('test_name');
   }
 
@@ -112,7 +111,7 @@ class ExtensionListTest extends UnitTestCase {
         'core' => '8.x',
         'name' => 'test name',
         'mtime' => 123456789,
-      ],
+      ]
     ], $infos);
   }
 
@@ -130,7 +129,7 @@ class ExtensionListTest extends UnitTestCase {
         'core' => '8.x',
         'name' => 'test name',
         'mtime' => 123456789,
-      ],
+      ]
     ], $infos);
   }
 
@@ -155,6 +154,7 @@ class ExtensionListTest extends UnitTestCase {
     $pathname = $test_extension_list->getPathname('test_name');
     $this->assertEquals('vfs://drupal_root/example/test_name/test_name.info.yml', $pathname);
   }
+
 
   /**
    * @covers ::setPathname

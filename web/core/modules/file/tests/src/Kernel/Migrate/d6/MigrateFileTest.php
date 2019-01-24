@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\file\Kernel\Migrate\d6;
 
+use Drupal\Component\Utility\Random;
 use Drupal\file\Entity\File;
 use Drupal\file\FileInterface;
 use Drupal\KernelTests\KernelTestBase;
@@ -10,7 +11,7 @@ use Drupal\Tests\migrate\Kernel\MigrateDumpAlterInterface;
 use Drupal\Tests\migrate_drupal\Kernel\d6\MigrateDrupal6TestBase;
 
 /**
- * Test file migration.
+ * file migration.
  *
  * @group migrate_drupal_6
  */
@@ -67,10 +68,8 @@ class MigrateFileTest extends MigrateDrupal6TestBase implements MigrateDumpAlter
   public function testFiles() {
     $this->assertEntity(1, 'Image1.png', '39325', 'public://image-1.png', 'image/png', '1');
     $this->assertEntity(2, 'Image2.jpg', '1831', 'public://image-2.jpg', 'image/jpeg', '1');
-    $this->assertEntity(3, 'image-3.jpg', '1831', 'public://image-3.jpg', 'image/jpeg', '1');
+    $this->assertEntity(3, 'Image-test.gif', '183', 'public://image-test.gif', 'image/jpeg', '1');
     $this->assertEntity(4, 'html-1.txt', '24', 'public://html-1.txt', 'text/plain', '1');
-    // Ensure temporary file was not migrated.
-    $this->assertNull(File::load(6));
 
     $map_table = $this->getMigration('d6_file')->getIdMap()->mapTableName();
     $map = \Drupal::database()
@@ -82,9 +81,10 @@ class MigrateFileTest extends MigrateDrupal6TestBase implements MigrateDumpAlter
       // The 4 files from the fixture.
       1 => '1',
       2 => '2',
-      // The file updated in migrateDumpAlter().
       3 => '3',
       5 => '4',
+      // The file updated in migrateDumpAlter().
+      6 => NULL,
       // The file created in migrateDumpAlter().
       7 => '4',
     ];
@@ -124,9 +124,10 @@ class MigrateFileTest extends MigrateDrupal6TestBase implements MigrateDumpAlter
       // The 4 files from the fixture.
       1 => '5',
       2 => '6',
-      // The file updated in migrateDumpAlter().
       3 => '7',
       5 => '8',
+      // The file updated in migrateDumpAlter().
+      6 => NULL,
       // The files created in migrateDumpAlter().
       7 => '8',
       8 => '8',
@@ -142,16 +143,32 @@ class MigrateFileTest extends MigrateDrupal6TestBase implements MigrateDumpAlter
   }
 
   /**
+   * @return string
+   *   A filename based upon the test.
+   */
+  public static function getUniqueFilename() {
+    return static::$tempFilename;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public static function migrateDumpAlter(KernelTestBase $test) {
+    // Creates a random filename and updates the source database.
+    $random = new Random();
+    $temp_directory = file_directory_temp();
+    file_prepare_directory($temp_directory, FILE_CREATE_DIRECTORY);
+    static::$tempFilename = $test->getDatabasePrefix() . $random->name() . '.jpg';
+    $file_path = $temp_directory . '/' . static::$tempFilename;
+    file_put_contents($file_path, '');
+
     $db = Database::getConnection('default', 'migrate');
 
     $db->update('files')
-      ->condition('fid', 3)
+      ->condition('fid', 6)
       ->fields([
-        'filename' => 'image-3.jpg',
-        'filepath' => 'core/modules/simpletest/files/image-3.jpg',
+        'filename' => static::$tempFilename,
+        'filepath' => $file_path,
       ])
       ->execute();
 

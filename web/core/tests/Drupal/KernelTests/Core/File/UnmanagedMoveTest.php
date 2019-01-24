@@ -11,7 +11,6 @@ use Drupal\Core\File\FileSystem;
  * @group File
  */
 class UnmanagedMoveTest extends FileTestBase {
-
   /**
    * Move a normal file.
    */

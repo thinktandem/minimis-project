@@ -126,7 +126,7 @@
       });
 
       if (rowNames.length) {
-        $(ajaxElements).after(Drupal.theme.ajaxProgressThrobber());
+        $(ajaxElements).after('<div class="ajax-progress ajax-progress-throbber"><div class="throbber">&nbsp;</div></div>');
 
         $('input[name=refresh_rows]').val(rowNames.join(' '));
         $('input[data-drupal-selector="edit-refresh"]').trigger('mousedown');
@@ -163,12 +163,10 @@
 
       this.$regionSelect.val(region);
 
-      if (this.region === 'hidden') {
-        var value = typeof this.defaultPlugin !== 'undefined' ? this.defaultPlugin : this.$pluginSelect.find('option').val();
+      var value = typeof this.defaultPlugin !== 'undefined' ? this.defaultPlugin : this.$pluginSelect.find('option').val();
 
-        if (typeof value !== 'undefined') {
-          this.$pluginSelect.val(value);
-        }
+      if (typeof value !== 'undefined') {
+        this.$pluginSelect.val(value);
       }
 
       var refreshRows = {};

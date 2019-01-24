@@ -21,9 +21,16 @@ use Drupal\migrate_drupal\Plugin\MigrateCckFieldInterface;
 abstract class CckFieldPluginBase extends FieldPluginBase implements MigrateCckFieldInterface {
 
   /**
-   * {@inheritdoc}
+   * Apply any custom processing to the field bundle migrations.
+   *
+   * @param \Drupal\migrate\Plugin\MigrationInterface $migration
+   *   The migration entity.
+   * @param string $field_name
+   *   The field name we're processing the value for.
+   * @param array $data
+   *   The array of field data from FieldValues::fieldData().
    */
-  public function defineValueProcessPipeline(MigrationInterface $migration, $field_name, $data) {
+  public function processFieldValues(MigrationInterface $migration, $field_name, $data) {
     // Provide a bridge to the old method declared on the interface and now an
     // abstract method in this class.
     return $this->processCckFieldValues($migration, $field_name, $data);

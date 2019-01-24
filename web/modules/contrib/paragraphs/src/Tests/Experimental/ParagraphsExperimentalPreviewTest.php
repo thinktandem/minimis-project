@@ -27,9 +27,6 @@ class ParagraphsExperimentalPreviewTest extends ParagraphsExperimentalTestBase {
    * Tests the revision of paragraphs.
    */
   public function testParagraphsPreview() {
-
-    \Drupal::state()->set('paragraphs_test_parent', TRUE);
-
     // Create paragraph type Headline + Block.
     $this->addParagraphedContentType('article');
     $this->loginAsAdmin([
@@ -60,10 +57,6 @@ class ParagraphsExperimentalPreviewTest extends ParagraphsExperimentalTestBase {
     // Check if the text is displayed.
     $this->assertRaw($test_text_1);
 
-    // Check that the parent is set correctly on all paragraphs.
-    $this->assertNoText('Parent: //');
-    $this->assertNoUniqueText('Parent: node//field_paragraphs');
-
     // Go back to the editing form.
     $this->clickLink('Back to content editing');
 
@@ -93,11 +86,6 @@ class ParagraphsExperimentalPreviewTest extends ParagraphsExperimentalTestBase {
     $this->drupalPostForm(NULL, $edit, t('Preview'));
     $this->assertRaw($test_text_1);
     $this->assertRaw($new_test_text_2);
-
-    // Check that the parent is set correctly on all paragraphs.
-    $this->assertNoText('Parent: //');
-    $this->assertNoUniqueText('Parent: node/1/field_paragraphs');
-
     // Go back to the editing form.
     $this->clickLink('Back to content editing');
     $paragraph_1 = $this->xpath('//*[@id="edit-field-paragraphs-0-subform-field-text-0-value"]')[0];

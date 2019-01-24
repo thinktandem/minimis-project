@@ -230,9 +230,9 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
       default:
         return $string;
       case 'upper':
-        return mb_strtoupper($string);
+        return Unicode::strtoupper($string);
       case 'lower':
-        return mb_strtolower($string);
+        return Unicode::strtolower($string);
       case 'ucfirst':
         return Unicode::ucfirst($string);
       case 'ucwords':
@@ -313,7 +313,6 @@ abstract class HandlerBase extends PluginBase implements ViewsHandlerInterface {
   public function usesGroupBy() {
     return TRUE;
   }
-
   /**
    * Provide a form for aggregation settings.
    */

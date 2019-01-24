@@ -54,6 +54,7 @@ class PsrResponseSubscriberTest extends UnitTestCase {
     $this->psrResponseSubscriber->onKernelView($event);
   }
 
+
   /**
    * Tests altering and finished event.
    *

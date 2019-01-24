@@ -7,13 +7,13 @@
 
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\Html;
-use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Config\BootstrapConfigStorageFactory;
-use Drupal\Core\Extension\Exception\UnknownExtensionException;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Test\TestDatabase;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Site\Settings;
 use Drupal\Core\Utility\Error;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 
@@ -246,7 +246,7 @@ function drupal_get_filename($type, $name, $filename = NULL) {
     try {
       return $extension_list->getPathname($name);
     }
-    catch (UnknownExtensionException $e) {
+    catch (\InvalidArgumentException $e) {
       // Catch the exception. This will result in triggering an error.
     }
   }
@@ -273,7 +273,7 @@ function drupal_get_filename($type, $name, $filename = NULL) {
     }
   }
   // If the filename is still unknown, create a user-level error message.
-  trigger_error(new FormattableMarkup('The following @type is missing from the file system: @name', ['@type' => $type, '@name' => $name]), E_USER_WARNING);
+  trigger_error(SafeMarkup::format('The following @type is missing from the file system: @name', ['@type' => $type, '@name' => $name]), E_USER_WARNING);
 }
 
 /**
@@ -349,7 +349,7 @@ function t($string, array $args = [], array $options = []) {
  * @see https://www.drupal.org/node/2302363
  */
 function format_string($string, array $args) {
-  return new FormattableMarkup($string, $args);
+  return SafeMarkup::format($string, $args);
 }
 
 /**
@@ -572,14 +572,14 @@ function drupal_get_user_timezone() {
  * @param $message
  *   The error message.
  * @param $filename
- *   (optional) The filename that the error was raised in.
+ *   The filename that the error was raised in.
  * @param $line
- *   (optional) The line number the error was raised at.
+ *   The line number the error was raised at.
  * @param $context
- *   (optional) An array that points to the active symbol table at the point the
- *   error occurred.
+ *   An array that points to the active symbol table at the point the error
+ *   occurred.
  */
-function _drupal_error_handler($error_level, $message, $filename = NULL, $line = NULL, $context = NULL) {
+function _drupal_error_handler($error_level, $message, $filename, $line, $context) {
   require_once __DIR__ . '/errors.inc';
   _drupal_error_handler_real($error_level, $message, $filename, $line, $context);
 }
@@ -796,6 +796,12 @@ function drupal_get_profile() {
     else {
       $profile = BootstrapConfigStorageFactory::getDatabaseStorage()->read('core.extension')['profile'];
     }
+
+    // A BC layer just in in case this only exists in Settings. Introduced in
+    // Drupal 8.3.x and will be removed before Drupal 9.0.0.
+    if (empty($profile)) {
+      $profile = Settings::get('install_profile');
+    }
   }
 
   return $profile;
@@ -975,10 +981,10 @@ function drupal_static_reset($name = NULL) {
  * Formats text for emphasized display in a placeholder inside a sentence.
  *
  * @deprecated in Drupal 8.0.0, will be removed before Drupal 9.0.0. Use
- *   \Drupal\Component\Render\FormattableMarkup or Twig's "placeholder" filter
- *   instead. Note this method should not be used to simply emphasize a string
- *   and therefore has few valid use-cases. Note also, that this method does not
- *   mark the string as safe.
+ *   \Drupal\Component\Utility\SafeMarkup::format() or Twig's "placeholder"
+ *   filter instead. Note this method should not be used to simply emphasize a
+ *   string and therefore has few valid use-cases. Note also, that this method
+ *   does not mark the string as safe.
  *
  * @see https://www.drupal.org/node/2302363
  */
@@ -1033,12 +1039,8 @@ function _drupal_shutdown_function() {
   chdir(DRUPAL_ROOT);
 
   try {
-    reset($callbacks);
-    // Do not use foreach() here because it is possible that the callback will
-    // add to the $callbacks array via drupal_register_shutdown_function().
-    while ($callback = current($callbacks)) {
+    foreach ($callbacks as &$callback) {
       call_user_func_array($callback['callback'], $callback['arguments']);
-      next($callbacks);
     }
   }
   // PHP 7 introduces Throwable, which covers both Error and

@@ -22,9 +22,6 @@ interface ThemeInstallerInterface {
    *
    * @throws \Drupal\Core\Extension\ExtensionNameLengthException
    *   Thrown when the theme name is to long.
-   *
-   * @throws \Drupal\Core\Extension\Exception\UnknownExtensionException
-   *   Thrown when the theme does not exist.
    */
   public function install(array $theme_list, $install_dependencies = TRUE);
 
@@ -37,11 +34,8 @@ interface ThemeInstallerInterface {
    * @param array $theme_list
    *   The themes to uninstall.
    *
-   * @throws \Drupal\Core\Extension\Exception\UnknownExtensionException
-   *   Thrown when trying to uninstall a theme that was not installed.
-   *
    * @throws \InvalidArgumentException
-   *   Thrown when trying to uninstall the default theme or the admin theme.
+   *   Thrown when you uninstall an not installed theme.
    *
    * @see hook_themes_uninstalled()
    */

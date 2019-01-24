@@ -28,6 +28,7 @@ class UserInstallTest extends KernelTestBase {
     user_install();
   }
 
+
   /**
    * Test that the initial users have correct values.
    */

@@ -5,9 +5,6 @@
  * Install, update and uninstall functions for the taxonomy module.
  */
 
-use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Site\Settings;
-
 /**
  * Convert the custom taxonomy term hierarchy storage to a default storage.
  */
@@ -29,15 +26,7 @@ function taxonomy_update_8502(&$sandbox) {
   if (!isset($sandbox['current'])) {
     // Set batch ops sandbox.
     $sandbox['current'] = 0;
-    $sandbox['tid'] = -1;
-    $sandbox['delta'] = 0;
-    $sandbox['limit'] = Settings::get('entity_update_batch_size', 50);
-
-    // Count records using a join, as there might be orphans in the hierarchy
-    // table. See https://www.drupal.org/project/drupal/issues/2997982.
-    $select = $database->select('taxonomy_term_hierarchy', 'h');
-    $select->join('taxonomy_term_data', 'd', 'h.tid = d.tid');
-    $sandbox['max'] = $select
+    $sandbox['max'] = $database->select('taxonomy_term_hierarchy')
       ->countQuery()
       ->execute()
       ->fetchField();
@@ -49,20 +38,19 @@ function taxonomy_update_8502(&$sandbox) {
   $hierarchy = $select
     ->fields('h', ['tid', 'parent'])
     ->fields('d', ['vid', 'langcode'])
-    ->range($sandbox['current'], $sandbox['limit'])
-    ->orderBy('tid', 'ASC')
-    ->orderBy('parent', 'ASC')
+    ->range($sandbox['current'], $sandbox['current'] + 100)
     ->execute()
     ->fetchAll();
 
   // Restore data.
   $insert = $database->insert('taxonomy_term__parent')
     ->fields(['bundle', 'entity_id', 'revision_id', 'langcode', 'delta', 'parent_target_id']);
+  $tid = -1;
 
   foreach ($hierarchy as $row) {
-    if ($row->tid !== $sandbox['tid']) {
-      $sandbox['delta'] = 0;
-      $sandbox['tid'] = $row->tid;
+    if ($row->tid !== $tid) {
+      $delta = 0;
+      $tid = $row->tid;
     }
 
     $insert->values([
@@ -70,11 +58,11 @@ function taxonomy_update_8502(&$sandbox) {
       'entity_id' => $row->tid,
       'revision_id' => $row->tid,
       'langcode' => $row->langcode,
-      'delta' => $sandbox['delta'],
+      'delta' => $delta,
       'parent_target_id' => $row->parent,
     ]);
 
-    $sandbox['delta']++;
+    $delta++;
     $sandbox['current']++;
   }
 
@@ -137,52 +125,4 @@ function taxonomy_update_8503() {
       }
     }
   }
-}
-
-/**
- * Add the publishing status fields to taxonomy terms.
- */
-function taxonomy_update_8601() {
-  $definition_update_manager = \Drupal::entityDefinitionUpdateManager();
-  $entity_type = $definition_update_manager->getEntityType('taxonomy_term');
-
-  // Bail out early if a field named 'status' is already installed.
-  if ($definition_update_manager->getFieldStorageDefinition('status', 'taxonomy_term')) {
-    $message = \Drupal::state()->get('taxonomy_update_8601_skip_message', t('The publishing status field has <strong>not</strong> been added to taxonomy terms. See <a href=":link">this page</a> for more information on how to install it.', [
-      ':link' => 'https://www.drupal.org/node/2985366',
-    ]));
-    return $message;
-  }
-
-  // Add the 'published' entity key to the taxonomy_term entity type.
-  $entity_keys = $entity_type->getKeys();
-  $entity_keys['published'] = 'status';
-  $entity_type->set('entity_keys', $entity_keys);
-
-  $definition_update_manager->updateEntityType($entity_type);
-
-  // Add the status field.
-  $status = BaseFieldDefinition::create('boolean')
-    ->setLabel(t('Publishing status'))
-    ->setDescription(t('A boolean indicating the published state.'))
-    ->setRevisionable(TRUE)
-    ->setTranslatable(TRUE)
-    ->setDefaultValue(TRUE);
-
-  $has_content_translation_status_field = $definition_update_manager->getFieldStorageDefinition('content_translation_status', 'taxonomy_term');
-  if ($has_content_translation_status_field) {
-    $status->setInitialValueFromField('content_translation_status', TRUE);
-  }
-  else {
-    $status->setInitialValue(TRUE);
-  }
-  $definition_update_manager->installFieldStorageDefinition('status', 'taxonomy_term', 'taxonomy_term', $status);
-
-  // Uninstall the 'content_translation_status' field if needed.
-  if ($has_content_translation_status_field) {
-    $content_translation_status = $definition_update_manager->getFieldStorageDefinition('content_translation_status', 'taxonomy_term');
-    $definition_update_manager->uninstallFieldStorageDefinition($content_translation_status);
-  }
-
-  return t('The publishing status field has been added to taxonomy terms.');
 }

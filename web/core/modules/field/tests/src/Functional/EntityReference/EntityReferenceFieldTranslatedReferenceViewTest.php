@@ -302,6 +302,7 @@ class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
     return $node;
   }
 
+
   /**
    * Create the referenced entity.
    */

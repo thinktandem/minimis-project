@@ -118,10 +118,7 @@
                 range.selectNodeContents(text);
               }
 
-              var style = new CKEDITOR.style({
-                element: 'a',
-                attributes: returnValues.attributes
-              });
+              var style = new CKEDITOR.style({ element: 'a', attributes: returnValues.attributes });
               style.type = CKEDITOR.STYLE_INLINE;
               style.applyToRange(range);
               range.select();
@@ -160,11 +157,7 @@
           }
         }),
         exec: function exec(editor) {
-          var style = new CKEDITOR.style({
-            element: 'a',
-            type: CKEDITOR.STYLE_INLINE,
-            alwaysRemoveElement: 1
-          });
+          var style = new CKEDITOR.style({ element: 'a', type: CKEDITOR.STYLE_INLINE, alwaysRemoveElement: 1 });
           editor.removeStyle(style);
         },
         refresh: function refresh(editor, path) {
@@ -231,10 +224,7 @@
 
           var menu = {};
           if (anchor.getAttribute('href') && anchor.getChildCount()) {
-            menu = {
-              link: CKEDITOR.TRISTATE_OFF,
-              unlink: CKEDITOR.TRISTATE_OFF
-            };
+            menu = { link: CKEDITOR.TRISTATE_OFF, unlink: CKEDITOR.TRISTATE_OFF };
           }
           return menu;
         });

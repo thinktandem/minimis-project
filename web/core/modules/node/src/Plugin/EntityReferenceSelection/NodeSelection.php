@@ -42,7 +42,7 @@ class NodeSelection extends DefaultSelection {
 
     // In order to create a referenceable node, it needs to published.
     /** @var \Drupal\node\NodeInterface $node */
-    $node->setPublished();
+    $node->setPublished(TRUE);
 
     return $node;
   }

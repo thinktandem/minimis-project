@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\datetime_range\Kernel;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Language\Language;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItem;
@@ -58,7 +59,7 @@ class SeparatorTranslationTest extends KernelTestBase {
 
     // Add a datetime range field.
     $this->fieldStorage = FieldStorageConfig::create([
-      'field_name' => mb_strtolower($this->randomMachineName()),
+      'field_name' => Unicode::strtolower($this->randomMachineName()),
       'entity_type' => 'entity_test',
       'type' => 'daterange',
       'settings' => ['datetime_type' => DateTimeItem::DATETIME_TYPE_DATE],

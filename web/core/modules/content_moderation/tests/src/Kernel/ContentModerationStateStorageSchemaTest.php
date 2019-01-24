@@ -6,7 +6,7 @@ use Drupal\content_moderation\Entity\ContentModerationState;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Test the ContentModerationState storage schema.
@@ -15,8 +15,6 @@ use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
  * @group content_moderation
  */
 class ContentModerationStateStorageSchemaTest extends KernelTestBase {
-
-  use ContentModerationTestTrait;
 
   /**
    * {@inheritdoc}
@@ -47,7 +45,7 @@ class ContentModerationStateStorageSchemaTest extends KernelTestBase {
     NodeType::create([
       'type' => 'example',
     ])->save();
-    $workflow = $this->createEditorialWorkflow();
+    $workflow = Workflow::load('editorial');
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'example');
     $workflow->save();
   }

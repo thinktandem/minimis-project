@@ -86,13 +86,13 @@ class WorkflowAddForm extends EntityForm {
     $workflow = $this->entity;
     $return = $workflow->save();
     if (empty($workflow->getTypePlugin()->getStates())) {
-      $this->messenger()->addStatus($this->t('Created the %label Workflow. In order for the workflow to be enabled there needs to be at least one state.', [
+      drupal_set_message($this->t('Created the %label Workflow. In order for the workflow to be enabled there needs to be at least one state.', [
         '%label' => $workflow->label(),
       ]));
       $form_state->setRedirectUrl($workflow->toUrl('add-state-form'));
     }
     else {
-      $this->messenger()->addStatus($this->t('Created the %label Workflow.', [
+      drupal_set_message($this->t('Created the %label Workflow.', [
         '%label' => $workflow->label(),
       ]));
       $form_state->setRedirectUrl($workflow->toUrl('edit-form'));

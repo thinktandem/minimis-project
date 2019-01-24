@@ -1,4 +1,3 @@
-{% if configurable_storage %}
 field.storage_settings.{{ plugin_id }}:
   type: mapping
   label: {{ plugin_label }} storage settings
@@ -7,8 +6,6 @@ field.storage_settings.{{ plugin_id }}:
       type: string
       label: Foo
 
-{% endif %}
-{% if configurable_instance %}
 field.field_settings.{{ plugin_id }}:
   type: mapping
   label: {{ plugin_label }} field settings
@@ -17,7 +14,6 @@ field.field_settings.{{ plugin_id }}:
       type: string
       label: Bar
 
-{% endif %}
 field.value.{{ plugin_id }}:
   type: mapping
   label: Default value

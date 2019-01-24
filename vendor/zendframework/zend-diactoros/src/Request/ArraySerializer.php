@@ -12,8 +12,6 @@ use UnexpectedValueException;
 use Zend\Diactoros\Request;
 use Zend\Diactoros\Stream;
 
-use function sprintf;
-
 /**
  * Serialize or deserialize request messages to/from arrays.
  *

@@ -168,7 +168,6 @@ class EntityUnitTest extends UnitTestCase {
 
   /**
    * @covers ::label
-   * @group legacy
    */
   public function testLabel() {
     // Make a mock with one method that we use as the entity's uri_callback. We

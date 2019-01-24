@@ -19,7 +19,7 @@ class SchemaMetatagManagerTest extends UnitTestCase {
    */
   public function testPivot($original, $desired) {
     $processed = SchemaMetatagManager::pivot($original);
-    $this->assertEquals($desired, $processed);
+    $this->assertEquals($processed, $desired);
   }
 
   /**
@@ -28,7 +28,7 @@ class SchemaMetatagManagerTest extends UnitTestCase {
    */
   public function testExplode($original, $desired) {
     $processed = SchemaMetatagManager::explode($original);
-    $this->assertEquals($desired, $processed);
+    $this->assertEquals($processed, $desired);
   }
 
   /**
@@ -41,7 +41,7 @@ class SchemaMetatagManagerTest extends UnitTestCase {
       return;
     }
     $processed = SchemaMetatagManager::arrayTrim($original);
-    $this->assertEquals($desired, $processed);
+    $this->assertEquals($processed, $desired);
   }
 
   /**
@@ -54,7 +54,7 @@ class SchemaMetatagManagerTest extends UnitTestCase {
       return;
     }
     $processed = SchemaMetatagManager::unserialize($original_serialized);
-    $this->assertEquals($desired, $processed);
+    $this->assertEquals($processed, $desired);
   }
 
   /**
@@ -67,7 +67,7 @@ class SchemaMetatagManagerTest extends UnitTestCase {
       return;
     }
     $processed = SchemaMetatagManager::serialize($original);
-    $this->assertEquals($desired_serialized, $processed);
+    $this->assertEquals($processed, $desired_serialized);
   }
 
   /**
@@ -85,18 +85,6 @@ class SchemaMetatagManagerTest extends UnitTestCase {
     $unserialized = unserialize($processed);
     $this->assertTrue(is_array($unserialized));
     $this->assertTrue(in_array('ReallyBigOrganization', $unserialized));
-  }
-
-  /**
-   * @covers ::encodeJsonld
-   *
-   * @dataProvider jsonData
-   */
-  public function testEncodeJsonld($original, $desired) {
-    $processed = SchemaMetatagManager::encodeJsonld($original);
-    // Elmininate spacing and line breaks that don't matter.
-    $processed = str_replace(["\n", '  '], "", $processed);
-    $this->assertEquals($desired, $processed);
   }
 
   /**
@@ -305,31 +293,6 @@ class SchemaMetatagManagerTest extends UnitTestCase {
       'Needs trimming' => [
         ' First, Second , Third',
         ['First', 'Second', 'Third'],
-      ],
-    ];
-    return $values;
-  }
-
-  /**
-   * Provides json data.
-   *
-   * @return array
-   */
-  public function jsonData() {
-    $values = [
-      'Encode simple json' => [
-        [
-          "@type" => "Article",
-          "description" => "Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Donec sollicitudin molestie malesuada. Donec sollicitudin molestie malesuada. Donec rutrum congue leo eget malesuada. Nulla quis lorem ut libero malesuada feugiat.",
-        ],
-        '{"@type": "Article","description": "Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Donec sollicitudin molestie malesuada. Donec sollicitudin molestie malesuada. Donec rutrum congue leo eget malesuada. Nulla quis lorem ut libero malesuada feugiat."}',
-      ],
-      'Encode json with unicode' => [
-        [
-          "@type" => "Article",
-          "description" => "База данни грешка.",
-        ],
-        '{"@type": "Article","description": "База данни грешка."}',
       ],
     ];
     return $values;

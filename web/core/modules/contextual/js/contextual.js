@@ -55,7 +55,7 @@
 
     $contextual.html(html).addClass('contextual').prepend(Drupal.theme('contextualTrigger'));
 
-    var destination = 'destination=' + Drupal.encodePath(Drupal.url(drupalSettings.path.currentPath));
+    var destination = 'destination=' + Drupal.encodePath(drupalSettings.path.currentPath);
     $contextual.find('.contextual-links a').each(function () {
       var url = this.getAttribute('href');
       var glue = url.indexOf('?') === -1 ? '?' : '&';
@@ -95,31 +95,25 @@
 
       var ids = [];
       $placeholders.each(function () {
-        ids.push({
-          id: $(this).attr('data-contextual-id'),
-          token: $(this).attr('data-contextual-token')
-        });
+        ids.push($(this).attr('data-contextual-id'));
       });
 
-      var uncachedIDs = [];
-      var uncachedTokens = [];
-      ids.forEach(function (contextualID) {
-        var html = storage.getItem('Drupal.contextual.' + contextualID.id);
+      var uncachedIDs = _.filter(ids, function (contextualID) {
+        var html = storage.getItem('Drupal.contextual.' + contextualID);
         if (html && html.length) {
           window.setTimeout(function () {
-            initContextual($context.find('[data-contextual-id="' + contextualID.id + '"]'), html);
+            initContextual($context.find('[data-contextual-id="' + contextualID + '"]'), html);
           });
-          return;
+          return false;
         }
-        uncachedIDs.push(contextualID.id);
-        uncachedTokens.push(contextualID.token);
+        return true;
       });
 
       if (uncachedIDs.length > 0) {
         $.ajax({
           url: Drupal.url('contextual/render'),
           type: 'POST',
-          data: { 'ids[]': uncachedIDs, 'tokens[]': uncachedTokens },
+          data: { 'ids[]': uncachedIDs },
           dataType: 'json',
           success: function success(results) {
             _.each(results, function (html, contextualID) {
@@ -145,9 +139,7 @@
     regionViews: []
   };
 
-  Drupal.contextual.collection = new Backbone.Collection([], {
-    model: Drupal.contextual.StateModel
-  });
+  Drupal.contextual.collection = new Backbone.Collection([], { model: Drupal.contextual.StateModel });
 
   Drupal.theme.contextualTrigger = function () {
     return '<button class="trigger visually-hidden focusable" type="button"></button>';

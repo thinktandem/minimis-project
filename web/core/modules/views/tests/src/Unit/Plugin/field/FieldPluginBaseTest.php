@@ -775,9 +775,7 @@ class FieldPluginBaseTestField extends FieldPluginBase {
 namespace Drupal\views\Plugin\views\field;
 
 if (!function_exists('base_path')) {
-
   function base_path() {
     return '/';
   }
-
 }

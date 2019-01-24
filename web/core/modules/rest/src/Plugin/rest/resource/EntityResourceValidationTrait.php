@@ -14,23 +14,16 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 trait EntityResourceValidationTrait {
 
   /**
-   * Verifies that an entity does not violate any validation constraints.
-   *
-   * The validation errors will be filtered to not include fields to which the
-   * current user does not have access and if $fields_to_validate is provided
-   * will only include fields in that array.
+   * Verifies that the whole entity does not violate any validation constraints.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity to validate.
-   * @param string[] $fields_to_validate
-   *   (optional) An array of field names. If specified, filters the violations
-   *   list to include only this set of fields.
    *
    * @throws \Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException
    *   If validation errors are found.
    */
-  protected function validate(EntityInterface $entity, array $fields_to_validate = []) {
-    // @todo Update this check in https://www.drupal.org/node/2300677.
+  protected function validate(EntityInterface $entity) {
+    // @todo Remove when https://www.drupal.org/node/2164373 is committed.
     if (!$entity instanceof FieldableEntityInterface) {
       return;
     }
@@ -39,11 +32,6 @@ trait EntityResourceValidationTrait {
     // Remove violations of inaccessible fields as they cannot stem from our
     // changes.
     $violations->filterByFieldAccess();
-
-    if ($fields_to_validate) {
-      // Filter violations by explicitly provided array of field names.
-      $violations->filterByFields(array_diff(array_keys($entity->getFieldDefinitions()), $fields_to_validate));
-    }
 
     if ($violations->count() > 0) {
       $message = "Unprocessable Entity: validation failed.\n";

@@ -232,6 +232,7 @@ class FieldDefinitionListenerTest extends UnitTestCase {
     $this->fieldDefinitionListener->onFieldDefinitionDelete($field_definition->reveal());
   }
 
+
   /**
    * @covers ::onFieldDefinitionDelete
    */

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\comment\Kernel\Views;
 
+use Drupal\comment\CommentInterface;
 use Drupal\comment\CommentManagerInterface;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\Core\Url;
@@ -83,7 +84,7 @@ class CommentLinksTest extends CommentViewsKernelTestBase {
     $this->assertEqual(\Drupal::l('Approve', $url), (string) $approve_comment, 'Found a comment approve link for an unapproved comment.');
 
     // Approve the comment.
-    $comment->setPublished();
+    $comment->setPublished(CommentInterface::PUBLISHED);
     $comment->save();
     $view = Views::getView('test_comment');
     $view->preview();
@@ -96,7 +97,7 @@ class CommentLinksTest extends CommentViewsKernelTestBase {
     // anonymous user.
     $account_switcher->switchTo(new AnonymousUserSession());
     // Set the comment as unpublished again.
-    $comment->setUnpublished();
+    $comment->setPublished(CommentInterface::NOT_PUBLISHED);
     $comment->save();
 
     $view = Views::getView('test_comment');
@@ -167,7 +168,7 @@ class CommentLinksTest extends CommentViewsKernelTestBase {
     $this->assertFalse((string) $replyto_comment, "I can't reply to an unapproved comment.");
 
     // Approve the comment.
-    $comment->setPublished();
+    $comment->setPublished(CommentInterface::PUBLISHED);
     $comment->save();
     $view = Views::getView('test_comment');
     $view->preview();

@@ -14,13 +14,13 @@ use Drupal\schema_metatag\Plugin\metatag\Tag\SchemaNameBase;
  * @MetatagTag(
  *   id = "schema_organization_telephone",
  *   label = @Translation("telephone"),
- *   description = @Translation("RECOMMENDED BY GOOGLE. A business phone number meant to be the primary contact method for customers. Be sure to include the country code and area code in the phone number."),
+ *   description = @Translation("RECOMMENDED BY GOOGLE. The telephone of the web site."),
  *   name = "telephone",
  *   group = "schema_organization",
- *   weight = 1.1,
+ *   weight = 1,
  *   type = "string",
  *   secure = FALSE,
- *   multiple = FALSE
+ *   multiple = TRUE
  * )
  */
 class SchemaOrganizationTelephone extends SchemaNameBase {

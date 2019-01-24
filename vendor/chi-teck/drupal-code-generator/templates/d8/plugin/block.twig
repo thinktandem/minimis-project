@@ -1,26 +1,17 @@
-{% import 'lib/di.twig' as di %}
 <?php
 
 namespace Drupal\{{ machine_name }}\Plugin\Block;
 
-{% sort %}
-  {% if access %}
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Session\AccountInterface;
-  {% endif %}
 use Drupal\Core\Block\BlockBase;
-  {% if configurable %}
 use Drupal\Core\Form\FormStateInterface;
-  {% endif %}
-  {% if services %}
-{{ di.use(services) }}
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-  {% endif %}
-{% endsort %}
 
 /**
- * Provides {{ plugin_label|article|lower }} block.
+ * Provides a '{{ plugin_label }}' block.
  *
  * @Block(
  *   id = "{{ plugin_id }}",
@@ -28,10 +19,14 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   category = @Translation("{{ category }}")
  * )
  */
-class {{ class }} extends BlockBase {% if services %}implements ContainerFactoryPluginInterface {% endif %}{
+class {{ class }} extends BlockBase implements ContainerFactoryPluginInterface {
 
-{% if services %}
-{{ di.properties(services) }}
+  /**
+   * The route match.
+   *
+   * @var \Drupal\Core\Routing\RouteMatchInterface
+   */
+  protected $routeMatch;
 
   /**
    * Constructs a new {{ class }} instance.
@@ -45,11 +40,12 @@ class {{ class }} extends BlockBase {% if services %}implements ContainerFactory
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-{{ di.annotation(services) }}
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   The route match.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, {{ di.signature(services) }}) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, RouteMatchInterface $route_match) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-{{ di.assignment(services) }}
+    $this->routeMatch = $route_match;
   }
 
   /**
@@ -60,18 +56,16 @@ class {{ class }} extends BlockBase {% if services %}implements ContainerFactory
       $configuration,
       $plugin_id,
       $plugin_definition,
-{{ di.container(services) }}
+      $container->get('current_route_match')
     );
   }
 
-{% endif %}
-{% if configurable %}
   /**
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
     return [
-      'foo' => $this->t('Hello world!'),
+      'content' => $this->t('Hello world!'),
     ];
   }
 
@@ -79,10 +73,10 @@ class {{ class }} extends BlockBase {% if services %}implements ContainerFactory
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
-    $form['foo'] = [
+    $form['content'] = [
       '#type' => 'textarea',
-      '#title' => $this->t('Foo'),
-      '#default_value' => $this->configuration['foo'],
+      '#title' => $this->t('Block content'),
+      '#default_value' => $this->configuration['content'],
     ];
     return $form;
   }
@@ -91,27 +85,30 @@ class {{ class }} extends BlockBase {% if services %}implements ContainerFactory
    * {@inheritdoc}
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
-    $this->configuration['foo'] = $form_state->getValue('foo');
+    $this->configuration['content'] = $form_state->getValue('content');
   }
 
-{% endif %}
-{% if access %}
   /**
    * {@inheritdoc}
+   *
+   * @DCG Remove this method of you do not need any access restrictions.
    */
   protected function blockAccess(AccountInterface $account) {
-    // @DCG Evaluate the access condition here.
-    $condition = TRUE;
-    return AccessResult::allowedIf($condition);
+    $route_name = $this->routeMatch->getRouteName();
+    // Display the block only for anonymous users.
+    if ($account->isAnonymous() && $route_name != 'user.register') {
+      return AccessResult::allowed()
+        ->addCacheContexts(['route.name', 'user.roles:anonymous']);
+    }
+    return AccessResult::forbidden();
   }
 
-{% endif %}
   /**
    * {@inheritdoc}
    */
   public function build() {
     $build['content'] = [
-      '#markup' => $this->t('It works!'),
+      '#markup' => $this->configuration['content'],
     ];
     return $build;
   }

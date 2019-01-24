@@ -24,7 +24,7 @@
  * @event drupalViewportOffsetChange
  */
 
-(function($, Drupal, debounce) {
+(function ($, Drupal, debounce) {
   /**
    * @name Drupal.displace.offsets
    *
@@ -54,15 +54,12 @@
     const $el = $(el);
     const documentElement = document.documentElement;
     let displacement = 0;
-    const horizontal = edge === 'left' || edge === 'right';
+    const horizontal = (edge === 'left' || edge === 'right');
     // Get the offset of the element itself.
     let placement = $el.offset()[horizontal ? 'left' : 'top'];
     // Subtract scroll distance from placement to get the distance
     // to the edge of the viewport.
-    placement -=
-      window[`scroll${horizontal ? 'X' : 'Y'}`] ||
-      document.documentElement[`scroll${horizontal ? 'Left' : 'Top'}`] ||
-      0;
+    placement -= window[`scroll${horizontal ? 'X' : 'Y'}`] || document.documentElement[`scroll${horizontal ? 'Left' : 'Top'}`] || 0;
     // Find the displacement value according to the edge.
     switch (edge) {
       // Left and top elements displace as a sum of their own offset value
@@ -112,9 +109,7 @@
    */
   function calculateOffset(edge) {
     let edgeOffset = 0;
-    const displacingElements = document.querySelectorAll(
-      `[data-offset-${edge}]`,
-    );
+    const displacingElements = document.querySelectorAll(`[data-offset-${edge}]`);
     const n = displacingElements.length;
     for (let i = 0; i < n; i++) {
       const el = displacingElements[i];
@@ -127,7 +122,6 @@
       // If the element's offset data attribute exits
       // but is not a valid number then get the displacement
       // dimensions directly from the element.
-      // eslint-disable-next-line no-restricted-globals
       if (isNaN(displacement)) {
         displacement = getRawOffset(el, edge);
       }
@@ -207,6 +201,7 @@
    */
   Drupal.displace = displace;
   $.extend(Drupal.displace, {
+
     /**
      * Expose offsets to other scripts to avoid having to recalculate offsets.
      *
@@ -221,4 +216,4 @@
      */
     calculateOffset,
   });
-})(jQuery, Drupal, Drupal.debounce);
+}(jQuery, Drupal, Drupal.debounce));

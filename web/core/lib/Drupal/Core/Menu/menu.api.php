@@ -201,7 +201,7 @@
  * // Finally, build a renderable array from the transformed tree.
  * $menu = $menu_tree->build($tree);
  *
- * $menu_html = \Drupal::service('renderer')->render($menu);
+ * $menu_html = drupal_render($menu);
  * @endcode
  *
  * @}
@@ -450,7 +450,7 @@ function hook_system_breadcrumb_alter(\Drupal\Core\Breadcrumb\Breadcrumb &$bread
  *   The following keys can be altered:
  *   - text: The link text for the anchor tag. If the hook implementation
  *     changes this text it needs to preserve the safeness of the original text.
- *     Using t() or \Drupal\Component\Render\FormattableMarkup with
+ *     Using t() or \Drupal\Component\Utility\SafeMarkup::format() with
  *     @placeholder is recommended as this will escape the original text if
  *     necessary. If the resulting text is not marked safe it will be escaped.
  *   - url_is_active: Whether or not the link points to the currently active

@@ -2,7 +2,6 @@
 
 namespace Drupal\paragraphs;
 
-use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\user\EntityOwnerInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\entity_reference_revisions\EntityNeedsSaveInterface;
@@ -11,7 +10,7 @@ use Drupal\entity_reference_revisions\EntityNeedsSaveInterface;
  * Provides an interface defining a paragraphs entity.
  * @ingroup paragraphs
  */
-interface ParagraphInterface extends ContentEntityInterface, EntityOwnerInterface, EntityNeedsSaveInterface, EntityPublishedInterface {
+interface ParagraphInterface extends ContentEntityInterface, EntityOwnerInterface, EntityNeedsSaveInterface {
 
   /**
    * Gets the parent entity of the paragraph.
@@ -22,18 +21,6 @@ interface ParagraphInterface extends ContentEntityInterface, EntityOwnerInterfac
    *   The parent entity.
    */
   public function getParentEntity();
-
-  /**
-   * Set the parent entity of the paragraph.
-   *
-   * @param \Drupal\Core\Entity\ContentEntityInterface $parent
-   *   The parent entity.
-   * @param string $parent_field_name
-   *   The parent field name.
-   *
-   * @return $this
-   */
-  public function setParentEntity(ContentEntityInterface $parent, $parent_field_name);
 
   /**
    * Returns short summary for paragraph.
@@ -50,20 +37,6 @@ interface ParagraphInterface extends ContentEntityInterface, EntityOwnerInterfac
    *   The text without tags.
    */
   public function getSummary(array $options = []);
-
-  /**
-   * Returns info icons render array for a paragraph.
-   *
-   * @param array $options
-   *   (optional) Array of additional options, with the following elements:
-   *   - 'show_behavior_icon': Whether the icons should contain the
-   *     behavior settings. Defaults to TRUE to show behavior icons in the
-   *     summary.
-   *
-   * @return array
-   *   A list of render arrays that will be rendered as icons.
-   */
-  public function getIcons(array $options = []);
 
   /**
    * Returns a flag whether a current revision has been changed.

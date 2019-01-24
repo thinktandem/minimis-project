@@ -50,7 +50,7 @@
     'js-form-item',
     'js-form-type-' ~ type|clean_class,
     type in ['checkbox', 'radio'] ? type|clean_class : 'form-type-' ~ type|clean_class,
-    type in ['checkbox', 'radio'] ? 'form-check',
+    type in ['checkbox', 'radio'] ? form-check,
     'js-form-item-' ~ name|clean_class,
     'form-item-' ~ name|clean_class,
     title_display not in ['after', 'before'] ? 'form-no-label',
@@ -88,8 +88,8 @@
       <span class="field-suffix">{{ suffix }}</span>
     {% endif %}
     {% if errors %}
-      <div class="invalid-feedback">
-        {{ errors }}
+      <div class="alert alert-danger" role="alert">
+        <strong>{{ errors }}</strong>
       </div>
     {% endif %}
     {% if description_display in ['after', 'invisible'] and description.content %}
@@ -99,7 +99,7 @@
     {% endif %}
   </div>
 {% else %}
-  <fieldset{{ attributes.addClass(classes, 'form-group col-auto') }}>
+  <fieldset{{ attributes.addClass(classes, 'form-group') }}>
     {% if label_display in ['before', 'invisible'] %}
       {{ label }}
     {% endif %}
@@ -119,8 +119,8 @@
       {{ label }}
     {% endif %}
     {% if errors %}
-      <div class="invalid-feedback">
-        {{ errors }}
+      <div class="alert alert-danger" role="alert">
+        <strong>{{ errors }}</strong>
       </div>
     {% endif %}
     {% if description_display in ['after', 'invisible'] and description.content %}

@@ -11,19 +11,6 @@ bootstrap:
   dependencies:
     - core/jquery
 
-bootstrap-composer:
-  remote: http://getbootstrap.com/
-  license:
-    name: MIT
-    gpl-compatible: false
-  js:
-    /libraries/bootstrap/dist/js/bootstrap.js: { }
-  css:
-    theme:
-      /libraries/bootstrap/dist/css/bootstrap.css: {}
-  dependencies:
-    - core/jquery
-
 bootstrap-dev:
   remote: http://getbootstrap.com/
   license:

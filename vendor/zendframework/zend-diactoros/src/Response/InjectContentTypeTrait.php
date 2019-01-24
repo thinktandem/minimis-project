@@ -9,10 +9,6 @@
 
 namespace Zend\Diactoros\Response;
 
-use function array_keys;
-use function array_reduce;
-use function strtolower;
-
 trait InjectContentTypeTrait
 {
     /**

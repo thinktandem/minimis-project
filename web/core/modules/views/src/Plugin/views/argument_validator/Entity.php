@@ -5,7 +5,7 @@ namespace Drupal\views\Plugin\views\argument_validator;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Plugin\Context\EntityContextDefinition;
+use Drupal\Core\Plugin\Context\ContextDefinition;
 use Drupal\views\Plugin\views\argument\ArgumentPluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -233,9 +233,7 @@ class Entity extends ArgumentValidatorPluginBase {
    * {@inheritdoc}
    */
   public function getContextDefinition() {
-    return EntityContextDefinition::fromEntityTypeId($this->definition['entity_type'])
-      ->setLabel($this->argument->adminLabel())
-      ->setRequired(FALSE);
+    return new ContextDefinition('entity:' . $this->definition['entity_type'], $this->argument->adminLabel(), FALSE);
   }
 
 }

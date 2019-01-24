@@ -47,7 +47,6 @@ class SchemaRecipeTest extends SchemaMetatagTagsTestBase {
     'schema_recipe_total_time' => 'SchemaRecipeTotalTime',
     'schema_recipe_type' => 'SchemaRecipeType',
     'schema_recipe_nutrition' => 'SchemaRecipeNutrition',
-    'schema_recipe_recipe_cuisine' => 'SchemaRecipeRecipeCuisine',
   ];
 
 }

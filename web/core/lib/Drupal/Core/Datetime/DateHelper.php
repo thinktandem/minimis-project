@@ -334,6 +334,7 @@ class DateHelper {
     return !$required ? $none + $range : $range;
   }
 
+
   /**
    * Constructs an array of hours.
    *

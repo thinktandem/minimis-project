@@ -25,7 +25,7 @@ class UserUid extends ArgumentPluginBase {
   protected $database;
 
   /**
-   * Constructs a \Drupal\comment\Plugin\views\argument\UserUid object.
+   * Constructs a Drupal\Component\Plugin\PluginBase object.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.

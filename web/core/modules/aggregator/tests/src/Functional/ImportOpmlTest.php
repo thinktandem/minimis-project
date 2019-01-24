@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\aggregator\Functional;
 
-use Drupal\aggregator\Entity\Feed;
-
 /**
  * Tests OPML import.
  *
@@ -46,8 +44,7 @@ class ImportOpmlTest extends AggregatorTestBase {
    * Submits form filled with invalid fields.
    */
   public function validateImportFormFields() {
-    $count_query = \Drupal::entityQuery('aggregator_feed')->count();
-    $before = $count_query->execute();
+    $before = db_query('SELECT COUNT(*) FROM {aggregator_feed}')->fetchField();
 
     $edit = [];
     $this->drupalPostForm('admin/config/services/aggregator/add/opml', $edit, t('Import'));
@@ -65,7 +62,7 @@ class ImportOpmlTest extends AggregatorTestBase {
     $this->drupalPostForm('admin/config/services/aggregator/add/opml', $edit, t('Import'));
     $this->assertText(t('The URL invalidUrl://empty is not valid.'), 'Error if the URL is invalid.');
 
-    $after = $count_query->execute();
+    $after = db_query('SELECT COUNT(*) FROM {aggregator_feed}')->fetchField();
     $this->assertEqual($before, $after, 'No feeds were added during the three last form submissions.');
   }
 
@@ -73,8 +70,7 @@ class ImportOpmlTest extends AggregatorTestBase {
    * Submits form with invalid, empty, and valid OPML files.
    */
   protected function submitImportForm() {
-    $count_query = \Drupal::entityQuery('aggregator_feed')->count();
-    $before = $count_query->execute();
+    $before = db_query('SELECT COUNT(*) FROM {aggregator_feed}')->fetchField();
 
     $form['files[upload]'] = $this->getInvalidOpml();
     $this->drupalPostForm('admin/config/services/aggregator/add/opml', $form, t('Import'));
@@ -84,12 +80,10 @@ class ImportOpmlTest extends AggregatorTestBase {
     $this->drupalPostForm('admin/config/services/aggregator/add/opml', $edit, t('Import'));
     $this->assertText(t('No new feed has been added.'), 'Attempting to load empty OPML from remote URL.');
 
-    $after = $count_query->execute();
+    $after = db_query('SELECT COUNT(*) FROM {aggregator_feed}')->fetchField();
     $this->assertEqual($before, $after, 'No feeds were added during the two last form submissions.');
 
-    foreach (Feed::loadMultiple() as $feed) {
-      $feed->delete();
-    }
+    db_delete('aggregator_feed')->execute();
 
     $feeds[0] = $this->getFeedEditArray();
     $feeds[1] = $this->getFeedEditArray();
@@ -102,15 +96,15 @@ class ImportOpmlTest extends AggregatorTestBase {
     $this->assertRaw(t('A feed with the URL %url already exists.', ['%url' => $feeds[0]['url[0][value]']]), 'Verifying that a duplicate URL was identified');
     $this->assertRaw(t('A feed named %title already exists.', ['%title' => $feeds[1]['title[0][value]']]), 'Verifying that a duplicate title was identified');
 
-    $after = $count_query->execute();
+    $after = db_query('SELECT COUNT(*) FROM {aggregator_feed}')->fetchField();
     $this->assertEqual($after, 2, 'Verifying that two distinct feeds were added.');
 
-    $feed_entities = Feed::loadMultiple();
+    $feeds_from_db = db_query("SELECT title, url, refresh FROM {aggregator_feed}");
     $refresh = TRUE;
-    foreach ($feed_entities as $feed_entity) {
-      $title[$feed_entity->getUrl()] = $feed_entity->label();
-      $url[$feed_entity->label()] = $feed_entity->getUrl();
-      $refresh = $refresh && $feed_entity->getRefreshRate() == 900;
+    foreach ($feeds_from_db as $feed) {
+      $title[$feed->url] = $feed->title;
+      $url[$feed->title] = $feed->url;
+      $refresh = $refresh && $feed->refresh == 900;
     }
 
     $this->assertEqual($title[$feeds[0]['url[0][value]']], $feeds[0]['title[0][value]'], 'First feed was added correctly.');

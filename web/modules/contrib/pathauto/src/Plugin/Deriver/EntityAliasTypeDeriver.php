@@ -26,8 +26,6 @@ class EntityAliasTypeDeriver extends DeriverBase implements ContainerDeriverInte
   protected $entityTypeManager;
 
   /**
-   * The entity field manager.
-   *
    * @var \Drupal\Core\Entity\EntityFieldManagerInterface
    */
   protected $entityFieldManager;
@@ -46,7 +44,7 @@ class EntityAliasTypeDeriver extends DeriverBase implements ContainerDeriverInte
    *   The entity field manager.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
    *   The string translation service.
-   * @param \Drupal\Token\TokenEntityMapperInterface $token_entity_mapper
+   * @apram \Drupal\Token\TokenEntityMapperInterface $token_entity_mapper
    *   The token entity mapper.
    */
   public function __construct(EntityTypeManagerInterface $entity_type_manager, EntityFieldManagerInterface $entity_field_manager, TranslationInterface $string_translation, TokenEntityMapperInterface $token_entity_mapper) {

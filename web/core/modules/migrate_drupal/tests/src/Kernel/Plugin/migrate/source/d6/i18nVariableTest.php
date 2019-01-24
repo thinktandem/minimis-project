@@ -10,7 +10,6 @@ use Drupal\Tests\migrate\Kernel\MigrateSqlSourceTestBase;
  * @covers \Drupal\migrate_drupal\Plugin\migrate\source\d6\i18nVariable
  *
  * @group migrate_drupal
- * @group legacy
  */
 class i18nVariableTest extends MigrateSqlSourceTestBase {
 

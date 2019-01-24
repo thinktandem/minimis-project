@@ -62,6 +62,7 @@ function hook_test_group_finished() {
 function hook_test_finished($results) {
 }
 
+
 /**
  * @} End of "addtogroup hooks".
  */

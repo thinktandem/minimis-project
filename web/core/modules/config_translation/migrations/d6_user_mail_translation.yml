@@ -3,9 +3,8 @@ label: User mail configuration
 migration_tags:
   - Drupal 6
   - Configuration
-  - Multilingual
 source:
-  plugin: d6_variable_translation
+  plugin: variable_translation
   variables:
     - user_mail_status_activated_subject
     - user_mail_status_activated_body

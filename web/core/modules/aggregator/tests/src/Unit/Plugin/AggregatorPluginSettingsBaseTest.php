@@ -4,7 +4,6 @@ namespace Drupal\Tests\aggregator\Unit\Plugin;
 
 use Drupal\aggregator\Form\SettingsForm;
 use Drupal\Core\Form\FormState;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Tests\UnitTestCase;
 
 /**
@@ -56,10 +55,6 @@ class AggregatorPluginSettingsBaseTest extends UnitTestCase {
         ->will($this->returnValue(['aggregator_test' => ['title' => '', 'description' => '']]));
     }
 
-    /** @var \Drupal\Core\Messenger\MessengerInterface|\PHPUnit_Framework_MockObject_MockBuilder $messenger */
-    $messenger = $this->createMock(MessengerInterface::class);
-    $messenger->expects($this->any())->method('addMessage');
-
     $this->settingsForm = new SettingsForm(
       $this->configFactory,
       $this->managers['fetcher'],
@@ -67,7 +62,6 @@ class AggregatorPluginSettingsBaseTest extends UnitTestCase {
       $this->managers['processor'],
       $this->getStringTranslationStub()
     );
-    $this->settingsForm->setMessenger($messenger);
   }
 
   /**
@@ -109,4 +103,12 @@ class AggregatorPluginSettingsBaseTest extends UnitTestCase {
     $this->settingsForm->submitForm($form, $form_state);
   }
 
+}
+
+// @todo Delete after https://www.drupal.org/node/2278383 is in.
+namespace Drupal\Core\Form;
+
+if (!function_exists('drupal_set_message')) {
+  function drupal_set_message() {
+  }
 }

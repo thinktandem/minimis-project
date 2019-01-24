@@ -10,7 +10,6 @@ use Robo\Common\IO;
 use Robo\Exception\TaskExitException;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
-use Consolidation\Config\Util\EnvConfig;
 
 class Runner implements ContainerAwareInterface
 {
@@ -44,16 +43,6 @@ class Runner implements ContainerAwareInterface
      * @var string GitHub Repo for SelfUpdate
      */
     protected $selfUpdateRepository = null;
-
-    /**
-     * @var string filename to load configuration from (set to 'robo.yml' for RoboFiles)
-     */
-    protected $configFilename = 'conf.yml';
-
-    /**
-     * @var string prefix for environment variable configuration overrides
-     */
-    protected $envConfigPrefix = false;
 
     /**
      * @var \Composer\Autoload\ClassLoader
@@ -146,19 +135,6 @@ class Runner implements ContainerAwareInterface
     }
 
     /**
-     * Get a list of locations where config files may be loaded
-     * @return string[]
-     */
-    protected function getConfigFilePaths($userConfig)
-    {
-        $roboAppConfig = dirname(__DIR__) . '/' . basename($userConfig);
-        $configFiles = [$userConfig, $roboAppConfig];
-        if (dirname($userConfig) != '.') {
-            array_unshift($configFiles, basename($userConfig));
-        }
-        return $configFiles;
-    }
-    /**
      * @param null|\Symfony\Component\Console\Input\InputInterface $input
      * @param null|\Symfony\Component\Console\Output\OutputInterface $output
      * @param null|\Robo\Application $app
@@ -184,12 +160,9 @@ class Runner implements ContainerAwareInterface
 
         // If we were not provided a container, then create one
         if (!$this->getContainer()) {
-            $configFiles = $this->getConfigFilePaths($this->configFilename);
-            $config = Robo::createConfiguration($configFiles);
-            if ($this->envConfigPrefix) {
-                $envConfig = new EnvConfig($this->envConfigPrefix);
-                $config->addContext('env', $envConfig);
-            }
+            $userConfig = 'robo.yml';
+            $roboAppConfig = dirname(__DIR__) . '/robo.yml';
+            $config = Robo::createConfiguration([$userConfig, $roboAppConfig]);
             $container = Robo::createDefaultContainer($input, $output, $app, $config, $classLoader);
             $this->setContainer($container);
             // Automatically register a shutdown function and
@@ -377,10 +350,6 @@ class Runner implements ContainerAwareInterface
      */
     protected function isShebangFile($filepath)
     {
-        // Avoid trying to call $filepath on remote URLs
-        if ((strpos($filepath, '://') !== false) && (substr($filepath, 0, 7) != 'file://')) {
-            return false;
-        }
         if (!is_file($filepath)) {
             return false;
         }
@@ -526,28 +495,6 @@ class Runner implements ContainerAwareInterface
     public function setSelfUpdateRepository($selfUpdateRepository)
     {
         $this->selfUpdateRepository = $selfUpdateRepository;
-        return $this;
-    }
-
-    /**
-     * @param string $configFilename
-     *
-     * @return $this
-     */
-    public function setConfigurationFilename($configFilename)
-    {
-        $this->configFilename = $configFilename;
-        return $this;
-    }
-
-    /**
-     * @param string $envConfigPrefix
-     *
-     * @return $this
-     */
-    public function setEnvConfigPrefix($envConfigPrefix)
-    {
-        $this->envConfigPrefix = $envConfigPrefix;
         return $this;
     }
 

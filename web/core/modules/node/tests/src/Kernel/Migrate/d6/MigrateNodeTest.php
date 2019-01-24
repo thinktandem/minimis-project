@@ -19,13 +19,7 @@ class MigrateNodeTest extends MigrateNodeTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
-    'language',
-    'content_translation',
-    'menu_ui',
-    // Required for translation migrations.
-    'migrate_drupal_multilingual',
-  ];
+  public static $modules = ['language', 'content_translation', 'menu_ui'];
 
   /**
    * {@inheritdoc}
@@ -233,7 +227,7 @@ class MigrateNodeTest extends MigrateNodeTestBase {
     $default_connection = \Drupal::database();
     $default_connection->truncate($table_name)->execute();
     if ($new_row) {
-      $hash = $migration->getIdMap()->getSourceIdsHash(['nid' => $new_row['sourceid1']]);
+      $hash = $migration->getIdMap()->getSourceIDsHash(['nid' => $new_row['sourceid1']]);
       $new_row['source_ids_hash'] = $hash;
       $default_connection->insert($table_name)
         ->fields($new_row)

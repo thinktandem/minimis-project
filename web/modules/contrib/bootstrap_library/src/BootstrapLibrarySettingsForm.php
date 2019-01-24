@@ -66,17 +66,17 @@ class BootstrapLibrarySettingsForm extends ConfigFormBase {
 	// Production or minimized version
     $form['minimized'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Minimized, Non-minimized, or Composer version'),
+      '#title' => t('Production or development version'),
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
     );
     $form['minimized']['minimized_options'] = array(
       '#type' => 'radios',
-      '#title' => t('Choose minimized, non-minimized, or composer version.'),
+      '#title' => t('Choose minimized or non minimized version.'),
       '#options' => array(
         0 => t('Use non minimized libraries (Development)'),
         1 => t('Use minimized libraries (Production)'),
-        2 => t('Use composer installed libraries'),      ),
+      ),
       '#default_value' => $config->get('minimized.options'),
     );
     // Per-theme visibility.
@@ -171,19 +171,10 @@ function _bootstrap_library_data() {
   return '{
   "timestamp": "2015-11-09T18:54:50.335Z",
   "bootstrap": {
-    "4.1.1": {
-      "css": "//stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css",
-      "js": [
-        "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",
-        "//stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"
-      ]
-    },
     "4.0.0": {
       "css": "//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
-      "js": [
-        "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",
-        "//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-      ]
+      "js": "//cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js",
+      "js": "//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     },
     "3.3.7": {
       "css": "//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css",

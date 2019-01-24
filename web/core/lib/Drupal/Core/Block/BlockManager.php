@@ -6,9 +6,8 @@ use Drupal\Component\Plugin\FallbackPluginManagerInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\CategorizingPluginManagerTrait;
+use Drupal\Core\Plugin\Context\ContextAwarePluginManagerTrait;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\Core\Plugin\FilteredPluginManagerTrait;
-use Psr\Log\LoggerInterface;
 
 /**
  * Manages discovery and instantiation of block plugins.
@@ -22,14 +21,7 @@ class BlockManager extends DefaultPluginManager implements BlockManagerInterface
   use CategorizingPluginManagerTrait {
     getSortedDefinitions as traitGetSortedDefinitions;
   }
-  use FilteredPluginManagerTrait;
-
-  /**
-   * The logger.
-   *
-   * @var \Psr\Log\LoggerInterface
-   */
-  protected $logger;
+  use ContextAwarePluginManagerTrait;
 
   /**
    * Constructs a new \Drupal\Core\Block\BlockManager object.
@@ -41,22 +33,12 @@ class BlockManager extends DefaultPluginManager implements BlockManagerInterface
    *   Cache backend instance to use.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler to invoke the alter hook with.
-   * @param \Psr\Log\LoggerInterface $logger
-   *   The logger.
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, LoggerInterface $logger) {
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler) {
     parent::__construct('Plugin/Block', $namespaces, $module_handler, 'Drupal\Core\Block\BlockPluginInterface', 'Drupal\Core\Block\Annotation\Block');
 
-    $this->alterInfo($this->getType());
+    $this->alterInfo('block');
     $this->setCacheBackend($cache_backend, 'block_plugins');
-    $this->logger = $logger;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getType() {
-    return 'block';
   }
 
   /**
@@ -83,14 +65,6 @@ class BlockManager extends DefaultPluginManager implements BlockManagerInterface
    */
   public function getFallbackPluginId($plugin_id, array $configuration = []) {
     return 'broken';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function handlePluginNotFound($plugin_id, array $configuration) {
-    $this->logger->warning('The "%plugin_id" was not found', ['%plugin_id' => $plugin_id]);
-    return parent::handlePluginNotFound($plugin_id, $configuration);
   }
 
 }

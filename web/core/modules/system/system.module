@@ -9,7 +9,6 @@ use Drupal\Component\Render\PlainTextOutput;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Asset\AttachedAssetsInterface;
 use Drupal\Core\Cache\Cache;
-use Drupal\Core\Extension\Exception\UnknownExtensionException;
 use Drupal\Core\Queue\QueueGarbageCollectionInterface;
 use Drupal\Core\Database\Query\AlterableInterface;
 use Drupal\Core\Extension\Extension;
@@ -767,10 +766,10 @@ function system_js_settings_alter(&$settings, AttachedAssetsInterface $assets) {
     }
     // Provide the page with information about the individual asset libraries
     // used, information not otherwise available when aggregation is enabled.
-    $minimal_libraries = $library_dependency_resolver->getMinimalRepresentativeSubset(array_unique(array_merge(
+    $minimal_libraries = $library_dependency_resolver->getMinimalRepresentativeSubset(array_merge(
       $assets->getLibraries(),
       $assets->getAlreadyLoadedLibraries()
-    )));
+    ));
     sort($minimal_libraries);
     $settings['ajaxPageState']['libraries'] = implode(',', $minimal_libraries);
   }
@@ -835,13 +834,7 @@ function system_user_login(UserInterface $account) {
   $config = \Drupal::config('system.date');
   // If the user has a NULL time zone, notify them to set a time zone.
   if (!$account->getTimezone() && $config->get('timezone.user.configurable') && $config->get('timezone.user.warn')) {
-    \Drupal::messenger()
-      ->addStatus(t('Configure your <a href=":user-edit">account time zone setting</a>.', [
-        ':user-edit' => $account->url('edit-form', [
-          'query' => \Drupal::destination()->getAsArray(),
-          'fragment' => 'edit-timezone',
-        ]),
-      ]));
+    drupal_set_message(t('Configure your <a href=":user-edit">account time zone setting</a>.', [':user-edit' => $account->url('edit-form', ['query' => \Drupal::destination()->getAsArray(), 'fragment' => 'edit-timezone'])]));
   }
 }
 
@@ -919,7 +912,7 @@ function system_check_directory($form_element, FormStateInterface $form_state) {
 
   $logger = \Drupal::logger('file system');
   if (!is_dir($directory) && !drupal_mkdir($directory, NULL, TRUE)) {
-    // If the directory does not exist and cannot be created.
+    // If the directory does not exists and cannot be created.
     $form_state->setErrorByName($form_element['#parents'][0], t('The directory %directory does not exist and could not be created.', ['%directory' => $directory]));
     $logger->error('The directory %directory does not exist and could not be created.', ['%directory' => $directory]);
   }
@@ -973,7 +966,7 @@ function system_get_info($type, $name = NULL) {
       try {
         return $module_list->getExtensionInfo($name);
       }
-      catch (UnknownExtensionException $e) {
+      catch (\InvalidArgumentException $e) {
         return [];
       }
     }
@@ -1374,11 +1367,11 @@ function system_retrieve_file($url, $destination = NULL, $managed = FALSE, $repl
     $local = $managed ? file_save_data($data, $path, $replace) : file_unmanaged_save_data($data, $path, $replace);
   }
   catch (RequestException $exception) {
-    \Drupal::messenger()->addError(t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]));
+    drupal_set_message(t('Failed to fetch file due to error "%error"', ['%error' => $exception->getMessage()]), 'error');
     return FALSE;
   }
   if (!$local) {
-    \Drupal::messenger()->addError(t('@remote could not be saved to @path.', ['@remote' => $url, '@path' => $path]));
+    drupal_set_message(t('@remote could not be saved to @path.', ['@remote' => $url, '@path' => $path]), 'error');
   }
 
   return $local;

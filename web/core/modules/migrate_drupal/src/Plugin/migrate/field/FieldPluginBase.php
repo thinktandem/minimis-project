@@ -20,66 +20,24 @@ use Drupal\migrate_drupal\Plugin\MigrateFieldInterface;
 abstract class FieldPluginBase extends PluginBase implements MigrateFieldInterface {
 
   /**
-   * Alters the migration for field definitions.
-   *
-   * @deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use
-   *   alterFieldMigration() instead.
-   *
-   * @see https://www.drupal.org/node/2944598
-   * @see ::alterFieldMigration()
-   */
-  public function processField(MigrationInterface $migration) {
-    @trigger_error('Deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use alterFieldMigration() instead. See https://www.drupal.org/node/2944598.', E_USER_DEPRECATED);
-    $this->alterFieldMigration($migration);
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public function alterFieldMigration(MigrationInterface $migration) {
+  public function processField(MigrationInterface $migration) {
     $process[0]['map'][$this->pluginId][$this->pluginId] = $this->pluginId;
     $migration->mergeProcessOfProperty('type', $process);
   }
 
   /**
-   * Alert field instance migration.
-   *
-   * @deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use
-   *   alterFieldInstanceMigration() instead.
-   *
-   * @see https://www.drupal.org/node/2944598
-   * @see ::alterFieldInstanceMigration()
-   */
-  public function processFieldInstance(MigrationInterface $migration) {
-    @trigger_error('Deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use alterFieldInstanceMigration() instead. See https://www.drupal.org/node/2944598.', E_USER_DEPRECATED);
-    $this->alterFieldInstanceMigration($migration);
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public function alterFieldInstanceMigration(MigrationInterface $migration) {
+  public function processFieldInstance(MigrationInterface $migration) {
     // Nothing to do by default with field instances.
   }
 
   /**
-   * Alter field widget migration.
-   *
-   * @deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use
-   *   alterFieldWidgetMigration() instead.
-   *
-   * @see https://www.drupal.org/node/2944598
-   * @see ::alterFieldWidgetMigration()
-   */
-  public function processFieldWidget(MigrationInterface $migration) {
-    @trigger_error('Deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use alterFieldWidgetMigration() instead. See https://www.drupal.org/node/2944598.', E_USER_DEPRECATED);
-    $this->alterFieldWidgetMigration($migration);
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public function alterFieldWidgetMigration(MigrationInterface $migration) {
+  public function processFieldWidget(MigrationInterface $migration) {
     $process = [];
     foreach ($this->getFieldWidgetMap() as $source_widget => $destination_widget) {
       $process['type']['map'][$source_widget] = $destination_widget;
@@ -119,24 +77,11 @@ abstract class FieldPluginBase extends PluginBase implements MigrateFieldInterfa
   }
 
   /**
-   * Alter field formatter migration.
-   *
-   * @deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use
-   *   alterFieldFormatterMigration() instead.
-   *
-   * @see https://www.drupal.org/node/2944598
-   * @see ::processFieldFormatter()
-   */
-  public function processFieldFormatter(MigrationInterface $migration) {
-    @trigger_error('Deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use alterFieldFormatterMigration() instead. See https://www.drupal.org/node/2944598.', E_USER_DEPRECATED);
-    $this->alterFieldFormatterMigration($migration);
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public function alterFieldFormatterMigration(MigrationInterface $migration) {
+  public function processFieldFormatter(MigrationInterface $migration) {
     $process = [];
+
     // Some migrate field plugin IDs are prefixed with 'd6_' or 'd7_'. Since the
     // plugin ID is used in the static map as the module name, we have to remove
     // this prefix from the plugin ID.
@@ -148,23 +93,9 @@ abstract class FieldPluginBase extends PluginBase implements MigrateFieldInterfa
   }
 
   /**
-   * Defines the process pipeline for field values.
-   *
-   * @deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use
-   *   defineValueProcessPipeline() instead.
-   *
-   * @see https://www.drupal.org/node/2944598
-   * @see ::defineValueProcessPipeline()
-   */
-  public function processFieldValues(MigrationInterface $migration, $field_name, $data) {
-    @trigger_error('Deprecated in Drupal 8.6.0, to be removed before Drupal 9.0.0. Use defineValueProcessPipeline() instead. See https://www.drupal.org/node/2944598.', E_USER_DEPRECATED);
-    return $this->defineValueProcessPipeline($migration, $field_name, $data);
-  }
-
-  /**
    * {@inheritdoc}
    */
-  public function defineValueProcessPipeline(MigrationInterface $migration, $field_name, $data) {
+  public function processFieldValues(MigrationInterface $migration, $field_name, $data) {
     $process = [
       'plugin' => 'get',
       'source' => $field_name,

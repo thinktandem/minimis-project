@@ -216,7 +216,7 @@ class Migration extends PluginBase implements MigrationInterface, RequirementsIn
   protected $sourcePluginManager;
 
   /**
-   * The process plugin manager.
+   * Thep process plugin manager.
    *
    * @var \Drupal\migrate\Plugin\MigratePluginManager
    */
@@ -410,7 +410,7 @@ class Migration extends PluginBase implements MigrationInterface, RequirementsIn
    */
   public function getDestinationPlugin($stub_being_requested = FALSE) {
     if ($stub_being_requested && !empty($this->destination['no_stub'])) {
-      throw new MigrateSkipRowException('Stub requested but not made because no_stub configuration is set.');
+      throw new MigrateSkipRowException();
     }
     if (!isset($this->destinationPlugin)) {
       $this->destinationPlugin = $this->destinationPluginManager->createInstance($this->destination['plugin'], $this->destination, $this);
@@ -553,6 +553,7 @@ class Migration extends PluginBase implements MigrationInterface, RequirementsIn
     $this->{$property_name} = $value;
     return $this;
   }
+
 
   /**
    * {@inheritdoc}

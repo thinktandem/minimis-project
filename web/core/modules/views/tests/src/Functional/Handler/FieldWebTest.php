@@ -3,6 +3,7 @@
 namespace Drupal\Tests\views\Functional\Handler;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Render\RenderContext;
 use Drupal\Core\Url;
@@ -339,7 +340,7 @@ class FieldWebTest extends ViewTestBase {
     $this->assertSubString($output, UrlHelper::encodePath('Drupal Has A Great Community'));
     unset($id_field->options['alter']['path_case']);
 
-    // Tests the link_class setting and see whether it actually exists in the
+    // Tests the linkclass setting and see whether it actually exists in the
     // output.
     $id_field->options['alter']['link_class'] = $class = $this->randomMachineName();
     $output = $renderer->executeInRenderContext(new RenderContext(), function () use ($id_field, $row) {
@@ -483,7 +484,7 @@ class FieldWebTest extends ViewTestBase {
       'p',
       'strong',
       'em',
-      'marquee',
+      'marquee'
     ];
 
     $this->assertEqual(array_keys($element_types), $expected_elements);
@@ -555,7 +556,7 @@ class FieldWebTest extends ViewTestBase {
     // Tests for simple trimming by string length.
     $row->views_test_data_name = $this->randomMachineName(8);
     $name_field->options['alter']['max_length'] = 5;
-    $trimmed_name = mb_substr($row->views_test_data_name, 0, 5);
+    $trimmed_name = Unicode::substr($row->views_test_data_name, 0, 5);
 
     $output = $renderer->executeInRenderContext(new RenderContext(), function () use ($name_field, $row) {
       return $name_field->advancedRender($row);
@@ -580,28 +581,28 @@ class FieldWebTest extends ViewTestBase {
       [
         'value' => $random_text_8,
         'trimmed_value' => '',
-        'trimmed' => TRUE,
+        'trimmed' => TRUE
       ],
       // Create one string with two words which doesn't fit both into the limit.
       [
         'value' => $random_text_8 . ' ' . $random_text_8,
         'trimmed_value' => '',
-        'trimmed' => TRUE,
+        'trimmed' => TRUE
       ],
       // Create one string which contains of two words, of which only the first
       // fits into the limit.
       [
         'value' => $random_text_4 . ' ' . $random_text_8,
         'trimmed_value' => $random_text_4,
-        'trimmed' => TRUE,
+        'trimmed' => TRUE
       ],
       // Create one string which contains of two words, of which both fits into
       // the limit.
       [
         'value' => $random_text_2 . ' ' . $random_text_2,
         'trimmed_value' => $random_text_2 . ' ' . $random_text_2,
-        'trimmed' => FALSE,
-      ],
+        'trimmed' => FALSE
+      ]
     ];
 
     foreach ($tuples as $tuple) {

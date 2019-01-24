@@ -2,6 +2,7 @@
 
 namespace Drupal\Core\Validation\Plugin\Validation\Constraint;
 
+use Drupal\Component\Utility\Unicode;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -35,7 +36,7 @@ class UniqueFieldValueValidator extends ConstraintValidator {
       $this->context->addViolation($constraint->message, [
         '%value' => $item->value,
         '@entity_type' => $entity->getEntityType()->getLowercaseLabel(),
-        '@field_name' => mb_strtolower($items->getFieldDefinition()->getLabel()),
+        '@field_name' => Unicode::strtolower($items->getFieldDefinition()->getLabel()),
       ]);
     }
   }

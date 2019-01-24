@@ -13,19 +13,6 @@
    * @namespace
    */
   Drupal.offCanvas = {
-    /**
-     * Storage for position information about the tray.
-     *
-     * @type {?String}
-     */
-    position: null,
-
-    /**
-     * The minimum height of the tray when opened at the top of the page.
-     *
-     * @type {Number}
-     */
-    minimumHeight: 30,
 
     /**
      * The minimum width to use body displace needs to match the width at which
@@ -88,14 +75,10 @@
       };
 
       /**
-       * Applies initial height and with to dialog based depending on position.
+       * Applies initial height to dialog based on window height.
        * @see http://api.jqueryui.com/dialog for all dialog options.
        */
-      const position = settings.drupalOffCanvasPosition;
-      const height = position === 'side' ? $(window).height() : settings.height;
-      const width = position === 'side' ? settings.width : '100%';
-      settings.height = height;
-      settings.width = width;
+      settings.height = $(window).height();
     },
 
     /**
@@ -107,7 +90,8 @@
       $('body').removeClass('js-off-canvas-dialog-open');
       // Remove all *.off-canvas events
       Drupal.offCanvas.removeOffCanvasEvents($element);
-      Drupal.offCanvas.resetPadding();
+
+      Drupal.offCanvas.$mainCanvasWrapper.css(`padding-${Drupal.offCanvas.getEdge()}`, 0);
     },
 
     /**
@@ -124,27 +108,13 @@
       const eventData = { settings, $element, offCanvasDialog: this };
 
       $element
-        .on(
-          'dialogContentResize.off-canvas',
-          eventData,
-          Drupal.offCanvas.handleDialogResize,
-        )
-        .on(
-          'dialogContentResize.off-canvas',
-          eventData,
-          Drupal.offCanvas.bodyPadding,
-        );
+        .on('dialogContentResize.off-canvas', eventData, Drupal.offCanvas.handleDialogResize)
+        .on('dialogContentResize.off-canvas', eventData, Drupal.offCanvas.bodyPadding);
 
-      Drupal.offCanvas
-        .getContainer($element)
-        .attr(`data-offset-${Drupal.offCanvas.getEdge()}`, '');
+      Drupal.offCanvas.getContainer($element).attr(`data-offset-${Drupal.offCanvas.getEdge()}`, '');
 
       $(window)
-        .on(
-          'resize.off-canvas',
-          eventData,
-          debounce(Drupal.offCanvas.resetSize, 100),
-        )
+        .on('resize.off-canvas', eventData, debounce(Drupal.offCanvas.resetSize, 100))
         .trigger('resize.off-canvas');
     },
 
@@ -158,9 +128,7 @@
      * @return {undefined}
      */
     render({ settings }) {
-      $(
-        '.ui-dialog-off-canvas, .ui-dialog-off-canvas .ui-dialog-titlebar',
-      ).toggleClass('ui-dialog-empty-title', !settings.title);
+      $('.ui-dialog-off-canvas, .ui-dialog-off-canvas .ui-dialog-titlebar').toggleClass('ui-dialog-empty-title', !settings.title);
     },
 
     /**
@@ -175,9 +143,7 @@
       const $element = event.data.$element;
       const $container = Drupal.offCanvas.getContainer($element);
 
-      const $offsets = $container.find(
-        '> :not(#drupal-off-canvas, .ui-resizable-handle)',
-      );
+      const $offsets = $container.find('> :not(#drupal-off-canvas, .ui-resizable-handle)');
       let offset = 0;
 
       // Let scroll element take all the height available.
@@ -202,26 +168,11 @@
      *   Data attached to the event.
      */
     resetSize(event) {
+      const offsets = displace.offsets;
       const $element = event.data.$element;
       const container = Drupal.offCanvas.getContainer($element);
-      const position = event.data.settings.drupalOffCanvasPosition;
 
-      // Only remove the `data-offset-*` attribute if the value previously
-      // exists and the orientation is changing.
-      if (Drupal.offCanvas.position && Drupal.offCanvas.position !== position) {
-        container.removeAttr(`data-offset-${Drupal.offCanvas.position}`);
-      }
-      // Set a minimum height on $element
-      if (position === 'top') {
-        $element.css('min-height', `${Drupal.offCanvas.minimumHeight}px`);
-      }
-
-      displace();
-
-      const offsets = displace.offsets;
-
-      const topPosition =
-        position === 'side' && offsets.top !== 0 ? `+${offsets.top}` : '';
+      const topPosition = (offsets.top !== 0 ? `+${offsets.top}` : '');
       const adjustedOptions = {
         // @see http://api.jqueryui.com/position/
         position: {
@@ -231,20 +182,14 @@
         },
       };
 
-      const height =
-        position === 'side'
-          ? `${$(window).height() - (offsets.top + offsets.bottom)}px`
-          : event.data.settings.height;
       container.css({
         position: 'fixed',
-        height,
+        height: `${$(window).height() - (offsets.top + offsets.bottom)}px`,
       });
 
       $element
         .dialog('option', adjustedOptions)
         .trigger('dialogContentResize.off-canvas');
-
-      Drupal.offCanvas.position = position;
     },
 
     /**
@@ -256,35 +201,18 @@
      *   Data attached to the event.
      */
     bodyPadding(event) {
-      const position = event.data.settings.drupalOffCanvasPosition;
-      if (
-        position === 'side' &&
-        $('body').outerWidth() < Drupal.offCanvas.minDisplaceWidth
-      ) {
+      if ($('body').outerWidth() < Drupal.offCanvas.minDisplaceWidth) {
         return;
       }
-      Drupal.offCanvas.resetPadding();
       const $element = event.data.$element;
       const $container = Drupal.offCanvas.getContainer($element);
       const $mainCanvasWrapper = Drupal.offCanvas.$mainCanvasWrapper;
 
       const width = $container.outerWidth();
-      const mainCanvasPadding = $mainCanvasWrapper.css(
-        `padding-${Drupal.offCanvas.getEdge()}`,
-      );
-      if (position === 'side' && width !== mainCanvasPadding) {
-        $mainCanvasWrapper.css(
-          `padding-${Drupal.offCanvas.getEdge()}`,
-          `${width}px`,
-        );
+      const mainCanvasPadding = $mainCanvasWrapper.css(`padding-${Drupal.offCanvas.getEdge()}`);
+      if (width !== mainCanvasPadding) {
+        $mainCanvasWrapper.css(`padding-${Drupal.offCanvas.getEdge()}`, `${width}px`);
         $container.attr(`data-offset-${Drupal.offCanvas.getEdge()}`, width);
-        displace();
-      }
-
-      const height = $container.outerHeight();
-      if (position === 'top') {
-        $mainCanvasWrapper.css('padding-top', `${height}px`);
-        $container.attr('data-offset-top', height);
         displace();
       }
     },
@@ -310,18 +238,6 @@
     getEdge() {
       return document.documentElement.dir === 'rtl' ? 'left' : 'right';
     },
-
-    /**
-     * Resets main canvas wrapper and toolbar padding / margin.
-     */
-    resetPadding() {
-      Drupal.offCanvas.$mainCanvasWrapper.css(
-        `padding-${Drupal.offCanvas.getEdge()}`,
-        0,
-      );
-      Drupal.offCanvas.$mainCanvasWrapper.css('padding-top', 0);
-      displace();
-    },
   };
 
   /**
@@ -334,26 +250,24 @@
    */
   Drupal.behaviors.offCanvasEvents = {
     attach: () => {
-      $(window)
-        .once('off-canvas')
-        .on({
-          'dialog:beforecreate': (event, dialog, $element, settings) => {
-            if (Drupal.offCanvas.isOffCanvas($element)) {
-              Drupal.offCanvas.beforeCreate({ dialog, $element, settings });
-            }
-          },
-          'dialog:aftercreate': (event, dialog, $element, settings) => {
-            if (Drupal.offCanvas.isOffCanvas($element)) {
-              Drupal.offCanvas.render({ dialog, $element, settings });
-              Drupal.offCanvas.afterCreate({ $element, settings });
-            }
-          },
-          'dialog:beforeclose': (event, dialog, $element) => {
-            if (Drupal.offCanvas.isOffCanvas($element)) {
-              Drupal.offCanvas.beforeClose({ dialog, $element });
-            }
-          },
-        });
+      $(window).once('off-canvas').on({
+        'dialog:beforecreate': (event, dialog, $element, settings) => {
+          if (Drupal.offCanvas.isOffCanvas($element)) {
+            Drupal.offCanvas.beforeCreate({ dialog, $element, settings });
+          }
+        },
+        'dialog:aftercreate': (event, dialog, $element, settings) => {
+          if (Drupal.offCanvas.isOffCanvas($element)) {
+            Drupal.offCanvas.render({ dialog, $element, settings });
+            Drupal.offCanvas.afterCreate({ $element, settings });
+          }
+        },
+        'dialog:beforeclose': (event, dialog, $element) => {
+          if (Drupal.offCanvas.isOffCanvas($element)) {
+            Drupal.offCanvas.beforeClose({ dialog, $element });
+          }
+        },
+      });
     },
   };
 })(jQuery, Drupal, Drupal.debounce, Drupal.displace);

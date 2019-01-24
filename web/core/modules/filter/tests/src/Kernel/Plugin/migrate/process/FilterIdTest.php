@@ -37,7 +37,7 @@ class FilterIdTest extends KernelTestBase {
   }
 
   /**
-   * Tests transformation of filter_id plugin.
+   * Tests the filter_id plugin.
    *
    * @param mixed $value
    *   The input value to the plugin.
@@ -47,11 +47,11 @@ class FilterIdTest extends KernelTestBase {
    *   (optional) The invalid plugin ID which is expected to be logged by the
    *   MigrateExecutable object.
    *
-   * @dataProvider provideFilters
+   * @dataProvider testProvider
    *
    * @covers ::transform
    */
-  public function testTransform($value, $expected_value, $invalid_id = NULL) {
+  public function test($value, $expected_value, $invalid_id = NULL) {
     $configuration = [
       'bypass' => TRUE,
       'map' => [
@@ -78,34 +78,37 @@ class FilterIdTest extends KernelTestBase {
   }
 
   /**
-   * Provides filter ids for testing transformations.
+   * The test data provider.
    *
    * @return array
-   *   Formatted as $source_id, $tranformed_id, $invalid_id.
-   *   When $invalid_id is provided the transformation should fail with the
-   *   supplied id.
    */
-  public function provideFilters() {
+  public function testProvider() {
     return [
-      'filter ID mapped to plugin that exists' => [
+      // The filter ID is mapped, and the plugin exists.
+      [
         'foo',
         'filter_html',
       ],
-      'filter ID not mapped but unchanged from the source and the plugin exists' => [
+      // The filter ID isn't mapped, but it's unchanged from the source (i.e.,
+      // it bypasses the static map) and the plugin exists.
+      [
         'filter_html',
         'filter_html',
       ],
-      'filter ID mapped to plugin that does not exist' => [
+      // The filter ID is mapped, but the plugin does not exist.
+      [
         'baz',
         'filter_null',
         'php_code',
       ],
-      'filter ID not mapped but unchanged from the source and the plugin does not exist' => [
+      // The filter ID isn't mapped, but it's unchanged from the source (i.e.,
+      // it bypasses the static map) but the plugin does not exist.
+      [
         'php_code',
         'filter_null',
         'php_code',
       ],
-      'filter ID set and the plugin does not exist' => [
+      [
         ['filter', 1],
         'filter_null',
         'filter:1',

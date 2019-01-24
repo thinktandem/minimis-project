@@ -85,7 +85,7 @@ class FilteredStorage implements FilteredStorageInterface {
       $data = $filter->filterReadMultiple($names, $data);
     }
     ksort($data);
-    return array_filter($data);
+    return $data;
   }
 
   /**
@@ -224,9 +224,7 @@ class FilteredStorage implements FilteredStorageInterface {
     foreach ($this->filters as $filter) {
       $collections = $filter->filterGetAllCollectionNames($collections);
     }
-    $collections = array_unique($collections);
     sort($collections);
-
     return $collections;
   }
 

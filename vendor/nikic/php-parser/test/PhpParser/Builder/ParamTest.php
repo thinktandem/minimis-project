@@ -80,9 +80,9 @@ class ParamTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTestTypes
+     * @dataProvider provideTestTypeHints
      */
-    public function testTypes($typeHint, $expectedType) {
+    public function testTypeHints($typeHint, $expectedType) {
         $node = $this->createParamBuilder('test')
             ->setTypeHint($typeHint)
             ->getNode()
@@ -100,7 +100,7 @@ class ParamTest extends TestCase
         $this->assertEquals($expectedType, $type);
     }
 
-    public function provideTestTypes() {
+    public function provideTestTypeHints() {
         return [
             ['array', new Node\Identifier('array')],
             ['callable', new Node\Identifier('callable')],
@@ -129,16 +129,20 @@ class ParamTest extends TestCase
         ];
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Parameter type cannot be void
+     */
     public function testVoidTypeError() {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Parameter type cannot be void');
-        $this->createParamBuilder('test')->setType('void');
+        $this->createParamBuilder('test')->setTypeHint('void');
     }
 
+    /**
+     * @expectedException \LogicException
+     * @expectedExceptionMessage Type must be a string, or an instance of Name, Identifier or NullableType
+     */
     public function testInvalidTypeError() {
-        $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Type must be a string, or an instance of Name, Identifier or NullableType');
-        $this->createParamBuilder('test')->setType(new \stdClass);
+        $this->createParamBuilder('test')->setTypeHint(new \stdClass);
     }
 
     public function testByRef() {

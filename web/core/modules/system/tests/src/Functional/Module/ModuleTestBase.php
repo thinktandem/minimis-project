@@ -56,9 +56,8 @@ abstract class ModuleTestBase extends BrowserTestBase {
   public function assertModuleTablesExist($module) {
     $tables = array_keys(drupal_get_module_schema($module));
     $tables_exist = TRUE;
-    $schema = Database::getConnection()->schema();
     foreach ($tables as $table) {
-      if (!$schema->tableExists($table)) {
+      if (!db_table_exists($table)) {
         $tables_exist = FALSE;
       }
     }
@@ -74,9 +73,8 @@ abstract class ModuleTestBase extends BrowserTestBase {
   public function assertModuleTablesDoNotExist($module) {
     $tables = array_keys(drupal_get_module_schema($module));
     $tables_exist = FALSE;
-    $schema = Database::getConnection()->schema();
     foreach ($tables as $table) {
-      if ($schema->tableExists($table)) {
+      if (db_table_exists($table)) {
         $tables_exist = TRUE;
       }
     }
@@ -111,18 +109,16 @@ abstract class ModuleTestBase extends BrowserTestBase {
     }
     $this->assertTrue($all_names);
 
-    $module_config_dependencies = \Drupal::service('config.manager')->findConfigEntityDependents('module', [$module]);
     // Look up each default configuration object name in the active
     // configuration, and if it exists, remove it from the stack.
-    $names = $module_file_storage->listAll();
+    // Only default config that belongs to $module is guaranteed to exist; any
+    // other default config depends on whether other modules are enabled. Thus,
+    // list all default config once more, but filtered by $module.
+    $names = $module_file_storage->listAll($module . '.');
     foreach ($names as $key => $name) {
       if ($this->config($name)->get()) {
         unset($names[$key]);
       }
-      // All configuration in a module's config/install directory should depend
-      // on the module as it must be removed on uninstall or the module will not
-      // be re-installable.
-      $this->assertTrue(strpos($name, $module . '.') === 0 || isset($module_config_dependencies[$name]), "Configuration $name provided by $module in its config/install directory does not depend on it.");
     }
     // Verify that all configuration has been installed (which means that $names
     // is empty).

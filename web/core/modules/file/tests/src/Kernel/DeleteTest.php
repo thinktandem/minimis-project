@@ -10,7 +10,6 @@ use Drupal\file\Entity\File;
  * @group file
  */
 class DeleteTest extends FileManagedUnitTestBase {
-
   /**
    * Tries deleting a normal file (as opposed to a directory, symlink, etc).
    */

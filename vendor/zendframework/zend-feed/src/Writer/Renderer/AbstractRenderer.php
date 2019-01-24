@@ -222,9 +222,11 @@ class AbstractRenderer
         Writer\Writer::registerCoreExtensions();
         $manager = Writer\Writer::getExtensionManager();
         $all = Writer\Writer::getExtensions();
-        $exts = stripos(get_class($this), 'entry')
-            ? $all['entryRenderer']
-            : $all['feedRenderer'];
+        if (stripos(get_class($this), 'entry')) {
+            $exts = $all['entryRenderer'];
+        } else {
+            $exts = $all['feedRenderer'];
+        }
         foreach ($exts as $extension) {
             $plugin = $manager->get($extension);
             $plugin->setDataContainer($this->getDataContainer());

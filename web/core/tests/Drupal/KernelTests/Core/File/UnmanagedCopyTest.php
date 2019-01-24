@@ -11,7 +11,6 @@ use Drupal\Core\File\FileSystem;
  * @group File
  */
 class UnmanagedCopyTest extends FileTestBase {
-
   /**
    * Copy a normal file.
    */

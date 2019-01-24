@@ -40,7 +40,7 @@ interface StackedRouteMatchInterface extends RouteMatchInterface {
    *   The request.
    *
    * @return \Drupal\Core\Routing\RouteMatchInterface|null
-   *   The matching route match, or NULL if there is no matching one.
+   *   THe matching route match, or NULL if there is no matching one.
    */
   public function getRouteMatchFromRequest(Request $request);
 

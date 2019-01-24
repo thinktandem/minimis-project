@@ -7,3 +7,4 @@ module_installer_config_test.type.*:
     name:
       type: label
       label: 'Name'
+

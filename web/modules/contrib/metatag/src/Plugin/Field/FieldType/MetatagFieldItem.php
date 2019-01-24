@@ -50,7 +50,7 @@ class MetatagFieldItem extends FieldItemBase {
    */
   public function isEmpty() {
     $value = $this->get('value')->getValue();
-    return $value === NULL || $value === '' || $value === serialize([]);
+    return $value === NULL || $value === '';
   }
 
   /**

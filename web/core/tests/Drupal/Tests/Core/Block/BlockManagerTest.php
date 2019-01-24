@@ -4,11 +4,9 @@ namespace Drupal\Tests\Core\Block;
 
 use Drupal\Component\Plugin\Discovery\DiscoveryInterface;
 use Drupal\Core\Block\BlockManager;
-use Drupal\Core\Block\Plugin\Block\Broken;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Tests\UnitTestCase;
-use Psr\Log\LoggerInterface;
 
 /**
  * @coversDefaultClass \Drupal\Core\Block\BlockManager
@@ -25,13 +23,6 @@ class BlockManagerTest extends UnitTestCase {
   protected $blockManager;
 
   /**
-   * The logger.
-   *
-   * @var \Psr\Log\LoggerInterface
-   */
-  protected $logger;
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp() {
@@ -39,8 +30,7 @@ class BlockManagerTest extends UnitTestCase {
 
     $cache_backend = $this->prophesize(CacheBackendInterface::class);
     $module_handler = $this->prophesize(ModuleHandlerInterface::class);
-    $this->logger = $this->prophesize(LoggerInterface::class);
-    $this->blockManager = new BlockManager(new \ArrayObject(), $cache_backend->reveal(), $module_handler->reveal(), $this->logger->reveal());
+    $this->blockManager = new BlockManager(new \ArrayObject(), $cache_backend->reveal(), $module_handler->reveal());
     $this->blockManager->setStringTranslation($this->getStringTranslationStub());
 
     $discovery = $this->prophesize(DiscoveryInterface::class);
@@ -50,8 +40,6 @@ class BlockManagerTest extends UnitTestCase {
       'broken' => [
         'admin_label' => 'Broken/Missing',
         'category' => 'Block',
-        'class' => Broken::class,
-        'provider' => 'core',
       ],
       'block1' => [
         'admin_label' => 'Coconut',
@@ -96,15 +84,6 @@ class BlockManagerTest extends UnitTestCase {
     $this->assertSame(['Group 1', 'Group 2'], array_keys($definitions));
     $this->assertSame(['block2'], array_keys($definitions['Group 1']));
     $this->assertSame(['block3', 'block1'], array_keys($definitions['Group 2']));
-  }
-
-  /**
-   * @covers ::handlePluginNotFound
-   */
-  public function testHandlePluginNotFound() {
-    $this->logger->warning('The "%plugin_id" was not found', ['%plugin_id' => 'invalid'])->shouldBeCalled();
-    $plugin = $this->blockManager->createInstance('invalid');
-    $this->assertSame('broken', $plugin->getPluginId());
   }
 
 }

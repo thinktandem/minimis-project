@@ -13,9 +13,9 @@ namespace Symfony\Component\Yaml\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Tag\TaggedValue;
-use Symfony\Component\Yaml\Yaml;
 
 class ParserTest extends TestCase
 {
@@ -47,10 +47,10 @@ class ParserTest extends TestCase
                     restore_error_handler();
 
                     if (class_exists('PHPUnit_Util_ErrorHandler')) {
-                        return \call_user_func_array('PHPUnit_Util_ErrorHandler::handleError', \func_get_args());
+                        return call_user_func_array('PHPUnit_Util_ErrorHandler::handleError', func_get_args());
                     }
 
-                    return \call_user_func_array('PHPUnit\Util\ErrorHandler::handleError', \func_get_args());
+                    return call_user_func_array('PHPUnit\Util\ErrorHandler::handleError', func_get_args());
                 }
 
                 $deprecations[] = $msg;
@@ -2095,12 +2095,8 @@ YAML;
      */
     public function testParsingNotReadableFilesThrowsException()
     {
-        if ('\\' === \DIRECTORY_SEPARATOR) {
+        if ('\\' === DIRECTORY_SEPARATOR) {
             $this->markTestSkipped('chmod is not supported on Windows');
-        }
-
-        if (!getenv('USER') || 'root' === getenv('USER')) {
-            $this->markTestSkipped('This test will fail if run under superuser');
         }
 
         $file = __DIR__.'/Fixtures/not_readable.yml';
@@ -2175,48 +2171,6 @@ YAML;
 foo: { &foo { a: Steve, <<: *foo} }
 EOE;
         $this->parser->parse($yaml);
-    }
-
-    /**
-     * @dataProvider circularReferenceProvider
-     * @expectedException \Symfony\Component\Yaml\Exception\ParseException
-     * @expectedExceptionMessage Circular reference [foo, bar, foo] detected
-     */
-    public function testDetectCircularReferences($yaml)
-    {
-        $this->parser->parse($yaml, Yaml::PARSE_CUSTOM_TAGS);
-    }
-
-    public function circularReferenceProvider()
-    {
-        $tests = array();
-
-        $yaml = <<<YAML
-foo:
-    - &foo
-      - &bar
-        bar: foobar
-        baz: *foo
-YAML;
-        $tests['sequence'] = array($yaml);
-
-        $yaml = <<<YAML
-foo: &foo
-    bar: &bar
-        foobar: baz
-        baz: *foo
-YAML;
-        $tests['mapping'] = array($yaml);
-
-        $yaml = <<<YAML
-foo: &foo
-    bar: &bar
-        foobar: baz
-        <<: *foo
-YAML;
-        $tests['mapping with merge key'] = array($yaml);
-
-        return $tests;
     }
 
     /**

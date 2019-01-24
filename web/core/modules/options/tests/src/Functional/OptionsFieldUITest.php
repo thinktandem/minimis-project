@@ -4,7 +4,7 @@ namespace Drupal\Tests\options\Functional;
 
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\Tests\field\Functional\FieldTestBase;
+use Drupal\field\Tests\FieldTestBase;
 
 /**
  * Tests the Options field UI functionality.

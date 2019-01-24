@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\search\Functional;
 
-use Drupal\Tests\BrowserTestBase;
-
 /**
  * Tests if the result page can be overridden.
  *
@@ -12,12 +10,14 @@ use Drupal\Tests\BrowserTestBase;
  *
  * @group search
  */
-class SearchPageOverrideTest extends BrowserTestBase {
+class SearchPageOverrideTest extends SearchTestBase {
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['search', 'search_extra_type'];
+  public static $modules = ['search_extra_type'];
 
   /**
    * A user with permission to administer search.

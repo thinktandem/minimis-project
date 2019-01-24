@@ -112,7 +112,7 @@ class EditorPrivateFileReferenceFilterTest extends BrowserTestBase {
 
     // When the published node is also unpublished, the image should also
     // become inaccessible to anonymous users.
-    $published_node->setUnpublished()->save();
+    $published_node->setPublished(FALSE)->save();
 
     $this->drupalGet($published_node->toUrl());
     $this->assertSession()->statusCodeEquals(403);
@@ -121,7 +121,7 @@ class EditorPrivateFileReferenceFilterTest extends BrowserTestBase {
 
     // Disallow anonymous users to view the entity, which then should also
     // disallow them to view the image.
-    $published_node->setPublished()->save();
+    $published_node->setPublished(TRUE)->save();
     Role::load(RoleInterface::ANONYMOUS_ID)
       ->revokePermission('access content')
       ->save();

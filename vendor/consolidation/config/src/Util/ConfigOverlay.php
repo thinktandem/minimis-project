@@ -3,9 +3,6 @@ namespace Consolidation\Config\Util;
 
 use Consolidation\Config\Config;
 use Consolidation\Config\ConfigInterface;
-use Consolidation\Config\Util\ArrayUtil;
-use Consolidation\Config\Util\ConfigInterpolatorInterface;
-use Consolidation\Config\Util\ConfigInterpolatorTrait;
 
 /**
  * Overlay different configuration objects that implement ConfigInterface
@@ -15,9 +12,8 @@ use Consolidation\Config\Util\ConfigInterpolatorTrait;
  * individual configuration context. When using overlays, always call
  * getDefault / setDefault on the ConfigOverlay object itself.
  */
-class ConfigOverlay implements ConfigInterface, ConfigInterpolatorInterface
+class ConfigOverlay implements ConfigInterface
 {
-    use ConfigInterpolatorTrait;
     protected $contexts = [];
 
     const DEFAULT_CONTEXT = 'default';
@@ -120,31 +116,11 @@ class ConfigOverlay implements ConfigInterface, ConfigInterpolatorInterface
      */
     public function get($key, $default = null)
     {
-        if (is_array($default)) {
-            return $this->getUnion($key);
-        }
-        return $this->getSingle($key, $default);
-    }
-
-    public function getSingle($key, $default = null)
-    {
         $context = $this->findContext($key);
         if ($context) {
             return $context->get($key, $default);
         }
         return $default;
-    }
-
-    public function getUnion($key)
-    {
-        $result = [];
-        foreach (array_reverse($this->contexts) as $name => $config) {
-            $item = (array) $config->get($key, []);
-            if ($item !== null) {
-                $result = array_merge($result, $item);
-            }
-        }
-        return $result;
     }
 
     /**
@@ -195,8 +171,7 @@ class ConfigOverlay implements ConfigInterface, ConfigInterpolatorInterface
     {
         $export = [];
         foreach ($this->contexts as $name => $config) {
-            $exportToMerge = $config->export();
-            $export = \array_replace_recursive($export, $exportToMerge);
+            $export = array_merge_recursive($export, $config->export());
         }
         return $export;
     }

@@ -26,6 +26,7 @@ class FileNormalizeTest extends NormalizerTestBase {
     $this->installEntitySchema('file');
   }
 
+
   /**
    * Tests the normalize function.
    */

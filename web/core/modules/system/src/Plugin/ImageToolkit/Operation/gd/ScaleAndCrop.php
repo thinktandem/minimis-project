@@ -20,16 +20,6 @@ class ScaleAndCrop extends GDImageToolkitOperationBase {
    */
   protected function arguments() {
     return [
-      'x' => [
-        'description' => 'The horizontal offset for the start of the crop, in pixels',
-        'required' => FALSE,
-        'default' => NULL,
-      ],
-      'y' => [
-        'description' => 'The vertical offset for the start the crop, in pixels',
-        'required' => FALSE,
-        'default' => NULL,
-      ],
       'width' => [
         'description' => 'The target width, in pixels',
       ],
@@ -48,12 +38,8 @@ class ScaleAndCrop extends GDImageToolkitOperationBase {
 
     $scaleFactor = max($arguments['width'] / $actualWidth, $arguments['height'] / $actualHeight);
 
-    $arguments['x'] = isset($arguments['x']) ?
-      (int) round($arguments['x']) :
-      (int) round(($actualWidth * $scaleFactor - $arguments['width']) / 2);
-    $arguments['y'] = isset($arguments['y']) ?
-      (int) round($arguments['y']) :
-      (int) round(($actualHeight * $scaleFactor - $arguments['height']) / 2);
+    $arguments['x'] = (int) round(($actualWidth * $scaleFactor - $arguments['width']) / 2);
+    $arguments['y'] = (int) round(($actualHeight * $scaleFactor - $arguments['height']) / 2);
     $arguments['resize'] = [
       'width' => (int) round($actualWidth * $scaleFactor),
       'height' => (int) round($actualHeight * $scaleFactor),

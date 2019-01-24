@@ -10,7 +10,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests responsive image module updates.
  *
  * @group responsive_image
- * @group legacy
  */
 class ResponsiveImageUpdateTest extends UpdatePathTestBase {
 

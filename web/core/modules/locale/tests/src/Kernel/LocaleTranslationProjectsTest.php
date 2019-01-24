@@ -41,6 +41,7 @@ class LocaleTranslationProjectsTest extends KernelTestBase {
     \Drupal::state()->set('locale.remove_core_project', TRUE);
   }
 
+
   /**
    * Tests locale_translation_clear_cache_projects().
    */

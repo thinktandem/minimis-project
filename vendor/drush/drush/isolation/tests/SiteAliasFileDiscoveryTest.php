@@ -2,7 +2,6 @@
 namespace Drush\SiteAlias;
 
 use PHPUnit\Framework\TestCase;
-use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 
 class SiteAliasFileDiscoveryTest extends TestCase
 {

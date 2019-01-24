@@ -25,3 +25,4 @@ tracker.user_tab:
     _permission: 'access content'
     _entity_access: 'user.view'
     user: \d+
+

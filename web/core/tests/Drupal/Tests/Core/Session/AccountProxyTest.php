@@ -47,9 +47,7 @@ class AccountProxyTest extends UnitTestCase {
 namespace Drupal\Core\Session;
 
 if (!function_exists('drupal_get_user_timezone')) {
-
   function drupal_get_user_timezone() {
     return date_default_timezone_get();
   }
-
 }

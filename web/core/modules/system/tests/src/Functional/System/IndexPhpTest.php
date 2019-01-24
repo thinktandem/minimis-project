@@ -10,7 +10,6 @@ use Drupal\Tests\BrowserTestBase;
  * @group system
  */
 class IndexPhpTest extends BrowserTestBase {
-
   protected function setUp() {
     parent::setUp();
   }

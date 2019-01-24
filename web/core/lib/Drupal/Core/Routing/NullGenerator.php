@@ -27,8 +27,8 @@ class NullGenerator extends UrlGenerator {
   /**
    * {@inheritdoc}
    *
-   * Methods generate(), generateFromRoute() and getPathFromRoute() all call
-   * this protected method.
+   * generate(), generateFromRoute(), and getPathFromRoute() all call this
+   * protected method.
    */
   protected function getRoute($name) {
     if ($name === '<front>') {

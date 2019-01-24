@@ -14,24 +14,16 @@ class {{ class }} extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['{{ machine_name }}'];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-    // Set up the test here.
-  }
+  public static $modules = ['node'];
 
   /**
    * Test callback.
    */
-  public function testSomething() {
-    $admin_user = $this->drupalCreateUser(['access administration pages']);
+  public function testContentPage() {
+    $admin_user = $this->drupalCreateUser(['access content overview']);
     $this->drupalLogin($admin_user);
-    $this->drupalGet('admin');
-    $this->assertSession()->elementExists('xpath', '//h1[text() = "Administration"]');
+    $this->drupalGet('admin/content');
+    $this->assertSession()->elementExists('xpath', '//h1[text() = "Content"]');
   }
 
 }

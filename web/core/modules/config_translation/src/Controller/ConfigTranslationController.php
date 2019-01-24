@@ -139,7 +139,7 @@ class ConfigTranslationController extends ControllerBase {
 
     $languages = $this->languageManager->getLanguages();
     if (count($languages) == 1) {
-      $this->messenger()->addWarning($this->t('In order to translate configuration, the website must have at least two <a href=":url">languages</a>.', [':url' => $this->url('entity.configurable_language.collection')]));
+      drupal_set_message($this->t('In order to translate configuration, the website must have at least two <a href=":url">languages</a>.', [':url' => $this->url('entity.configurable_language.collection')]), 'warning');
     }
 
     try {
@@ -162,7 +162,7 @@ class ConfigTranslationController extends ControllerBase {
           '#items' => $items,
         ],
       ];
-      $this->messenger()->addWarning($this->renderer->renderPlain($message));
+      drupal_set_message($this->renderer->renderPlain($message), 'warning');
 
       $original_langcode = LanguageInterface::LANGCODE_NOT_SPECIFIED;
       $operations_access = FALSE;

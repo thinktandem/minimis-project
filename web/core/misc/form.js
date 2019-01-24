@@ -130,7 +130,7 @@
     if (e.type === 'click') {
       url = e.currentTarget.location ? e.currentTarget.location : e.currentTarget;
     } else {
-      url = window.location;
+      url = location;
     }
     var hash = url.hash.substr(1);
     if (hash) {

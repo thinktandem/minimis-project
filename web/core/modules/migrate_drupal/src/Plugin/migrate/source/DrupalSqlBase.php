@@ -102,7 +102,6 @@ abstract class DrupalSqlBase extends SqlBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function checkRequirements() {
-    parent::checkRequirements();
     if ($this->pluginDefinition['requirements_met'] === TRUE) {
       if (isset($this->pluginDefinition['source_module'])) {
         if ($this->moduleExists($this->pluginDefinition['source_module'])) {
@@ -115,6 +114,7 @@ abstract class DrupalSqlBase extends SqlBase implements ContainerFactoryPluginIn
         }
       }
     }
+    parent::checkRequirements();
   }
 
   /**

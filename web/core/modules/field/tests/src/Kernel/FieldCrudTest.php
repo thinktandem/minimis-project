@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\field\Kernel;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Field\FieldException;
 use Drupal\entity_test\Entity\EntityTest;
@@ -42,7 +43,7 @@ class FieldCrudTest extends FieldKernelTestBase {
     parent::setUp();
 
     $this->fieldStorageDefinition = [
-      'field_name' => mb_strtolower($this->randomMachineName()),
+      'field_name' => Unicode::strtolower($this->randomMachineName()),
       'entity_type' => 'entity_test',
       'type' => 'test_field',
     ];
@@ -198,7 +199,7 @@ class FieldCrudTest extends FieldKernelTestBase {
    * Test creating a field with custom storage set.
    */
   public function testCreateFieldCustomStorage() {
-    $field_name = mb_strtolower($this->randomMachineName());
+    $field_name = Unicode::strtolower($this->randomMachineName());
     \Drupal::state()->set('field_test_custom_storage', $field_name);
 
     $field_storage = FieldStorageConfig::create([

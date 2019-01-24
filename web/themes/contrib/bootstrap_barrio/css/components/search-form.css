@@ -6,12 +6,3 @@
 input[type="search"] {
     box-sizing: border-box;
 }
-
-header #search-block-form {
-    padding: 5px 15px;
-    flex-flow: row wrap;
-}
-
-#search-block-form {
-    display: flex;
-}

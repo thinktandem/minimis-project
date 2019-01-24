@@ -881,7 +881,6 @@ class FormBuilderTest extends FormTestBase {
 }
 
 class TestForm implements FormInterface {
-
   public function getFormId() {
     return 'test_form';
   }
@@ -889,14 +888,11 @@ class TestForm implements FormInterface {
   public function buildForm(array $form, FormStateInterface $form_state) {
     return test_form_id();
   }
-
   public function validateForm(array &$form, FormStateInterface $form_state) {}
-
   public function submitForm(array &$form, FormStateInterface $form_state) {}
 
 }
 class TestFormInjected extends TestForm implements ContainerInjectionInterface {
-
   public static function create(ContainerInterface $container) {
     return new static();
   }

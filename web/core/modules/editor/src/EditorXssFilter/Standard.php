@@ -116,6 +116,7 @@ class Standard extends Xss implements EditorXssFilterInterface {
     return $html;
   }
 
+
   /**
    * Get all allowed tags from a restrictions data structure.
    *

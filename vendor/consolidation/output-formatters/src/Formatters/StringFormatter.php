@@ -1,15 +1,12 @@
 <?php
 namespace Consolidation\OutputFormatters\Formatters;
 
-use Consolidation\OutputFormatters\Options\FormatterOptions;
-use Consolidation\OutputFormatters\Options\OverrideOptionsInterface;
-use Consolidation\OutputFormatters\StructuredData\RestructureInterface;
-use Consolidation\OutputFormatters\StructuredData\UnstructuredInterface;
-use Consolidation\OutputFormatters\Transformations\SimplifiedFormatterInterface;
-use Consolidation\OutputFormatters\Transformations\StringTransformationInterface;
 use Consolidation\OutputFormatters\Validate\ValidationInterface;
+use Consolidation\OutputFormatters\Options\OverrideOptionsInterface;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\Validate\ValidDataTypesTrait;
 use Symfony\Component\Console\Output\OutputInterface;
+use Consolidation\OutputFormatters\StructuredData\RestructureInterface;
 
 /**
  * String formatter
@@ -22,16 +19,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 class StringFormatter implements FormatterInterface, ValidationInterface, OverrideOptionsInterface
 {
     /**
-     * By default, we assume that we can convert any data type to `string`,
-     * unless it implements UnstructuredInterface, in which case we won't
-     * allow the `string` format unless the data type also implements
-     * StringTransformationInterface.
+     * All data types are acceptable.
      */
     public function isValidDataType(\ReflectionClass $dataType)
     {
-        if ($dataType->implementsInterface('\Consolidation\OutputFormatters\StructuredData\UnstructuredInterface') && !$dataType->implementsInterface('\Consolidation\OutputFormatters\Transformations\StringTransformationInterface')) {
-            return false;
-        }
         return true;
     }
 
@@ -62,7 +53,7 @@ class StringFormatter implements FormatterInterface, ValidationInterface, Overri
 
     /**
      * If the data provided to a 'string' formatter is a table, then try
-     * to emit it in a simplified form (by default, TSV).
+     * to emit it as a TSV value.
      *
      * @param OutputInterface $output
      * @param mixed $data
@@ -70,11 +61,6 @@ class StringFormatter implements FormatterInterface, ValidationInterface, Overri
      */
     protected function reduceToSigleFieldAndWrite(OutputInterface $output, $data, FormatterOptions $options)
     {
-        if ($data instanceof StringTransformationInterface) {
-            $simplified = $data->simplifyToString($options);
-            return $output->write($simplified);
-        }
-
         $alternateFormatter = new TsvFormatter();
         try {
             $data = $alternateFormatter->validate($data);

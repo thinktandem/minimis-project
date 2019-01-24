@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\Core\Session;
 
-use Drupal\Core\Cache\MemoryCache\MemoryCache;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Session\UserSession;
 use Drupal\Tests\UnitTestCase;
@@ -95,7 +94,6 @@ class UserSessionTest extends UnitTestCase {
       ]));
 
     $role_storage = $this->getMockBuilder('Drupal\user\RoleStorage')
-      ->setConstructorArgs(['role', new MemoryCache()])
       ->disableOriginalConstructor()
       ->setMethods(['loadMultiple'])
       ->getMock();

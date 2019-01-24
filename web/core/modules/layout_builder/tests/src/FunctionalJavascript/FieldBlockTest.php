@@ -4,26 +4,19 @@ namespace Drupal\Tests\layout_builder\FunctionalJavascript;
 
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
+use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
 
 /**
  * @coversDefaultClass \Drupal\layout_builder\Plugin\Block\FieldBlock
  *
  * @group field
  */
-class FieldBlockTest extends WebDriverTestBase {
+class FieldBlockTest extends JavascriptTestBase {
 
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
-    'block',
-    'datetime',
-    'layout_builder',
-    'user',
-    // See \Drupal\layout_builder_fieldblock_test\Plugin\Block\FieldBlock.
-    'layout_builder_fieldblock_test',
-  ];
+  public static $modules = ['block', 'datetime', 'layout_builder', 'user'];
 
   /**
    * {@inheritdoc}
@@ -74,7 +67,7 @@ class FieldBlockTest extends WebDriverTestBase {
     $assert_session->pageTextNotContains('Initial email');
 
     $assert_session->pageTextContains('Date field');
-    $block_url = 'admin/structure/block/add/field_block_test%3Auser%3Auser%3Afield_date/classy';
+    $block_url = 'admin/structure/block/add/field_block%3Auser%3Auser%3Afield_date/classy';
     $assert_session->linkByHrefExists($block_url);
 
     $this->drupalGet($block_url);

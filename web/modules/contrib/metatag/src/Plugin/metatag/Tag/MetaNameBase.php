@@ -314,17 +314,15 @@ abstract class MetaNameBase extends PluginBase {
    *   A render array or an empty string.
    */
   public function output() {
-    if (empty($this->value)) {
-      // If there is no value, we don't want a tag output.
-      return $this->multiple() ? [] : '';
-    }
-
     // Parse out the image URL, if needed.
     $value = $this->parseImageUrl();
-    $values = $this->multiple() ? explode(',', $value) : [$value];
-    $elements = [];
-    foreach ($values as $value) {
-      $value = $this->tidy($value);
+    $value = $this->tidy($value);
+
+    if (empty($value)) {
+      // If there is no value, we don't want a tag output.
+      $element = '';
+    }
+    else {
       if ($this->requiresAbsoluteUrl()) {
         // Relative URL.
         if (parse_url($value, PHP_URL_HOST) == NULL) {
@@ -341,7 +339,7 @@ abstract class MetaNameBase extends PluginBase {
         $value = str_replace('http://', 'https://', $value);
       }
 
-      $elements[] = [
+      $element = [
         '#tag' => 'meta',
         '#attributes' => [
           $this->nameAttribute => $this->name,
@@ -350,7 +348,7 @@ abstract class MetaNameBase extends PluginBase {
       ];
     }
 
-    return $this->multiple() ? $elements : reset($elements);
+    return $element;
   }
 
   /**

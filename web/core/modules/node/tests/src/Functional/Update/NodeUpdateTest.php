@@ -9,7 +9,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests that node settings are properly updated during database updates.
  *
  * @group node
- * @group legacy
  */
 class NodeUpdateTest extends UpdatePathTestBase {
 

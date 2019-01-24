@@ -44,9 +44,7 @@ class PatternDisableForm extends EntityConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->disable()->save();
-    $this->messenger()->addMessage($this->t('Disabled pattern %label.', [
-      '%label' => $this->entity->label(),
-    ]));
+    drupal_set_message($this->t('Disabled pattern %label.', array('%label' => $this->entity->label())));
 
     $form_state->setRedirectUrl($this->getCancelUrl());
   }

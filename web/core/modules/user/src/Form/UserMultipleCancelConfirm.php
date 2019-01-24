@@ -5,7 +5,6 @@ namespace Drupal\user\Form;
 use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
 use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Drupal\user\UserStorageInterface;
@@ -133,7 +132,7 @@ class UserMultipleCancelConfirm extends ConfirmFormBase {
     if (isset($root)) {
       $redirect = (count($accounts) == 1);
       $message = $this->t('The user account %name cannot be canceled.', ['%name' => $root->label()]);
-      $this->messenger()->addMessage($message, $redirect ? MessengerInterface::TYPE_ERROR : MessengerInterface::TYPE_WARNING);
+      drupal_set_message($message, $redirect ? 'error' : 'warning');
       // If only user 1 was selected, redirect to the overview.
       if ($redirect) {
         return $this->redirect('entity.user.collection');

@@ -116,7 +116,7 @@ function _batch_test_finished_helper($batch_id, $success, $results, $operations)
     ],
   ];
 
-  \Drupal::messenger()->addStatus(\Drupal::service('renderer')->renderPlain($error_message));
+  drupal_set_message(\Drupal::service('renderer')->renderPlain($error_message));
 }
 
 /**

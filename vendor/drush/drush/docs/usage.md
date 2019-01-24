@@ -16,7 +16,7 @@ For even more documentation, use the 'topic' command:
 Using the --uri option and --root options.
 -----------
 
-For multi-site installations, use a site alias or the --uri option to target a particular site.
+For multisite installations, use a site alias or the --uri option to target a particular site.
 
     $ drush --uri=http://example.com pm:enable
     

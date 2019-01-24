@@ -15,25 +15,6 @@ class MigrateUpgrade6ReviewPageTest extends MigrateUpgradeReviewPageTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
-    'language',
-    'content_translation',
-    'config_translation',
-    'telephone',
-    'aggregator',
-    'book',
-    'forum',
-    'statistics',
-    'syslog',
-    'tracker',
-    'update',
-    // Required for translation migrations.
-    'migrate_drupal_multilingual',
-  ];
-
-  /**
-   * {@inheritdoc}
-   */
   protected function setUp() {
     parent::setUp();
     $this->loadFixture(drupal_get_path('module', 'migrate_drupal') . '/tests/fixtures/drupal6.php');
@@ -63,12 +44,6 @@ class MigrateUpgrade6ReviewPageTest extends MigrateUpgradeReviewPageTestBase {
       'filefield',
       'filter',
       'forum',
-      'i18n',
-      'i18nblocks',
-      'i18ncck',
-      'i18nmenu',
-      'i18nprofile',
-      'i18nstrings',
       'i18ntaxonomy',
       'imagecache',
       'imagefield',
@@ -113,6 +88,9 @@ class MigrateUpgrade6ReviewPageTest extends MigrateUpgradeReviewPageTestBase {
       'fieldgroup',
       'filefield_meta',
       'help',
+      'i18n',
+      'i18nmenu',
+      'i18nstrings',
       'imageapi',
       'imageapi_gd',
       'imageapi_imagemagick',
@@ -143,8 +121,11 @@ class MigrateUpgrade6ReviewPageTest extends MigrateUpgradeReviewPageTestBase {
       'devel',
       'devel_generate',
       'devel_node_access',
+      'i18nblocks',
+      'i18ncck',
       'i18ncontent',
       'i18npoll',
+      'i18nprofile',
       'i18nsync',
       'i18nviews',
       'phone',

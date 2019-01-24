@@ -22,18 +22,16 @@ class Twig_SimpleTest
     protected $callable;
     protected $options;
 
-    private $arguments = [];
-
-    public function __construct($name, $callable, array $options = [])
+    public function __construct($name, $callable, array $options = array())
     {
         $this->name = $name;
         $this->callable = $callable;
-        $this->options = array_merge([
+        $this->options = array_merge(array(
             'is_variadic' => false,
             'node_class' => 'Twig_Node_Expression_Test',
             'deprecated' => false,
             'alternative' => null,
-        ], $options);
+        ), $options);
     }
 
     public function getName()
@@ -69,16 +67,6 @@ class Twig_SimpleTest
     public function getAlternative()
     {
         return $this->options['alternative'];
-    }
-
-    public function setArguments($arguments)
-    {
-        $this->arguments = $arguments;
-    }
-
-    public function getArguments()
-    {
-        return $this->arguments;
     }
 }
 

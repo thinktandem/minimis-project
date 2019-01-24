@@ -2,19 +2,14 @@
 
 namespace Drupal\Tests\search\Functional;
 
-use Drupal\Tests\BrowserTestBase;
+use Drupal\Component\Utility\Unicode;
 
 /**
  * Tests that CJK tokenizer works as intended.
  *
  * @group search
  */
-class SearchTokenizerTest extends BrowserTestBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  protected static $modules = ['search'];
+class SearchTokenizerTest extends SearchTestBase {
 
   /**
    * Verifies that strings of CJK characters are tokenized.
@@ -100,7 +95,7 @@ class SearchTokenizerTest extends BrowserTestBase {
     // Merge into a string and tokenize.
     $string = implode('', $chars);
     $out = trim(search_simplify($string));
-    $expected = mb_strtolower(implode(' ', $chars));
+    $expected = Unicode::strtolower(implode(' ', $chars));
 
     // Verify that the output matches what we expect.
     $this->assertEqual($out, $expected, 'CJK tokenizer worked on all supplied CJK characters');
@@ -130,9 +125,9 @@ class SearchTokenizerTest extends BrowserTestBase {
   /**
    * Like PHP chr() function, but for unicode characters.
    *
-   * Function chr() only works for ASCII characters up to character 255. This
-   * function converts a number to the corresponding unicode character. Adapted
-   * from functions supplied in comments on several functions on php.net.
+   * chr() only works for ASCII characters up to character 255. This function
+   * converts a number to the corresponding unicode character. Adapted from
+   * functions supplied in comments on several functions on php.net.
    */
   public function code2utf($num) {
     if ($num < 128) {

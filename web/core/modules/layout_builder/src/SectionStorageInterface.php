@@ -3,7 +3,6 @@
 namespace Drupal\layout_builder;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
-use Drupal\Core\Access\AccessibleInterface;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -14,7 +13,7 @@ use Symfony\Component\Routing\RouteCollection;
  *   experimental modules and development releases of contributed modules.
  *   See https://www.drupal.org/core/experimental for more information.
  */
-interface SectionStorageInterface extends SectionListInterface, PluginInspectionInterface, AccessibleInterface {
+interface SectionStorageInterface extends SectionListInterface, PluginInspectionInterface {
 
   /**
    * Returns an identifier for this storage.
@@ -89,14 +88,10 @@ interface SectionStorageInterface extends SectionListInterface, PluginInspection
   /**
    * Gets the URL used to display the Layout Builder UI.
    *
-   * @param string $rel
-   *   (optional) The link relationship type, for example: 'view' or 'disable'.
-   *   Defaults to 'view'.
-   *
    * @return \Drupal\Core\Url
    *   The URL object.
    */
-  public function getLayoutBuilderUrl($rel = 'view');
+  public function getLayoutBuilderUrl();
 
   /**
    * Configures the plugin based on route values.

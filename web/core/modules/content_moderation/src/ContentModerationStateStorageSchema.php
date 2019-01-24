@@ -25,16 +25,12 @@ class ContentModerationStateStorageSchema extends SqlContentEntityStorageSchema 
       'workflow',
       'langcode',
     ];
-    if ($data_table = $this->storage->getDataTable()) {
-      $schema[$data_table]['unique keys'] += [
-        'content_moderation_state__lookup' => $unique_keys,
-      ];
-    }
-    if ($revision_data_table = $this->storage->getRevisionDataTable()) {
-      $schema[$revision_data_table]['unique keys'] += [
-        'content_moderation_state__lookup' => $unique_keys,
-      ];
-    }
+    $schema['content_moderation_state_field_data']['unique keys'] += [
+      'content_moderation_state__lookup' => $unique_keys,
+    ];
+    $schema['content_moderation_state_field_revision']['unique keys'] += [
+      'content_moderation_state__lookup' => $unique_keys,
+    ];
 
     return $schema;
   }

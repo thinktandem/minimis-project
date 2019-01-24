@@ -49,13 +49,6 @@ class ConfigEntityMapperTest extends UnitTestCase {
    */
   protected $languageManager;
 
-  /**
-   * The mocked event dispatcher.
-   *
-   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface|\PHPUnit_Framework_MockObject_MockObject
-   */
-  protected $eventDispatcher;
-
   protected function setUp() {
     $this->entityManager = $this->getMock('Drupal\Core\Entity\EntityManagerInterface');
 
@@ -86,8 +79,6 @@ class ConfigEntityMapperTest extends UnitTestCase {
 
     $this->languageManager = $this->getMock('Drupal\Core\Language\LanguageManagerInterface');
 
-    $this->eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-
     $this->configEntityMapper = new ConfigEntityMapper(
       'configurable_language',
       $definition,
@@ -98,8 +89,7 @@ class ConfigEntityMapperTest extends UnitTestCase {
       $this->routeProvider,
       $this->getStringTranslationStub(),
       $this->entityManager,
-      $this->languageManager,
-      $this->eventDispatcher
+      $this->languageManager
     );
   }
 

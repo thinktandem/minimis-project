@@ -1,8 +1,3 @@
-ajax_insert:
-  js:
-    js/insert-ajax.js: {}
-  dependencies:
-    - core/drupal.ajax
 order:
  drupalSettings:
    ajax: test

@@ -23,21 +23,14 @@ class Controller extends BaseGenerator {
    */
   protected function interact(InputInterface $input, OutputInterface $output) {
     $questions = Utils::defaultQuestions();
-
     $default_class = function ($vars) {
-      return Utils::camelize($vars['name']) . 'Controller';
+      return Utils::camelize($vars['name'] . 'Controller');
     };
     $questions['class'] = new Question('Class', $default_class);
-
+    $questions['route'] = new ConfirmationQuestion('Would you like to create a route for this controller?');
     $vars = $this->collectVars($input, $output, $questions);
 
-    $di_question = new ConfirmationQuestion('Would you like to inject dependencies?', FALSE);
-    if ($this->ask($input, $output, $di_question)) {
-      $this->collectServices($input, $output);
-    }
-
-    $route_question = new ConfirmationQuestion('Would you like to create a route for this controller?');
-    if ($this->ask($input, $output, $route_question)) {
+    if ($vars['route']) {
       $route_path = '/' . str_replace('_', '-', $vars['machine_name']) . '/example';
       $route_questions['route_name'] = new Question('Route name', '{machine_name}.example');
       $route_questions['route_path'] = new Question('Route path', $route_path);

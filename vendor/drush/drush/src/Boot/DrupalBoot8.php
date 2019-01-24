@@ -112,22 +112,11 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
     public function bootstrapDrupalSiteValidate()
     {
         parent::bootstrapDrupalSiteValidate();
-
-        // Normalize URI.
-        $uri = rtrim($this->uri, '/') . '/';
-        $parsed_url = parse_url($uri);
-
         // Account for users who omit the http:// prefix.
-        if (empty($parsed_url['scheme'])) {
+        if (!parse_url($this->uri, PHP_URL_SCHEME)) {
             $this->uri = 'http://' . $this->uri;
-            $parsed_url = parse_url($this->uri);
         }
-
-        $server = [
-            'SCRIPT_FILENAME' => getcwd() . '/index.php',
-            'SCRIPT_NAME' => isset($parsed_url['path']) ? $parsed_url['path'] . 'index.php' : '/index.php',
-        ];
-        $request = Request::create($this->uri, 'GET', [], [], [], $server);
+        $request = Request::create($this->uri, 'GET', [], [], [], ['SCRIPT_NAME' => '/index.php']);
         $this->setRequest($request);
         $confPath = drush_bootstrap_value('confPath', $this->confPath(true, true));
         drush_bootstrap_value('site', $request->getHttpHost());
@@ -167,9 +156,8 @@ class DrupalBoot8 extends DrupalBoot implements AutoloaderAwareInterface
         $classloader = $this->autoloader();
         $request = $this->getRequest();
         $kernel_factory = Kernels::getKernelFactory($kernel);
-        $allow_dumping = $kernel !== Kernels::UPDATE;
         /** @var \Drupal\Core\DrupalKernelInterface kernel */
-        $this->kernel = $kernel_factory($request, $classloader, 'prod', $allow_dumping);
+        $this->kernel = $kernel_factory($request, $classloader, 'prod');
         // Include Drush services in the container.
         // @see Drush\Drupal\DrupalKernel::addServiceModifier()
         $this->kernel->addServiceModifier(new DrushServiceModifier());

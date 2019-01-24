@@ -94,7 +94,7 @@ class FormTestRebuildPreserveValuesForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Finish the workflow. Do not rebuild.
-    $this->messenger()->addStatus($this->t('Form values: %values', ['%values' => var_export($form_state->getValues(), TRUE)]));
+    drupal_set_message(t('Form values: %values', ['%values' => var_export($form_state->getValues(), TRUE)]));
   }
 
 }

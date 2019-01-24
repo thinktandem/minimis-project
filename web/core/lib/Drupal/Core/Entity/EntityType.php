@@ -3,7 +3,7 @@
 namespace Drupal\Core\Entity;
 
 use Drupal\Component\Plugin\Definition\PluginDefinition;
-use Drupal\Core\DependencyInjection\DependencySerializationTrait;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Entity\Exception\EntityTypeIdLengthException;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
@@ -15,7 +15,6 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
  */
 class EntityType extends PluginDefinition implements EntityTypeInterface {
 
-  use DependencySerializationTrait;
   use StringTranslationTrait;
 
   /**
@@ -296,7 +295,7 @@ class EntityType extends PluginDefinition implements EntityTypeInterface {
    */
   public function __construct($definition) {
     // Throw an exception if the entity type ID is longer than 32 characters.
-    if (mb_strlen($definition['id']) > static::ID_MAX_LENGTH) {
+    if (Unicode::strlen($definition['id']) > static::ID_MAX_LENGTH) {
       throw new EntityTypeIdLengthException('Attempt to create an entity type with an ID longer than ' . static::ID_MAX_LENGTH . " characters: {$definition['id']}.");
     }
 
@@ -769,7 +768,7 @@ class EntityType extends PluginDefinition implements EntityTypeInterface {
    * {@inheritdoc}
    */
   public function getLowercaseLabel() {
-    return mb_strtolower($this->getLabel());
+    return Unicode::strtolower($this->getLabel());
   }
 
   /**
@@ -837,6 +836,7 @@ class EntityType extends PluginDefinition implements EntityTypeInterface {
   public function getGroup() {
     return $this->group;
   }
+
 
   /**
    * {@inheritdoc}

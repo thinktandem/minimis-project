@@ -23,18 +23,14 @@ class MigrateUpgrade7Test extends MigrateUpgradeExecuteTestBase {
   public static $modules = [
     'file',
     'language',
-    'config_translation',
     'content_translation',
     'migrate_drupal_ui',
     'telephone',
     'aggregator',
     'book',
     'forum',
-    'rdf',
     'statistics',
     'migration_provider_test',
-    // Required for translation migrations.
-    'migrate_drupal_multilingual',
   ];
 
   /**
@@ -62,25 +58,24 @@ class MigrateUpgrade7Test extends MigrateUpgradeExecuteTestBase {
       'block' => 25,
       'block_content' => 1,
       'block_content_type' => 1,
-      'comment' => 3,
+      'comment' => 1,
       // The 'standard' profile provides the 'comment' comment type, and the
       // migration creates 6 comment types, one per node type.
       'comment_type' => 7,
-      // Module 'language' comes with 'en', 'und', 'zxx'. Migration adds 'is'
-      // and 'fr'.
-      'configurable_language' => 5,
+      // Module 'language' comes with 'en', 'und', 'zxx'. Migration adds 'is'.
+      'configurable_language' => 4,
       'contact_form' => 3,
       'editor' => 2,
-      'field_config' => 67,
-      'field_storage_config' => 50,
+      'field_config' => 66,
+      'field_storage_config' => 49,
       'file' => 3,
       'filter_format' => 7,
       'image_style' => 6,
-      'language_content_settings' => 6,
+      'language_content_settings' => 2,
       'migration' => 73,
       'node' => 5,
       'node_type' => 6,
-      'rdf_mapping' => 8,
+      'rdf_mapping' => 7,
       'search_page' => 2,
       'shortcut' => 6,
       'shortcut_set' => 2,
@@ -88,7 +83,7 @@ class MigrateUpgrade7Test extends MigrateUpgradeExecuteTestBase {
       'menu' => 6,
       'taxonomy_term' => 18,
       'taxonomy_vocabulary' => 4,
-      'tour' => 5,
+      'tour' => 4,
       'user' => 4,
       'user_role' => 3,
       'menu_link_content' => 12,
@@ -108,7 +103,7 @@ class MigrateUpgrade7Test extends MigrateUpgradeExecuteTestBase {
   protected function getEntityCountsIncremental() {
     $counts = $this->getEntityCounts();
     $counts['block_content'] = 2;
-    $counts['comment'] = 4;
+    $counts['comment'] = 2;
     $counts['file'] = 4;
     $counts['menu_link_content'] = 13;
     $counts['node'] = 6;
@@ -137,7 +132,6 @@ class MigrateUpgrade7Test extends MigrateUpgradeExecuteTestBase {
       'file',
       'filter',
       'forum',
-      'i18n_variable',
       'image',
       'language',
       'link',
@@ -149,7 +143,6 @@ class MigrateUpgrade7Test extends MigrateUpgradeExecuteTestBase {
       'options',
       'path',
       'phone',
-      'rdf',
       'search',
       'shortcut',
       'statistics',
@@ -179,10 +172,7 @@ class MigrateUpgrade7Test extends MigrateUpgradeExecuteTestBase {
    */
   protected function getMissingPaths() {
     return [
-      'i18n',
-      'variable',
-      'variable_realm',
-      'variable_store',
+      'rdf',
       // These modules are in the missing path list because they are installed
       // on the source site but they are not installed on the destination site.
       'syslog',

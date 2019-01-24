@@ -29,3 +29,4 @@ entity.action.delete_form:
     _title: 'Delete'
   requirements:
     _permission: 'administer actions'
+

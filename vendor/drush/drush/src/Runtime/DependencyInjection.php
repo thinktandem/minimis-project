@@ -11,7 +11,7 @@ use Symfony\Component\Console\Application;
 use Consolidation\Config\ConfigInterface;
 use Composer\Autoload\ClassLoader;
 use League\Container\ContainerInterface;
-use Consolidation\SiteAlias\SiteAliasManager;
+use Drush\SiteAlias\SiteAliasManager;
 
 /**
  * Prepare our Dependency Injection Container
@@ -104,7 +104,7 @@ class DependencyInjection
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(\Drush\Boot\AutoloaderAwareInterface::class)
             ->invokeMethod('setAutoloader', ['loader']);
-        $container->inflector(\Consolidation\SiteAlias\SiteAliasManagerAwareInterface::class)
+        $container->inflector(\Drush\SiteAlias\SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', ['site.alias.manager']);
     }
 
@@ -126,9 +126,6 @@ class DependencyInjection
         $factory = $container->get('commandFactory');
         $factory->setIncludeAllPublicMethods(false);
         $factory->setDataStore($commandCacheDataStore);
-
-        $commandProcessor = $container->get('commandProcessor');
-        $commandProcessor->setPassExceptions(true);
     }
 
     protected static function injectApplicationServices(ContainerInterface $container, Application $application)

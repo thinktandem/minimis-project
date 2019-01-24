@@ -3,6 +3,7 @@
 namespace Drupal\Tests\content_moderation\Functional;
 
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\workflows\Entity\Workflow;
 use Drupal\Core\Url;
 
 /**
@@ -156,8 +157,9 @@ class ModerationFormTest extends ModerationStateTestBase {
    */
   public function testNonBundleModerationForm() {
     $this->drupalLogin($this->rootUser);
-    $this->workflow->getTypePlugin()->addEntityTypeAndBundle('entity_test_mulrevpub', 'entity_test_mulrevpub');
-    $this->workflow->save();
+    $workflow = Workflow::load('editorial');
+    $workflow->getTypePlugin()->addEntityTypeAndBundle('entity_test_mulrevpub', 'entity_test_mulrevpub');
+    $workflow->save();
 
     // Create new moderated content in draft.
     $this->drupalPostForm('entity_test_mulrevpub/add', ['moderation_state[0][state]' => 'draft'], t('Save'));
@@ -471,7 +473,7 @@ class ModerationFormTest extends ModerationStateTestBase {
       'edit own moderated_content content',
       'use editorial transition create_new_draft',
       'use editorial transition publish',
-      'use editorial transition archive',
+      'use editorial transition archive'
     ]);
     $this->drupalLogin($user);
     $paths = [

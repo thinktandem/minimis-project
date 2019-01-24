@@ -24,17 +24,6 @@
     return typeof a === 'undefined' || typeof b === 'undefined';
   }
 
-  function ternary(a, b) {
-    if (typeof a === 'undefined') {
-      return b;
-    }
-    if (typeof b === 'undefined') {
-      return a;
-    }
-
-    return a && b;
-  }
-
   Drupal.behaviors.states = {
     attach: function attach(context, settings) {
       var $states = $(context).find('[data-drupal-states]');
@@ -130,14 +119,12 @@
 
         value = invert(value, this.state.invert);
 
-        this.element.trigger({
-          type: 'state:' + this.state,
-          value: value,
-          trigger: true
-        });
+        this.element.trigger({ type: 'state:' + this.state, value: value, trigger: true });
       }
     },
     verifyConstraints: function verifyConstraints(constraints, selector) {
+      var _this3 = this;
+
       var result = void 0;
       if ($.isArray(constraints)) {
         var hasXor = $.inArray('xor', constraints) === -1;
@@ -153,15 +140,11 @@
           }
         }
       } else if ($.isPlainObject(constraints)) {
-          for (var n in constraints) {
-            if (constraints.hasOwnProperty(n)) {
-              result = ternary(result, this.checkConstraints(constraints[n], selector, n));
+          result = Object.keys(constraints).every(function (constraint) {
+            var check = _this3.checkConstraints(constraints[constraint], selector, constraint);
 
-              if (result === false) {
-                return false;
-              }
-            }
-          }
+            return typeof check === 'undefined' ? true : check;
+          });
         }
       return result;
     },
@@ -210,7 +193,7 @@
 
   states.Trigger.prototype = {
     initialize: function initialize() {
-      var _this3 = this;
+      var _this4 = this;
 
       var trigger = states.Trigger.states[this.state];
 
@@ -218,7 +201,7 @@
         trigger.call(window, this.element);
       } else {
         Object.keys(trigger || {}).forEach(function (event) {
-          _this3.defaultTrigger(event, trigger[event]);
+          _this4.defaultTrigger(event, trigger[event]);
         });
       }
 
@@ -231,21 +214,13 @@
         var value = valueFn.call(this.element, e);
 
         if (oldValue !== value) {
-          this.element.trigger({
-            type: 'state:' + this.state,
-            value: value,
-            oldValue: oldValue
-          });
+          this.element.trigger({ type: 'state:' + this.state, value: value, oldValue: oldValue });
           oldValue = value;
         }
       }, this));
 
       states.postponed.push($.proxy(function () {
-        this.element.trigger({
-          type: 'state:' + this.state,
-          value: oldValue,
-          oldValue: null
-        });
+        this.element.trigger({ type: 'state:' + this.state, value: oldValue, oldValue: null });
       }, this));
     }
   };

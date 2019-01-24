@@ -12,7 +12,6 @@ use Drupal\Core\Render\Element;
  * Properties:
  * - #default_value: A valid URL string.
  * - #size: The size of the input element in characters.
- * - #pattern: A string for the native HTML5 pattern attribute.
  *
  * Usage example:
  * @code
@@ -20,7 +19,6 @@ use Drupal\Core\Render\Element;
  *   '#type' => 'url',
  *   '#title' => $this->t('Home Page'),
  *   '#size' => 30,
- *   '#pattern' => '*.example.com',
  *   ...
  * );
  * @endcode

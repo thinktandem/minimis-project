@@ -12,12 +12,7 @@ use Drupal\Tests\migrate_drupal\Kernel\d6\MigrateDrupal6TestBase;
  */
 class MigrateSystemMaintenanceTranslationTest extends MigrateDrupal6TestBase {
 
-  public static $modules = [
-    'language',
-    'config_translation',
-    // Required for translation migrations.
-    'migrate_drupal_multilingual',
-  ];
+  public static $modules = ['language', 'config_translation'];
 
   /**
    * {@inheritdoc}

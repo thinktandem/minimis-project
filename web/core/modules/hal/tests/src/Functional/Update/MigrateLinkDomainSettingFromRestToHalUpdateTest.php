@@ -10,7 +10,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * @see https://www.drupal.org/node/2758897
  *
  * @group hal
- * @group legacy
  */
 class MigrateLinkDomainSettingFromRestToHalUpdateTest extends UpdatePathTestBase {
 

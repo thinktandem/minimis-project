@@ -35,7 +35,7 @@ function node_mass_update(array $nodes, array $updates, $langcode = NULL, $load 
   if (count($nodes) > 10) {
     $batch = [
       'operations' => [
-        ['_node_mass_update_batch_process', [$nodes, $updates, $langcode, $load, $revisions]],
+        ['_node_mass_update_batch_process', [$nodes, $updates, $langcode, $load, $revisions]]
       ],
       'finished' => '_node_mass_update_batch_finished',
       'title' => t('Processing'),
@@ -60,7 +60,7 @@ function node_mass_update(array $nodes, array $updates, $langcode = NULL, $load 
       }
       _node_mass_update_helper($node, $updates, $langcode);
     }
-    \Drupal::messenger()->addStatus(t('The update has been performed.'));
+    drupal_set_message(t('The update has been performed.'));
   }
 }
 
@@ -164,16 +164,16 @@ function _node_mass_update_batch_process(array $nodes, array $updates, $langcode
  */
 function _node_mass_update_batch_finished($success, $results, $operations) {
   if ($success) {
-    \Drupal::messenger()->addStatus(t('The update has been performed.'));
+    drupal_set_message(t('The update has been performed.'));
   }
   else {
-    \Drupal::messenger()->addError(t('An error occurred and processing did not complete.'));
+    drupal_set_message(t('An error occurred and processing did not complete.'), 'error');
     $message = \Drupal::translation()->formatPlural(count($results), '1 item successfully processed:', '@count items successfully processed:');
     $item_list = [
       '#theme' => 'item_list',
       '#items' => $results,
     ];
     $message .= \Drupal::service('renderer')->render($item_list);
-    \Drupal::messenger()->addStatus($message);
+    drupal_set_message($message);
   }
 }

@@ -9,7 +9,7 @@ use Drupal\Core\Cache\Cache;
 /**
  * Provides a block to display the messages.
  *
- * @see @see \Drupal\Core\Messenger\MessengerInterface
+ * @see drupal_set_message()
  *
  * @Block(
  *   id = "system_messages_block",

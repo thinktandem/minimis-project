@@ -3,7 +3,7 @@
 namespace Drupal\simpletest;
 
 use Drupal\Component\Utility\Html;
-use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Component\Utility\Variable;
 use Drupal\Core\Config\Development\ConfigSchemaChecker;
 use Drupal\Core\Database\Database;
@@ -102,7 +102,7 @@ abstract class KernelTestBase extends TestBase {
   /**
    * A KeyValueMemoryFactory instance to use when building the container.
    *
-   * @var \Drupal\Core\KeyValueStore\KeyValueMemoryFactory
+   * @var \Drupal\Core\KeyValueStore\KeyValueMemoryFactory.
    */
   protected $keyValueFactory;
 
@@ -478,6 +478,7 @@ EOD;
     ]));
   }
 
+
   /**
    * Installs the storage schema for a specific entity type.
    *
@@ -499,7 +500,7 @@ EOD;
       $all_tables_exist = TRUE;
       foreach ($tables as $table) {
         if (!$db_schema->tableExists($table)) {
-          $this->fail(new FormattableMarkup('Installed entity type table for the %entity_type entity type: %table', [
+          $this->fail(SafeMarkup::format('Installed entity type table for the %entity_type entity type: %table', [
             '%entity_type' => $entity_type_id,
             '%table' => $table,
           ]));
@@ -507,7 +508,7 @@ EOD;
         }
       }
       if ($all_tables_exist) {
-        $this->pass(new FormattableMarkup('Installed entity type tables for the %entity_type entity type: %tables', [
+        $this->pass(SafeMarkup::format('Installed entity type tables for the %entity_type entity type: %tables', [
           '%entity_type' => $entity_type_id,
           '%tables' => '{' . implode('}, {', $tables) . '}',
         ]));

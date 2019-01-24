@@ -267,13 +267,18 @@ abstract class ConfigEntityBase extends Entity implements ConfigEntityInterface 
     /** @var \Drupal\Core\Config\Entity\ConfigEntityTypeInterface $entity_type */
     $entity_type = $this->getEntityType();
 
-    $id_key = $entity_type->getKey('id');
-    $property_names = $entity_type->getPropertiesToExport($this->id());
-    if (empty($property_names)) {
+    $properties_to_export = $entity_type->getPropertiesToExport();
+    if (empty($properties_to_export)) {
       $config_name = $entity_type->getConfigPrefix() . '.' . $this->id();
-      throw new SchemaIncompleteException("Incomplete or missing schema for $config_name");
+      $definition = $this->getTypedConfig()->getDefinition($config_name);
+      if (!isset($definition['mapping'])) {
+        throw new SchemaIncompleteException("Incomplete or missing schema for $config_name");
+      }
+      $properties_to_export = array_combine(array_keys($definition['mapping']), array_keys($definition['mapping']));
     }
-    foreach ($property_names as $property_name => $export_name) {
+
+    $id_key = $entity_type->getKey('id');
+    foreach ($properties_to_export as $property_name => $export_name) {
       // Special handling for IDs so that computed compound IDs work.
       // @see \Drupal\Core\Entity\EntityDisplayBase::id()
       if ($property_name == $id_key) {

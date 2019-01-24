@@ -9,7 +9,7 @@ use Drupal\Core\Entity\ContentEntityBase;
 use Drupal\metatag\Entity\MetatagDefaults;
 
 /**
- * Implementations of hook_update_N().
+ * Implementsations of hook_update_N().
  */
 
 /**

@@ -3,7 +3,6 @@
 namespace Drupal\Tests\search\Functional;
 
 use Drupal\Component\Utility\Html;
-use Drupal\Tests\BrowserTestBase;
 
 /**
  * Verify the search without keywords set and extra conditions.
@@ -14,12 +13,14 @@ use Drupal\Tests\BrowserTestBase;
  *
  * @group search
  */
-class SearchKeywordsConditionsTest extends BrowserTestBase {
+class SearchKeywordsConditionsTest extends SearchTestBase {
 
   /**
-   * {@inheritdoc}
+   * Modules to enable.
+   *
+   * @var array
    */
-  protected static $modules = ['comment', 'search', 'search_extra_type', 'test_page_test'];
+  public static $modules = ['comment', 'search_extra_type', 'test_page_test'];
 
   /**
    * A user with permission to search and post comments.

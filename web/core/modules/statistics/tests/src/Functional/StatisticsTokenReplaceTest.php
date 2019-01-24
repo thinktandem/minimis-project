@@ -9,7 +9,6 @@ namespace Drupal\Tests\statistics\Functional;
  * @group statistics
  */
 class StatisticsTokenReplaceTest extends StatisticsTestBase {
-
   /**
    * Creates a node, then tests the statistics tokens generated from it.
    */

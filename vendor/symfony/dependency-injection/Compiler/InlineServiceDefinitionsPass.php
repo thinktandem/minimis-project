@@ -88,7 +88,7 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass implements Repe
             $ids = array_keys($this->cloningIds);
             $ids[] = $id;
 
-            throw new ServiceCircularReferenceException($id, \array_slice($ids, array_search($id, $ids)));
+            throw new ServiceCircularReferenceException($id, array_slice($ids, array_search($id, $ids)));
         }
 
         $this->cloningIds[$id] = true;
@@ -106,15 +106,11 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass implements Repe
      */
     private function isInlineableDefinition($id, Definition $definition, ServiceReferenceGraph $graph)
     {
-        if ($definition->getErrors() || $definition->isDeprecated() || $definition->isLazy() || $definition->isSynthetic()) {
-            return false;
-        }
-
         if (!$definition->isShared()) {
             return true;
         }
 
-        if ($definition->isPublic() || $definition->isPrivate()) {
+        if ($definition->isDeprecated() || $definition->isPublic() || $definition->isPrivate() || $definition->isLazy()) {
             return false;
         }
 
@@ -127,31 +123,21 @@ class InlineServiceDefinitionsPass extends AbstractRecursivePass implements Repe
         }
 
         $ids = array();
-        $isReferencedByConstructor = false;
         foreach ($graph->getNode($id)->getInEdges() as $edge) {
-            $isReferencedByConstructor = $isReferencedByConstructor || $edge->isReferencedByConstructor();
-            if ($edge->isWeak() || $edge->isLazy()) {
+            if ($edge->isWeak()) {
                 return false;
             }
             $ids[] = $edge->getSourceNode()->getId();
         }
 
-        if (!$ids) {
-            return true;
-        }
-
-        if (\count(array_unique($ids)) > 1) {
+        if (count(array_unique($ids)) > 1) {
             return false;
         }
 
-        if (\count($ids) > 1 && \is_array($factory = $definition->getFactory()) && ($factory[0] instanceof Reference || $factory[0] instanceof Definition)) {
+        if (count($ids) > 1 && is_array($factory = $definition->getFactory()) && ($factory[0] instanceof Reference || $factory[0] instanceof Definition)) {
             return false;
         }
 
-        if ($isReferencedByConstructor && $this->container->getDefinition($ids[0])->isLazy() && ($definition->getProperties() || $definition->getMethodCalls() || $definition->getConfigurator())) {
-            return false;
-        }
-
-        return $this->container->getDefinition($ids[0])->isShared();
+        return true;
     }
 }

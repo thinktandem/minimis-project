@@ -3,7 +3,6 @@ namespace Drush\SiteAlias;
 
 use Symfony\Component\Yaml\Yaml;
 use Dflydev\DotAccessData\Data;
-use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 
 /**
  * Find all legacy alias files and convert them to an equivalent '.yml' file.

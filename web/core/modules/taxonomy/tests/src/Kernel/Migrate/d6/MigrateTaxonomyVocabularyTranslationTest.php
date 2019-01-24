@@ -14,13 +14,7 @@ class MigrateTaxonomyVocabularyTranslationTest extends MigrateDrupal6TestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = [
-    'config_translation',
-    'language',
-    'taxonomy',
-    // Required for translation migrations.
-    'migrate_drupal_multilingual',
-  ];
+  public static $modules = ['language', 'taxonomy'];
 
   /**
    * {@inheritdoc}

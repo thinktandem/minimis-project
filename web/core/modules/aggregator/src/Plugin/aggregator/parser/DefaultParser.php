@@ -4,7 +4,6 @@ namespace Drupal\aggregator\Plugin\aggregator\parser;
 
 use Drupal\aggregator\Plugin\ParserInterface;
 use Drupal\aggregator\FeedInterface;
-use Drupal\Core\Messenger\MessengerTrait;
 use Zend\Feed\Reader\Reader;
 use Zend\Feed\Reader\Exception\ExceptionInterface;
 
@@ -21,8 +20,6 @@ use Zend\Feed\Reader\Exception\ExceptionInterface;
  */
 class DefaultParser implements ParserInterface {
 
-  use MessengerTrait;
-
   /**
    * {@inheritdoc}
    */
@@ -34,7 +31,7 @@ class DefaultParser implements ParserInterface {
     }
     catch (ExceptionInterface $e) {
       watchdog_exception('aggregator', $e);
-      $this->messenger()->addError(t('The feed from %site seems to be broken because of error "%error".', ['%site' => $feed->label(), '%error' => $e->getMessage()]));
+      drupal_set_message(t('The feed from %site seems to be broken because of error "%error".', ['%site' => $feed->label(), '%error' => $e->getMessage()]), 'error');
 
       return FALSE;
     }

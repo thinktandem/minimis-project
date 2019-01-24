@@ -10,7 +10,6 @@ use Drupal\Component\Utility\Unicode;
  * @group Module
  */
 class DependencyTest extends ModuleTestBase {
-
   /**
    * Checks functionality of project namespaces for dependencies.
    */

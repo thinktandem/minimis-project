@@ -28,15 +28,13 @@ class PathNodeFormTest extends PathTestBase {
    * Tests the node form ui.
    */
   public function testNodeForm() {
-    $assert_session = $this->assertSession();
-
     $this->drupalGet('node/add/page');
 
-    // Make sure we have a vertical tab fieldset and 'Path' fields.
-    $assert_session->elementContains('css', '.form-type-vertical-tabs #edit-path-0 summary', 'URL alias');
-    $assert_session->fieldExists('path[0][alias]');
+    // Make sure we have a Path fieldset and Path fields.
+    $this->assertRaw(' id="edit-path-settings"', 'Path settings details exists');
+    $this->assertFieldByName('path[0][alias]', NULL, 'Path alias field exists');
 
-    // Disable the 'Path' field for this content type.
+    // Disable the Path field for this content type.
     entity_get_form_display('node', 'page', 'default')
       ->removeComponent('path')
       ->save();
@@ -44,8 +42,8 @@ class PathNodeFormTest extends PathTestBase {
     $this->drupalGet('node/add/page');
 
     // See if the whole fieldset is gone now.
-    $assert_session->elementNotExists('css', '.form-type-vertical-tabs #edit-path-0');
-    $assert_session->fieldNotExists('path[0][alias]');
+    $this->assertNoRaw(' id="edit-path-settings"', 'Path settings details does not exist');
+    $this->assertNoFieldByName('path[0][alias]', NULL, 'Path alias field does not exist');
   }
 
 }

@@ -5,7 +5,6 @@ namespace Drupal\paragraphs\Form;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\SubformState;
-use Drupal\Core\Messenger\Messenger;
 use Drupal\field_ui\FieldUI;
 use Drupal\paragraphs\ParagraphsBehaviorManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,23 +29,13 @@ class ParagraphsTypeForm extends EntityForm {
   protected $entity;
 
   /**
-   * Provides messenger service.
-   *
-   * @var \Drupal\Core\Messenger\Messenger
-   */
-  protected $messenger;
-
-  /**
    * GeneralSettingsForm constructor.
    *
    * @param \Drupal\paragraphs\ParagraphsBehaviorManager $paragraphs_behavior_manager
    *   The paragraphs type feature manager service.
-   * @param \Drupal\Core\Messenger\Messenger $messenger
-   *   The messenger service.
    */
-  public function __construct(ParagraphsBehaviorManager $paragraphs_behavior_manager, Messenger $messenger) {
+  public function __construct(ParagraphsBehaviorManager $paragraphs_behavior_manager) {
     $this->paragraphsBehaviorManager = $paragraphs_behavior_manager;
-    $this->messenger = $messenger;
   }
 
   /**
@@ -54,8 +43,7 @@ class ParagraphsTypeForm extends EntityForm {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.paragraphs.behavior'),
-      $container->get('messenger')
+      $container->get('plugin.manager.paragraphs.behavior')
     );
   }
 
@@ -126,10 +114,6 @@ class ParagraphsTypeForm extends EntityForm {
         '#open' => TRUE
       ];
       $config = $paragraphs_type->get('behavior_plugins');
-      // Alphabetically sort plugins by plugin label.
-      uasort($behavior_plugin_definitions, function ($a, $b) {
-        return strcmp($a['label'], $b['label']);
-      });
       foreach ($behavior_plugin_definitions as $id => $behavior_plugin_definition) {
         $description = $behavior_plugin_definition['description'];
         $form['behavior_plugins'][$id]['enabled'] = [
@@ -167,9 +151,9 @@ class ParagraphsTypeForm extends EntityForm {
 
     $paragraphs_type = $this->entity;
 
-    $icon_file = $form_state->getValue(['icon_file', '0']);
+    $icon_fild = $form_state->getValue(['icon_file', '0']);
     // Set the file UUID to the paragraph configuration.
-    if (!empty($icon_file) && $file = $this->entityTypeManager->getStorage('file')->load($icon_file)) {
+    if (!empty($icon_fild) && $file = $this->entityTypeManager->getStorage('file')->load($icon_fild)) {
       $paragraphs_type->set('icon_uuid', $file->uuid());
     }
     else {
@@ -215,7 +199,7 @@ class ParagraphsTypeForm extends EntityForm {
     }
 
     $status = $paragraphs_type->save();
-    $this->messenger->addMessage($this->t('Saved the %label Paragraphs type.', array(
+    drupal_set_message($this->t('Saved the %label Paragraphs type.', array(
       '%label' => $paragraphs_type->label(),
     )));
     if (($status == SAVED_NEW && \Drupal::moduleHandler()->moduleExists('field_ui'))

@@ -2,17 +2,17 @@
 
 namespace Drupal\Tests\media\FunctionalJavascript;
 
-use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
+use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
+use Drupal\Tests\media\Functional\MediaFunctionalTestCreateMediaTypeTrait;
 use Drupal\Tests\media\Functional\MediaFunctionalTestTrait;
-use Drupal\Tests\media\Traits\MediaTypeCreationTrait;
 
 /**
  * Base class for Media functional JavaScript tests.
  */
-abstract class MediaJavascriptTestBase extends WebDriverTestBase {
+abstract class MediaJavascriptTestBase extends JavascriptTestBase {
 
   use MediaFunctionalTestTrait;
-  use MediaTypeCreationTrait;
+  use MediaFunctionalTestCreateMediaTypeTrait;
 
   /**
    * Modules to enable.
@@ -41,23 +41,6 @@ abstract class MediaJavascriptTestBase extends WebDriverTestBase {
   protected function waitUntilVisible($selector, $timeout = 1000, $message = '') {
     $condition = "jQuery('" . $selector . ":visible').length > 0";
     $this->assertJsCondition($condition, $timeout, $message);
-  }
-
-  /**
-   * Asserts that a link to a new media item is displayed in the messages area.
-   *
-   * @return string
-   *   The link URL.
-   */
-  protected function assertLinkToCreatedMedia() {
-    $assert_session = $this->assertSession();
-    $selector = '.messages a';
-
-    // Get the canonical media entity URL from the creation message.
-    $link = $assert_session->elementExists('css', $selector);
-    $assert_session->elementAttributeExists('css', $selector, 'href');
-
-    return $link->getAttribute('href');
   }
 
 }

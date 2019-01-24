@@ -114,9 +114,9 @@ RSS;
     $event = new FilterResponseEvent(
       $this->prophesize(HttpKernelInterface::class)->reveal(),
       Request::create('/'),
-      HttpKernelInterface::MASTER_REQUEST,
+      'foo',
       new Response($content, 200, [
-        'Content-Type' => 'application/rss+xml',
+        'Content-Type' => 'application/rss+xml'
       ])
     );
 

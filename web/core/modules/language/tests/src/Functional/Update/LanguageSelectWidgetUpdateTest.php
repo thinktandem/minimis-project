@@ -9,7 +9,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests the update path for the language_select widget.
  *
  * @group Update
- * @group legacy
  */
 class LanguageSelectWidgetUpdateTest extends UpdatePathTestBase {
 

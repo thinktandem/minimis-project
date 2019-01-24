@@ -3,7 +3,7 @@
 namespace Drupal\Tests\book\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Tests Book and Content Moderation integration.
@@ -13,7 +13,6 @@ use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
 class BookContentModerationTest extends BrowserTestBase {
 
   use BookTestTrait;
-  use ContentModerationTestTrait;
 
   /**
    * Modules to install.
@@ -31,7 +30,7 @@ class BookContentModerationTest extends BrowserTestBase {
     $this->drupalPlaceBlock('system_breadcrumb_block');
     $this->drupalPlaceBlock('page_title_block');
 
-    $workflow = $this->createEditorialWorkflow();
+    $workflow = Workflow::load('editorial');
     $workflow->getTypePlugin()->addEntityTypeAndBundle('node', 'book');
     $workflow->save();
 

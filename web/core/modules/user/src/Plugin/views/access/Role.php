@@ -96,6 +96,7 @@ class Role extends AccessPluginBase implements CacheableDependencyInterface {
     }
   }
 
+
   protected function defineOptions() {
     $options = parent::defineOptions();
     $options['role'] = ['default' => []];

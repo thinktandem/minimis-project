@@ -3,7 +3,6 @@
 namespace Drupal\Tests\aggregator\Functional;
 
 use Drupal\aggregator\Entity\Feed;
-use Drupal\aggregator\Entity\Item;
 
 /**
  * Update feed items from a feed.
@@ -11,7 +10,6 @@ use Drupal\aggregator\Entity\Item;
  * @group aggregator
  */
 class UpdateFeedItemTest extends AggregatorTestBase {
-
   /**
    * Tests running "update items" from 'admin/config/services/aggregator' page.
    */
@@ -44,24 +42,26 @@ class UpdateFeedItemTest extends AggregatorTestBase {
     $view_link = $this->xpath('//div[@class="messages"]//a[contains(@href, :href)]', [':href' => 'aggregator/sources/']);
     $this->assert(isset($view_link), 'The message area contains a link to a feed');
 
-    $fids = \Drupal::entityQuery('aggregator_feed')->condition('url', $edit['url[0][value]'])->execute();
-    $feed = Feed::load(array_values($fids)[0]);
+    $fid = db_query("SELECT fid FROM {aggregator_feed} WHERE url = :url", [':url' => $edit['url[0][value]']])->fetchField();
+    $feed = Feed::load($fid);
 
     $feed->refreshItems();
-    $iids = \Drupal::entityQuery('aggregator_item')->condition('fid', $feed->id())->execute();
-    $before = Item::load(array_values($iids)[0])->getPostedTime();
+    $before = db_query('SELECT timestamp FROM {aggregator_item} WHERE fid = :fid', [':fid' => $feed->id()])->fetchField();
 
     // Sleep for 3 second.
     sleep(3);
-    $feed
-      ->setLastCheckedTime(0)
-      ->setHash('')
-      ->setEtag('')
-      ->setLastModified(0)
-      ->save();
+    db_update('aggregator_feed')
+      ->condition('fid', $feed->id())
+      ->fields([
+        'checked' => 0,
+        'hash' => '',
+        'etag' => '',
+        'modified' => 0,
+      ])
+      ->execute();
     $feed->refreshItems();
 
-    $after = Item::load(array_values($iids)[0])->getPostedTime();
+    $after = db_query('SELECT timestamp FROM {aggregator_item} WHERE fid = :fid', [':fid' => $feed->id()])->fetchField();
     $this->assertTrue($before === $after, format_string('Publish timestamp of feed item was not updated (@before === @after)', ['@before' => $before, '@after' => $after]));
 
     // Make sure updating items works even after uninstalling a module

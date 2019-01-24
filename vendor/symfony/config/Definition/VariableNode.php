@@ -82,7 +82,11 @@ class VariableNode extends BaseNode implements PrototypeNodeInterface
     protected function finalizeValue($value)
     {
         if (!$this->allowEmptyValue && $this->isValueEmpty($value)) {
-            $ex = new InvalidConfigurationException(sprintf('The path "%s" cannot contain an empty value, but got %s.', $this->getPath(), json_encode($value)));
+            $ex = new InvalidConfigurationException(sprintf(
+                'The path "%s" cannot contain an empty value, but got %s.',
+                $this->getPath(),
+                json_encode($value)
+            ));
             if ($hint = $this->getInfo()) {
                 $ex->addHint($hint);
             }

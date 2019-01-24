@@ -175,6 +175,7 @@ class ProcessingTest extends BrowserTestBase {
     $this->assertText('Redirection successful.', 'Redirection after batch execution is correct.');
   }
 
+
   /**
    * Triggers a pass if the texts were found in order in the raw content.
    *

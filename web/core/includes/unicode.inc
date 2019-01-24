@@ -10,7 +10,6 @@ use Drupal\Component\Utility\Unicode;
 /**
  * Returns Unicode library status and errors.
  */
-
 /**
  * Moves unicode_requirements() logic to system_requirements().
  *

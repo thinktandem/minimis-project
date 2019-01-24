@@ -3,8 +3,6 @@ namespace Drush\SiteAlias;
 
 /**
  * Inflection trait for the site alias manager.
- *
- * @deprecated Use \Consolidation\SiteAlias\SiteAliasManagerAwareTrait
  */
 trait SiteAliasManagerAwareTrait
 {

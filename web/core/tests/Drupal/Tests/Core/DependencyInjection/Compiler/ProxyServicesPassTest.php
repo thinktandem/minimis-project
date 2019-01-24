@@ -29,6 +29,7 @@ class ProxyServicesPassTest extends UnitTestCase {
     $this->proxyServicesPass = new ProxyServicesPass();
   }
 
+
   /**
    * @covers ::process
    */

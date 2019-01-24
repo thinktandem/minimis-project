@@ -35,7 +35,7 @@ class DbCommandBaseTest extends KernelTestBase {
     Database::addConnectionInfo('magic_db', 'default', Database::getConnectionInfo('default')['default']);
 
     $command_tester->execute([
-      '--database' => 'magic_db',
+      '--database' => 'magic_db'
     ]);
     $this->assertEquals('magic_db', $command->getDatabaseConnection($command_tester->getInput())->getKey(),
        'Special db key is returned');
@@ -48,7 +48,7 @@ class DbCommandBaseTest extends KernelTestBase {
     $command = new DbCommandBaseTester();
     $command_tester = new CommandTester($command);
     $command_tester->execute([
-      '--database' => 'dne',
+      '--database' => 'dne'
     ]);
     $this->setExpectedException(ConnectionNotDefinedException::class);
     $command->getDatabaseConnection($command_tester->getInput());
@@ -58,16 +58,18 @@ class DbCommandBaseTest extends KernelTestBase {
    * Test supplying database connection as a url.
    */
   public function testSpecifyDbUrl() {
+    $connection_info = Database::getConnectionInfo('default')['default'];
+
     $command = new DbCommandBaseTester();
     $command_tester = new CommandTester($command);
     $command_tester->execute([
-      '-db-url' => Database::getConnectionInfoAsUrl(),
+      '-db-url' => $connection_info['driver'] . '://' . $connection_info['username'] . ':' . $connection_info['password'] . '@' . $connection_info['host'] . '/' . $connection_info['database']
     ]);
     $this->assertEquals('db-tools', $command->getDatabaseConnection($command_tester->getInput())->getKey());
 
     Database::removeConnection('db-tools');
     $command_tester->execute([
-      '--database-url' => Database::getConnectionInfoAsUrl(),
+      '--database-url' => $connection_info['driver'] . '://' . $connection_info['username'] . ':' . $connection_info['password'] . '@' . $connection_info['host'] . '/' . $connection_info['database']
     ]);
     $this->assertEquals('db-tools', $command->getDatabaseConnection($command_tester->getInput())->getKey());
   }
@@ -89,8 +91,9 @@ class DbCommandBaseTest extends KernelTestBase {
     ]);
     $this->assertEquals('extra', $command->getDatabaseConnection($command_tester->getInput())->tablePrefix());
 
+    $connection_info = Database::getConnectionInfo('default')['default'];
     $command_tester->execute([
-      '-db-url' => Database::getConnectionInfoAsUrl(),
+      '-db-url' => $connection_info['driver'] . '://' . $connection_info['username'] . ':' . $connection_info['password'] . '@' . $connection_info['host'] . '/' . $connection_info['database'],
       '--prefix' => 'extra2',
     ]);
     $this->assertEquals('extra2', $command->getDatabaseConnection($command_tester->getInput())->tablePrefix());

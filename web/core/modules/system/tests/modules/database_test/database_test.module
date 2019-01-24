@@ -38,6 +38,7 @@ function database_test_query_alter(AlterableInterface $query) {
   }
 }
 
+
 /**
  * Implements hook_query_TAG_alter().
  *

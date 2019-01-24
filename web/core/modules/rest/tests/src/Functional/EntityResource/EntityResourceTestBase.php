@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\rest\Functional\EntityResource;
 
-use Drupal\Component\Assertion\Inspector;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Component\Utility\Random;
 use Drupal\Core\Cache\Cache;
@@ -83,8 +82,6 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
   /**
    * The fields that are protected against modification during PATCH requests.
    *
-   * Keys are field names, values are expected access denied reasons.
-   *
    * @var string[]
    */
   protected static $patchProtectedFieldNames;
@@ -159,22 +156,12 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
 
   /**
    * Provides an entity resource.
-   *
-   * @param bool $single_format
-   *   Provisions a single-format entity REST resource. Defaults to FALSE.
    */
-  protected function provisionEntityResource($single_format = FALSE) {
-    if ($existing = $this->resourceConfigStorage->load(static::$resourceConfigId)) {
-      $existing->delete();
-    }
-
-    $format = $single_format
-      ? [static::$format]
-      : [static::$format, 'foobar'];
+  protected function provisionEntityResource() {
     // It's possible to not have any authentication providers enabled, when
     // testing public (anonymous) usage of a REST resource.
     $auth = isset(static::$auth) ? [static::$auth] : [];
-    $this->provisionResource($format, $auth);
+    $this->provisionResource([static::$format], $auth);
   }
 
   /**
@@ -236,7 +223,6 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
         // Set a default value on the fields.
         $this->entity->set('field_rest_test', ['value' => 'All the faith he had had had had no effect on the outcome of his life.']);
         $this->entity->set('field_rest_test_multivalue', [['value' => 'One'], ['value' => 'Two']]);
-        $this->entity->set('rest_test_validation', ['value' => 'allowed value']);
         $this->entity->save();
       }
     }
@@ -448,6 +434,20 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
     }
 
     $this->provisionEntityResource();
+    // Simulate the developer again forgetting the ?_format query string.
+    $url->setOption('query', []);
+
+    // DX: 406 when ?_format is missing, except when requesting a canonical HTML
+    // route.
+    $response = $this->request('GET', $url, $request_options);
+    if ($has_canonical_url && (!static::$auth || static::$auth === 'cookie')) {
+      $this->assertSame(403, $response->getStatusCode());
+    }
+    else {
+      $this->assert406Response($response);
+    }
+
+    $url->setOption('query', ['_format' => static::$format]);
 
     // DX: forgetting authentication: authentication provider-specific error
     // response.
@@ -472,44 +472,10 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
     unset($request_options[RequestOptions::HEADERS]['REST-test-auth-global']);
     $request_options = NestedArray::mergeDeep($request_options, $this->getAuthenticationRequestOptions('GET'));
 
-    // First: single format. Drupal will automatically pick the only format.
-    $this->provisionEntityResource(TRUE);
+    // DX: 403 when unauthorized.
+    $response = $this->request('GET', $url, $request_options);
     $expected_403_cacheability = $this->getExpectedUnauthorizedAccessCacheability();
-    // DX: 403 because unauthorized single-format route, ?_format is omittable.
-    $url->setOption('query', []);
-    $response = $this->request('GET', $url, $request_options);
-    if ($has_canonical_url) {
-      $this->assertSame(403, $response->getStatusCode());
-      $this->assertSame(['text/html; charset=UTF-8'], $response->getHeader('Content-Type'));
-    }
-    else {
-      $this->assertResourceErrorResponse(403, FALSE, $response, $expected_403_cacheability->getCacheTags(), $expected_403_cacheability->getCacheContexts(), static::$auth ? FALSE : 'MISS', 'MISS');
-    }
-    $this->assertSame(static::$auth ? [] : ['MISS'], $response->getHeader('X-Drupal-Cache'));
-    // DX: 403 because unauthorized.
-    $url->setOption('query', ['_format' => static::$format]);
-    $response = $this->request('GET', $url, $request_options);
-    $this->assertResourceErrorResponse(403, FALSE, $response, $expected_403_cacheability->getCacheTags(), $expected_403_cacheability->getCacheContexts(), static::$auth ? FALSE : 'MISS', $has_canonical_url ? 'MISS' : 'HIT');
-
-    // Then, what we'll use for the remainder of the test: multiple formats.
-    $this->provisionEntityResource();
-    // DX: 406 because despite unauthorized, ?_format is not omittable.
-    $url->setOption('query', []);
-    $response = $this->request('GET', $url, $request_options);
-    if ($has_canonical_url) {
-      $this->assertSame(403, $response->getStatusCode());
-      $this->assertSame(['HIT'], $response->getHeader('X-Drupal-Dynamic-Cache'));
-    }
-    else {
-      $this->assertSame(406, $response->getStatusCode());
-      $this->assertSame(['UNCACHEABLE'], $response->getHeader('X-Drupal-Dynamic-Cache'));
-    }
-    $this->assertSame(['text/html; charset=UTF-8'], $response->getHeader('Content-Type'));
-    $this->assertSame(static::$auth ? [] : ['MISS'], $response->getHeader('X-Drupal-Cache'));
-    // DX: 403 because unauthorized.
-    $url->setOption('query', ['_format' => static::$format]);
-    $response = $this->request('GET', $url, $request_options);
-    $this->assertResourceErrorResponse(403, $this->getExpectedUnauthorizedAccessMessage('GET'), $response, $expected_403_cacheability->getCacheTags(), $expected_403_cacheability->getCacheContexts(), static::$auth ? FALSE : 'MISS', 'HIT');
+    $this->assertResourceErrorResponse(403, $this->getExpectedUnauthorizedAccessMessage('GET'), $response, $expected_403_cacheability->getCacheTags(), $expected_403_cacheability->getCacheContexts(), static::$auth ? FALSE : 'MISS', 'MISS');
     $this->assertArrayNotHasKey('Link', $response->getHeaders());
 
     $this->setUpAuthorization('GET');
@@ -618,10 +584,7 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
     // Only run this for fieldable entities. It doesn't make sense for config
     // entities as config values are already casted. They also run through the
     // ConfigEntityNormalizer, which doesn't deal with fields individually.
-    // Also exclude entity_test_map_field — that has a "map" base field, which
-    // only became normalizable since Drupal 8.6, so its normalization
-    // containing non-stringified numbers or booleans does not break BC.
-    if ($this->entity instanceof FieldableEntityInterface && static::$entityTypeId !== 'entity_test_map_field') {
+    if ($this->entity instanceof FieldableEntityInterface) {
       // Test primitive data casting BC (strings).
       $this->config('serialization.settings')->set('bc_primitives_as_strings', TRUE)->save(TRUE);
       // Rebuild the container so new config is reflected in the addition of the
@@ -668,7 +631,6 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
       // ::formatExpectedTimestampValue() to generate the timestamp value. This
       // will take into account the above config setting.
       $expected = $this->getExpectedNormalizedEntity();
-
       // Config entities are not affected.
       // @see \Drupal\serialization\Normalizer\ConfigEntityNormalizer::normalize()
       static::recursiveKSort($expected);
@@ -794,7 +756,7 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
 
     // Try with all of the following request bodies.
     $unparseable_request_body = '!{>}<';
-    $parseable_valid_request_body = $this->serializer->encode($this->getNormalizedPostEntity(), static::$format);
+    $parseable_valid_request_body   = $this->serializer->encode($this->getNormalizedPostEntity(), static::$format);
     $parseable_valid_request_body_2 = $this->serializer->encode($this->getSecondNormalizedPostEntity(), static::$format);
     $parseable_invalid_request_body = $this->serializer->encode($this->makeNormalizationInvalid($this->getNormalizedPostEntity(), 'label'), static::$format);
     $parseable_invalid_request_body_2 = $this->serializer->encode($this->getNormalizedPostEntity() + ['uuid' => [$this->randomMachineName(129)]], static::$format);
@@ -926,7 +888,17 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
       $created_entity = $this->entityStorage->loadUnchanged(static::$firstCreatedEntityId);
       $created_entity_normalization = $this->serializer->normalize($created_entity, static::$format, ['account' => $this->account]);
       $this->assertSame($created_entity_normalization, $this->serializer->decode((string) $response->getBody(), static::$format));
-      $this->assertStoredEntityMatchesSentNormalization($this->getNormalizedPostEntity(), $created_entity);
+      // Assert that the entity was indeed created using the POSTed values.
+      foreach ($this->getNormalizedPostEntity() as $field_name => $field_normalization) {
+        // Some top-level keys in the normalization may not be fields on the
+        // entity (for example '_links' and '_embedded' in the HAL normalization).
+        if ($created_entity->hasField($field_name)) {
+          // Subset, not same, because we can e.g. send just the target_id for the
+          // bundle in a POST request; the response will include more properties.
+          $this->assertArraySubset(static::castToString($field_normalization), $created_entity->get($field_name)
+            ->getValue(), TRUE);
+        }
+      }
     }
 
     $this->config('rest.settings')->set('bc_entity_resource_permissions', TRUE)->save(TRUE);
@@ -1013,9 +985,9 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
     $has_canonical_url = $this->entity->hasLinkTemplate('canonical');
 
     // Try with all of the following request bodies.
-    $unparseable_request_body         = '!{>}<';
-    $parseable_valid_request_body     = $this->serializer->encode($this->getNormalizedPatchEntity(), static::$format);
-    $parseable_valid_request_body_2   = $this->serializer->encode($this->getNormalizedPatchEntity(), static::$format);
+    $unparseable_request_body = '!{>}<';
+    $parseable_valid_request_body   = $this->serializer->encode($this->getNormalizedPatchEntity(), static::$format);
+    $parseable_valid_request_body_2 = $this->serializer->encode($this->getNormalizedPatchEntity(), static::$format);
     $parseable_invalid_request_body   = $this->serializer->encode($this->makeNormalizationInvalid($this->getNormalizedPatchEntity(), 'label'), static::$format);
     $parseable_invalid_request_body_2 = $this->serializer->encode($this->getNormalizedPatchEntity() + ['field_rest_test' => [['value' => $this->randomString()]]], static::$format);
     // The 'field_rest_test' field does not allow 'view' access, so does not end
@@ -1116,13 +1088,13 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
     // DX: 403 when entity trying to update an entity's ID field.
     $request_options[RequestOptions::BODY] = $this->serializer->encode($this->makeNormalizationInvalid($this->getNormalizedPatchEntity(), 'id'), static::$format);;
     $response = $this->request('PATCH', $url, $request_options);
-    $this->assertResourceErrorResponse(403, "Access denied on updating field '{$this->entity->getEntityType()->getKey('id')}'. The entity ID cannot be changed.", $response);
+    $this->assertResourceErrorResponse(403, "Access denied on updating field '{$this->entity->getEntityType()->getKey('id')}'.", $response);
 
     if ($this->entity->getEntityType()->hasKey('uuid')) {
       // DX: 403 when entity trying to update an entity's UUID field.
       $request_options[RequestOptions::BODY] = $this->serializer->encode($this->makeNormalizationInvalid($this->getNormalizedPatchEntity(), 'uuid'), static::$format);;
       $response = $this->request('PATCH', $url, $request_options);
-      $this->assertResourceErrorResponse(403, "Access denied on updating field '{$this->entity->getEntityType()->getKey('uuid')}'. The entity UUID cannot be changed.", $response);
+      $this->assertResourceErrorResponse(403, "Access denied on updating field '{$this->entity->getEntityType()->getKey('uuid')}'.", $response);
     }
 
     $request_options[RequestOptions::BODY] = $parseable_invalid_request_body_3;
@@ -1134,49 +1106,16 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
     $this->assertResourceErrorResponse(403, "Access denied on updating field 'field_rest_test'.", $response);
 
     // DX: 403 when sending PATCH request with updated read-only fields.
-    $this->assertPatchProtectedFieldNamesStructure();
     list($modified_entity, $original_values) = static::getModifiedEntityForPatchTesting($this->entity);
     // Send PATCH request by serializing the modified entity, assert the error
     // response, change the modified entity field that caused the error response
     // back to its original value, repeat.
-    foreach (static::$patchProtectedFieldNames as $patch_protected_field_name => $reason) {
+    for ($i = 0; $i < count(static::$patchProtectedFieldNames); $i++) {
+      $patch_protected_field_name = static::$patchProtectedFieldNames[$i];
       $request_options[RequestOptions::BODY] = $this->serializer->serialize($modified_entity, static::$format);
       $response = $this->request('PATCH', $url, $request_options);
-      $this->assertResourceErrorResponse(403, "Access denied on updating field '" . $patch_protected_field_name . "'." . ($reason !== NULL ? ' ' . $reason : ''), $response);
+      $this->assertResourceErrorResponse(403, "Access denied on updating field '" . $patch_protected_field_name . "'.", $response);
       $modified_entity->get($patch_protected_field_name)->setValue($original_values[$patch_protected_field_name]);
-    }
-
-    if ($this->entity instanceof FieldableEntityInterface) {
-      // Change the rest_test_validation field to prove that then its validation
-      // does run.
-      $override = [
-        'rest_test_validation' => [
-          [
-            'value' => 'ALWAYS_FAIL',
-          ],
-        ],
-      ];
-      $valid_request_body = $override + $this->getNormalizedPatchEntity() + $this->serializer->normalize($modified_entity, static::$format);
-      $request_options[RequestOptions::BODY] = $this->serializer->serialize($valid_request_body, static::$format);
-      $response = $this->request('PATCH', $url, $request_options);
-      $this->assertResourceErrorResponse(422, "Unprocessable Entity: validation failed.\nrest_test_validation: REST test validation failed\n", $response);
-
-      // Set the rest_test_validation field to always fail validation, which
-      // allows asserting that not modifying that field does not trigger
-      // validation errors.
-      $this->entity->set('rest_test_validation', 'ALWAYS_FAIL');
-      $this->entity->save();
-
-      // Information disclosure prevented: when a malicious user correctly
-      // guesses the current invalid value of a field, ensure a 200 is not sent
-      // because this would disclose to the attacker what the current value is.
-      // @see rest_test_entity_field_access()
-      $response = $this->request('PATCH', $url, $request_options);
-      $this->assertResourceErrorResponse(422, "Unprocessable Entity: validation failed.\nrest_test_validation: REST test validation failed\n", $response);
-
-      // All requests after the above one will not include this field (neither
-      // its current value nor any other), and therefore all subsequent test
-      // assertions should not trigger a validation error.
     }
 
     // 200 for well-formed PATCH request that sends all fields (even including
@@ -1210,7 +1149,16 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
     $updated_entity = $this->entityStorage->loadUnchanged($this->entity->id());
     $updated_entity_normalization = $this->serializer->normalize($updated_entity, static::$format, ['account' => $this->account]);
     $this->assertSame($updated_entity_normalization, $this->serializer->decode((string) $response->getBody(), static::$format));
-    $this->assertStoredEntityMatchesSentNormalization($this->getNormalizedPatchEntity(), $updated_entity);
+    // Assert that the entity was indeed created using the PATCHed values.
+    foreach ($this->getNormalizedPatchEntity() as $field_name => $field_normalization) {
+      // Some top-level keys in the normalization may not be fields on the
+      // entity (for example '_links' and '_embedded' in the HAL normalization).
+      if ($updated_entity->hasField($field_name)) {
+        // Subset, not same, because we can e.g. send just the target_id for the
+        // bundle in a PATCH request; the response will include more properties.
+        $this->assertArraySubset(static::castToString($field_normalization), $updated_entity->get($field_name)->getValue(), TRUE);
+      }
+    }
     // Ensure that fields do not get deleted if they're not present in the PATCH
     // request. Test this using the configurable field that we added, but which
     // is not sent in the PATCH request.
@@ -1371,18 +1319,6 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
   }
 
   /**
-   * Asserts structure of $patchProtectedFieldNames.
-   */
-  protected function assertPatchProtectedFieldNamesStructure() {
-    $is_null_or_string = function ($value) {
-      return is_null($value) || is_string($value);
-    };
-    $keys_are_field_names = Inspector::assertAllStrings(array_keys(static::$patchProtectedFieldNames));
-    $values_are_expected_access_denied_reasons = Inspector::assertAll($is_null_or_string, static::$patchProtectedFieldNames);
-    $this->assertTrue($keys_are_field_names && $values_are_expected_access_denied_reasons, 'In Drupal 8.6, the structure of $patchProtectectedFieldNames changed. It used to be an array with field names as values. Now those values are the keys, and their values should be either NULL or a string: a string containing the reason for why the field cannot be PATCHed, or NULL otherwise.');
-  }
-
-  /**
    * Gets an entity resource's GET/PATCH/DELETE URL.
    *
    * @return \Drupal\Core\Url
@@ -1423,7 +1359,7 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
   protected static function getModifiedEntityForPatchTesting(EntityInterface $entity) {
     $modified_entity = clone $entity;
     $original_values = [];
-    foreach (array_keys(static::$patchProtectedFieldNames) as $field_name) {
+    foreach (static::$patchProtectedFieldNames as $field_name) {
       $field = $modified_entity->get($field_name);
       $original_values[$field_name] = $field->getValue();
       switch ($field->getItemDefinition()->getClass()) {
@@ -1511,8 +1447,6 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
     else {
       // This is the desired response.
       $this->assertSame(406, $response->getStatusCode());
-      $this->stringContains('?_format=' . static::$format . '>; rel="alternate"; type="' . static::$mimeType . '"', $response->getHeader('Link'));
-      $this->stringContains('?_format=foobar>; rel="alternate"', $response->getHeader('Link'));
     }
   }
 
@@ -1532,35 +1466,6 @@ abstract class EntityResourceTestBase extends ResourceTestBase {
     }
     else {
       $this->assert406Response($response);
-    }
-  }
-
-  /**
-   * Asserts that the stored entity matches the sent normalization.
-   *
-   * @param array $sent_normalization
-   *   An entity normalization.
-   * @param \Drupal\Core\Entity\FieldableEntityInterface $modified_entity
-   *   The entity object of the modified (PATCHed or POSTed) entity.
-   */
-  protected function assertStoredEntityMatchesSentNormalization(array $sent_normalization, FieldableEntityInterface $modified_entity) {
-    foreach ($sent_normalization as $field_name => $field_normalization) {
-      // Some top-level keys in the normalization may not be fields on the
-      // entity (for example '_links' and '_embedded' in the HAL normalization).
-      if ($modified_entity->hasField($field_name)) {
-        $field_type = $modified_entity->get($field_name)->getFieldDefinition()->getType();
-        // Fields are stored in the database, when read they are represented
-        // as strings in PHP memory. The exception: field types that are
-        // stored in a serialized way. Hence we need to cast most expected
-        // field normalizations to strings.
-        $expected_field_normalization = ($field_type !== 'map')
-          ? static::castToString($field_normalization)
-          : $field_normalization;
-        // Subset, not same, because we can e.g. send just the target_id for the
-        // bundle in a PATCH or POST request; the response will include more
-        // properties.
-        $this->assertArraySubset($expected_field_normalization, $modified_entity->get($field_name)->getValue(), TRUE);
-      }
     }
   }
 

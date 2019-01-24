@@ -10,26 +10,6 @@ namespace Zend\Diactoros;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
-use function array_key_exists;
-use function array_keys;
-use function count;
-use function explode;
-use function get_class;
-use function gettype;
-use function implode;
-use function is_numeric;
-use function is_object;
-use function is_string;
-use function ltrim;
-use function parse_url;
-use function preg_replace;
-use function preg_replace_callback;
-use function rawurlencode;
-use function sprintf;
-use function strpos;
-use function strtolower;
-use function substr;
-
 /**
  * Implementation of Psr\Http\UriInterface.
  *
@@ -111,18 +91,16 @@ class Uri implements UriInterface
      */
     public function __construct($uri = '')
     {
-        if ('' === $uri) {
-            return;
-        }
-
         if (! is_string($uri)) {
             throw new InvalidArgumentException(sprintf(
                 'URI passed to constructor must be a string; received "%s"',
-                is_object($uri) ? get_class($uri) : gettype($uri)
+                (is_object($uri) ? get_class($uri) : gettype($uri))
             ));
         }
 
-        $this->parseUri($uri);
+        if (! empty($uri)) {
+            $this->parseUri($uri);
+        }
     }
 
     /**
@@ -169,12 +147,12 @@ class Uri implements UriInterface
      */
     public function getAuthority()
     {
-        if ('' === $this->host) {
+        if (empty($this->host)) {
             return '';
         }
 
         $authority = $this->host;
-        if ('' !== $this->userInfo) {
+        if (! empty($this->userInfo)) {
             $authority = $this->userInfo . '@' . $authority;
         }
 
@@ -248,7 +226,7 @@ class Uri implements UriInterface
             throw new InvalidArgumentException(sprintf(
                 '%s expects a string argument; received %s',
                 __METHOD__,
-                is_object($scheme) ? get_class($scheme) : gettype($scheme)
+                (is_object($scheme) ? get_class($scheme) : gettype($scheme))
             ));
         }
 
@@ -279,19 +257,19 @@ class Uri implements UriInterface
             throw new InvalidArgumentException(sprintf(
                 '%s expects a string user argument; received %s',
                 __METHOD__,
-                is_object($user) ? get_class($user) : gettype($user)
+                (is_object($user) ? get_class($user) : gettype($user))
             ));
         }
         if (null !== $password && ! is_string($password)) {
             throw new InvalidArgumentException(sprintf(
-                '%s expects a string or null password argument; received %s',
+                '%s expects a string password argument; received %s',
                 __METHOD__,
-                is_object($password) ? get_class($password) : gettype($password)
+                (is_object($password) ? get_class($password) : gettype($password))
             ));
         }
 
         $info = $this->filterUserInfoPart($user);
-        if (null !== $password) {
+        if ($password) {
             $info .= ':' . $this->filterUserInfoPart($password);
         }
 
@@ -315,7 +293,7 @@ class Uri implements UriInterface
             throw new InvalidArgumentException(sprintf(
                 '%s expects a string argument; received %s',
                 __METHOD__,
-                is_object($host) ? get_class($host) : gettype($host)
+                (is_object($host) ? get_class($host) : gettype($host))
             ));
         }
 
@@ -335,14 +313,14 @@ class Uri implements UriInterface
      */
     public function withPort($port)
     {
-        if ($port !== null) {
-            if (! is_numeric($port) || is_float($port)) {
-                throw new InvalidArgumentException(sprintf(
-                    'Invalid port "%s" specified; must be an integer, an integer string, or null',
-                    is_object($port) ? get_class($port) : gettype($port)
-                ));
-            }
+        if (! is_numeric($port) && $port !== null) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid port "%s" specified; must be an integer, an integer string, or null',
+                (is_object($port) ? get_class($port) : gettype($port))
+            ));
+        }
 
+        if ($port !== null) {
             $port = (int) $port;
         }
 
@@ -439,7 +417,7 @@ class Uri implements UriInterface
             throw new InvalidArgumentException(sprintf(
                 '%s expects a string argument; received %s',
                 __METHOD__,
-                is_object($fragment) ? get_class($fragment) : gettype($fragment)
+                (is_object($fragment) ? get_class($fragment) : gettype($fragment))
             ));
         }
 
@@ -498,26 +476,27 @@ class Uri implements UriInterface
     {
         $uri = '';
 
-        if ('' !== $scheme) {
+        if (! empty($scheme)) {
             $uri .= sprintf('%s:', $scheme);
         }
 
-        if ('' !== $authority) {
+        if (! empty($authority)) {
             $uri .= '//' . $authority;
         }
 
-        if ('' !== $path && '/' !== substr($path, 0, 1)) {
-            $path = '/' . $path;
+        if ($path) {
+            if (empty($path) || '/' !== substr($path, 0, 1)) {
+                $path = '/' . $path;
+            }
+
+            $uri .= $path;
         }
 
-        $uri .= $path;
-
-
-        if ('' !== $query) {
+        if ($query) {
             $uri .= sprintf('?%s', $query);
         }
 
-        if ('' !== $fragment) {
+        if ($fragment) {
             $uri .= sprintf('#%s', $fragment);
         }
 
@@ -534,11 +513,14 @@ class Uri implements UriInterface
      */
     private function isNonStandardPort($scheme, $host, $port)
     {
-        if ('' === $scheme) {
-            return '' === $host || null !== $port;
+        if (! $scheme) {
+            if ($host && ! $port) {
+                return false;
+            }
+            return true;
         }
 
-        if ('' === $host || null === $port) {
+        if (! $host || ! $port) {
             return false;
         }
 
@@ -557,11 +539,11 @@ class Uri implements UriInterface
         $scheme = strtolower($scheme);
         $scheme = preg_replace('#:(//)?$#', '', $scheme);
 
-        if ('' === $scheme) {
+        if (empty($scheme)) {
             return '';
         }
 
-        if (! isset($this->allowedSchemes[$scheme])) {
+        if (! array_key_exists($scheme, $this->allowedSchemes)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported scheme "%s"; must be any empty string or in the set (%s)',
                 $scheme,
@@ -603,7 +585,7 @@ class Uri implements UriInterface
             $path
         );
 
-        if ('' === $path) {
+        if (empty($path)) {
             // No path
             return $path;
         }
@@ -627,7 +609,7 @@ class Uri implements UriInterface
      */
     private function filterQuery($query)
     {
-        if ('' !== $query && strpos($query, '?') === 0) {
+        if (! empty($query) && strpos($query, '?') === 0) {
             $query = substr($query, 1);
         }
 
@@ -657,7 +639,7 @@ class Uri implements UriInterface
     private function splitQueryValue($value)
     {
         $data = explode('=', $value, 2);
-        if (! isset($data[1])) {
+        if (1 === count($data)) {
             $data[] = null;
         }
         return $data;
@@ -671,7 +653,7 @@ class Uri implements UriInterface
      */
     private function filterFragment($fragment)
     {
-        if ('' !== $fragment && strpos($fragment, '#') === 0) {
+        if (! empty($fragment) && strpos($fragment, '#') === 0) {
             $fragment = '%23' . substr($fragment, 1);
         }
 

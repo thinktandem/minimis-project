@@ -15,7 +15,6 @@ class MailCaptureTest extends BrowserTestBase {
   use AssertMailTrait {
     getMails as drupalGetMails;
   }
-
   /**
    * Test to see if the wrapper function is executed correctly.
    */

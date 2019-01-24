@@ -2,6 +2,8 @@
 
 namespace Drupal\Component\Render;
 
+use Drupal\Component\Utility\Unicode;
+
 /**
  * Implements MarkupInterface and Countable for rendered objects.
  *
@@ -59,7 +61,7 @@ trait MarkupTrait {
    *   The length of the string.
    */
   public function count() {
-    return mb_strlen($this->string);
+    return Unicode::strlen($this->string);
   }
 
   /**

@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\field\Functional;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\language\Entity\ConfigurableLanguage;
@@ -51,7 +52,7 @@ class TranslationWebTest extends FieldTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->fieldName = mb_strtolower($this->randomMachineName() . '_field_name');
+    $this->fieldName = Unicode::strtolower($this->randomMachineName() . '_field_name');
 
     $field_storage = [
       'field_name' => $this->fieldName,

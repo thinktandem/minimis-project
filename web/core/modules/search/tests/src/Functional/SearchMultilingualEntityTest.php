@@ -4,14 +4,13 @@ namespace Drupal\Tests\search\Functional;
 
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\language\Entity\ConfigurableLanguage;
-use Drupal\Tests\BrowserTestBase;
 
 /**
  * Tests entities with multilingual fields.
  *
  * @group search
  */
-class SearchMultilingualEntityTest extends BrowserTestBase {
+class SearchMultilingualEntityTest extends SearchTestBase {
 
   /**
    * List of searchable nodes.
@@ -27,15 +26,10 @@ class SearchMultilingualEntityTest extends BrowserTestBase {
    */
   protected $plugin;
 
-  /**
-   * {@inheritdoc}
-   */
-  protected static $modules = ['language', 'locale', 'comment', 'node', 'search'];
+  public static $modules = ['language', 'locale', 'comment'];
 
   protected function setUp() {
     parent::setUp();
-
-    $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
 
     // Create a user who can administer search, do searches, see the status
     // report, and administer cron. Log in.

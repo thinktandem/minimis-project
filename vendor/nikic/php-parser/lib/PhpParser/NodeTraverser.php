@@ -30,23 +30,17 @@ class NodeTraverser implements NodeTraverserInterface
      */
     const REMOVE_NODE = 3;
 
-    /**
-     * If NodeVisitor::enterNode() returns DONT_TRAVERSE_CURRENT_AND_CHILDREN, child nodes
-     * of the current node will not be traversed for any visitors.
-     *
-     * For subsequent visitors enterNode() will not be called as well.
-     * leaveNode() will be invoked for visitors that has enterNode() method invoked.
-     */
-    const DONT_TRAVERSE_CURRENT_AND_CHILDREN = 4;
-
     /** @var NodeVisitor[] Visitors */
-    protected $visitors = [];
+    protected $visitors;
 
     /** @var bool Whether traversal should be stopped */
     protected $stopTraversal;
 
+    /**
+     * Constructs a node traverser.
+     */
     public function __construct() {
-        // for BC
+        $this->visitors = [];
     }
 
     /**
@@ -117,9 +111,7 @@ class NodeTraverser implements NodeTraverserInterface
                 }
             } elseif ($subNode instanceof Node) {
                 $traverseChildren = true;
-                $breakVisitorIndex = null;
-
-                foreach ($this->visitors as $visitorIndex => $visitor) {
+                foreach ($this->visitors as $visitor) {
                     $return = $visitor->enterNode($subNode);
                     if (null !== $return) {
                         if ($return instanceof Node) {
@@ -127,10 +119,6 @@ class NodeTraverser implements NodeTraverserInterface
                             $subNode = $return;
                         } elseif (self::DONT_TRAVERSE_CHILDREN === $return) {
                             $traverseChildren = false;
-                        } elseif (self::DONT_TRAVERSE_CURRENT_AND_CHILDREN === $return) {
-                            $traverseChildren = false;
-                            $breakVisitorIndex = $visitorIndex;
-                            break;
                         } elseif (self::STOP_TRAVERSAL === $return) {
                             $this->stopTraversal = true;
                             break 2;
@@ -149,9 +137,8 @@ class NodeTraverser implements NodeTraverserInterface
                     }
                 }
 
-                foreach ($this->visitors as $visitorIndex => $visitor) {
+                foreach ($this->visitors as $visitor) {
                     $return = $visitor->leaveNode($subNode);
-
                     if (null !== $return) {
                         if ($return instanceof Node) {
                             $this->ensureReplacementReasonable($subNode, $return);
@@ -169,10 +156,6 @@ class NodeTraverser implements NodeTraverserInterface
                                 'leaveNode() returned invalid value of type ' . gettype($return)
                             );
                         }
-                    }
-
-                    if ($breakVisitorIndex === $visitorIndex) {
-                        break;
                     }
                 }
             }
@@ -194,9 +177,7 @@ class NodeTraverser implements NodeTraverserInterface
         foreach ($nodes as $i => &$node) {
             if ($node instanceof Node) {
                 $traverseChildren = true;
-                $breakVisitorIndex = null;
-
-                foreach ($this->visitors as $visitorIndex => $visitor) {
+                foreach ($this->visitors as $visitor) {
                     $return = $visitor->enterNode($node);
                     if (null !== $return) {
                         if ($return instanceof Node) {
@@ -204,10 +185,6 @@ class NodeTraverser implements NodeTraverserInterface
                             $node = $return;
                         } elseif (self::DONT_TRAVERSE_CHILDREN === $return) {
                             $traverseChildren = false;
-                        } elseif (self::DONT_TRAVERSE_CURRENT_AND_CHILDREN === $return) {
-                            $traverseChildren = false;
-                            $breakVisitorIndex = $visitorIndex;
-                            break;
                         } elseif (self::STOP_TRAVERSAL === $return) {
                             $this->stopTraversal = true;
                             break 2;
@@ -226,9 +203,8 @@ class NodeTraverser implements NodeTraverserInterface
                     }
                 }
 
-                foreach ($this->visitors as $visitorIndex => $visitor) {
+                foreach ($this->visitors as $visitor) {
                     $return = $visitor->leaveNode($node);
-
                     if (null !== $return) {
                         if ($return instanceof Node) {
                             $this->ensureReplacementReasonable($node, $return);
@@ -252,10 +228,6 @@ class NodeTraverser implements NodeTraverserInterface
                                 'leaveNode() returned invalid value of type ' . gettype($return)
                             );
                         }
-                    }
-
-                    if ($breakVisitorIndex === $visitorIndex) {
-                        break;
                     }
                 }
             } elseif (\is_array($node)) {

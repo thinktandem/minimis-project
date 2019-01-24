@@ -8,7 +8,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests that a newly-added index is properly created during database updates.
  *
  * @group Entity
- * @group legacy
  */
 class SqlContentEntityStorageSchemaIndexTest extends UpdatePathTestBase {
 

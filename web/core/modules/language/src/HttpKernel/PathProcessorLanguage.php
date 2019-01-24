@@ -60,6 +60,7 @@ class PathProcessorLanguage implements InboundPathProcessorInterface, OutboundPa
    */
   protected $configSubscriber;
 
+
   /**
    * Constructs a PathProcessorLanguage object.
    *

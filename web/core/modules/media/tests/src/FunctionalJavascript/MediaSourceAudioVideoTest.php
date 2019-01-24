@@ -39,7 +39,7 @@ class MediaSourceAudioVideoTest extends MediaSourceTestBase {
     $formatter = $display->getComponent($field_name)['type'];
     $this->assertSame('file_audio', $formatter);
 
-    // Create a media asset.
+    // Create a media asset and verify that the <audio> tag is present.
     file_put_contents('public://file.mp3', str_repeat('t', 10));
     $file = File::create([
       'uri' => 'public://file.mp3',
@@ -54,12 +54,7 @@ class MediaSourceAudioVideoTest extends MediaSourceTestBase {
     $this->assertNotEmpty($result);
     $page->pressButton('Save');
 
-    // Verify that there is a creation message and that it contains a link to
-    // the media entity.
     $assert_session->pageTextContains("$type_name Audio media asset has been created.");
-    $this->drupalGet($this->assertLinkToCreatedMedia());
-
-    // Verify that the <audio> tag is present on the media entity view.
     $assert_session->elementExists('css', "audio > source[type='audio/mpeg']");
   }
 
@@ -88,7 +83,7 @@ class MediaSourceAudioVideoTest extends MediaSourceTestBase {
     $formatter = $display->getComponent($field_name)['type'];
     $this->assertSame('file_video', $formatter);
 
-    // Create a media asset.
+    // Create a media asset and verify that the <video> tag is present.
     file_put_contents('public://file.mp4', str_repeat('t', 10));
     $file = File::create([
       'uri' => 'public://file.mp4',
@@ -103,12 +98,7 @@ class MediaSourceAudioVideoTest extends MediaSourceTestBase {
     $this->assertNotEmpty($result);
     $page->pressButton('Save');
 
-    // Verify that there is a creation message and that it contains a link to
-    // the media entity.
     $assert_session->pageTextContains("$type_name Video media asset has been created.");
-
-    $this->drupalGet($this->assertLinkToCreatedMedia());
-    // Verify that the <video> tag is present on the media entity view.
     $assert_session->elementExists('css', "video > source[type='video/mp4']");
   }
 

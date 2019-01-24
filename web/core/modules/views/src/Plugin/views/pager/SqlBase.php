@@ -233,6 +233,7 @@ abstract class SqlBase extends PagerPluginBase implements CacheableDependencyInt
     $this->view->query->setOffset($offset);
   }
 
+
   /**
    * Set the current page.
    *

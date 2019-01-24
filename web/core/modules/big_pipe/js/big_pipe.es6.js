@@ -3,7 +3,7 @@
  * Renders BigPipe placeholders using Drupal's Ajax system.
  */
 
-(function($, Drupal, drupalSettings) {
+(function ($, Drupal, drupalSettings) {
   /**
    * Maps textContent of <script type="application/vnd.drupal-ajax"> to an AJAX response.
    *
@@ -20,7 +20,8 @@
 
     try {
       return JSON.parse(content);
-    } catch (e) {
+    }
+    catch (e) {
       return false;
     }
   }
@@ -36,15 +37,11 @@
    *   Script tag created by BigPipe.
    */
   function bigPipeProcessPlaceholderReplacement(index, placeholderReplacement) {
-    const placeholderId = placeholderReplacement.getAttribute(
-      'data-big-pipe-replacement-for-placeholder-with-id',
-    );
+    const placeholderId = placeholderReplacement.getAttribute('data-big-pipe-replacement-for-placeholder-with-id');
     const content = this.textContent.trim();
     // Ignore any placeholders that are not in the known placeholder list. Used
     // to avoid someone trying to XSS the site via the placeholdering mechanism.
-    if (
-      typeof drupalSettings.bigPipePlaceholderIds[placeholderId] !== 'undefined'
-    ) {
+    if (typeof drupalSettings.bigPipePlaceholderIds[placeholderId] !== 'undefined') {
       const response = mapTextContentToAjaxResponse(content);
       // If we try to parse the content too early (when the JSON containing Ajax
       // commands is still arriving), textContent will be empty or incomplete.
@@ -54,7 +51,8 @@
          * @see bigPipeProcessDocument()
          */
         $(this).removeOnce('big-pipe');
-      } else {
+      }
+      else {
         // Create a Drupal.Ajax object without associating an element, a
         // progress indicator or a URL.
         const ajaxObject = Drupal.ajax({
@@ -95,8 +93,7 @@
       return false;
     }
 
-    $(context)
-      .find('script[data-big-pipe-replacement-for-placeholder-with-id]')
+    $(context).find('script[data-big-pipe-replacement-for-placeholder-with-id]')
       .once('big-pipe')
       .each(bigPipeProcessPlaceholderReplacement);
 
@@ -130,4 +127,4 @@
     }
     bigPipeProcessDocument(document);
   });
-})(jQuery, Drupal, drupalSettings);
+}(jQuery, Drupal, drupalSettings));

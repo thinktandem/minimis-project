@@ -3,6 +3,7 @@
 namespace Drupal\system\Plugin\ImageToolkit;
 
 use Drupal\Component\Utility\Color;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\ImageToolkit\ImageToolkitBase;
@@ -394,7 +395,7 @@ class GDToolkit extends ImageToolkitBase {
     foreach (static::supportedTypes() as $image_type) {
       // @todo Automatically fetch possible extensions for each mime type.
       // @see https://www.drupal.org/node/2311679
-      $extension = mb_strtolower(image_type_to_extension($image_type, FALSE));
+      $extension = Unicode::strtolower(image_type_to_extension($image_type, FALSE));
       $extensions[] = $extension;
       // Add some known similar extensions.
       if ($extension === 'jpeg') {

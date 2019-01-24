@@ -38,6 +38,7 @@ class WideModalRenderer extends ModalRenderer {
     $this->mode = $mode;
   }
 
+
   /**
    * {@inheritdoc}
    */

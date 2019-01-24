@@ -29,7 +29,7 @@ abstract class MigrateTestCase extends UnitTestCase {
   /**
    * Local store for mocking setStatus()/getStatus().
    *
-   * @var int
+   * @var \Drupal\migrate\Plugin\MigrationInterface::STATUS_*
    */
   protected $migrationStatus = MigrationInterface::STATUS_IDLE;
 

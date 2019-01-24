@@ -3,7 +3,7 @@
 namespace Drupal\Core\Field\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Entity\EntityInterface;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\EntityManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FormatterBase;
@@ -30,13 +30,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class StringFormatter extends FormatterBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The entity type manager.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected $entityTypeManager;
-
-  /**
    * Constructs a StringFormatter instance.
    *
    * @param string $plugin_id
@@ -53,13 +46,13 @@ class StringFormatter extends FormatterBase implements ContainerFactoryPluginInt
    *   The view mode.
    * @param array $third_party_settings
    *   Any third party settings settings.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager.
+   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   *   The entity manager.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, EntityTypeManagerInterface $entity_type_manager) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, $label, $view_mode, array $third_party_settings, EntityManagerInterface $entity_manager) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $label, $view_mode, $third_party_settings);
 
-    $this->entityTypeManager = $entity_type_manager;
+    $this->entityManager = $entity_manager;
   }
 
   /**
@@ -74,7 +67,7 @@ class StringFormatter extends FormatterBase implements ContainerFactoryPluginInt
       $configuration['label'],
       $configuration['view_mode'],
       $configuration['third_party_settings'],
-      $container->get('entity_type.manager')
+      $container->get('entity.manager')
     );
   }
 
@@ -94,7 +87,7 @@ class StringFormatter extends FormatterBase implements ContainerFactoryPluginInt
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $form = parent::settingsForm($form, $form_state);
 
-    $entity_type = $this->entityTypeManager->getDefinition($this->fieldDefinition->getTargetEntityTypeId());
+    $entity_type = $this->entityManager->getDefinition($this->fieldDefinition->getTargetEntityTypeId());
 
     $form['link_to_entity'] = [
       '#type' => 'checkbox',
@@ -111,7 +104,7 @@ class StringFormatter extends FormatterBase implements ContainerFactoryPluginInt
   public function settingsSummary() {
     $summary = [];
     if ($this->getSetting('link_to_entity')) {
-      $entity_type = $this->entityTypeManager->getDefinition($this->fieldDefinition->getTargetEntityTypeId());
+      $entity_type = $this->entityManager->getDefinition($this->fieldDefinition->getTargetEntityTypeId());
       $summary[] = $this->t('Linked to the @entity_label', ['@entity_label' => $entity_type->getLabel()]);
     }
     return $summary;
@@ -124,6 +117,7 @@ class StringFormatter extends FormatterBase implements ContainerFactoryPluginInt
     $elements = [];
     $url = NULL;
     if ($this->getSetting('link_to_entity')) {
+      // For the default revision this falls back to 'canonical'.
       $url = $this->getEntityUrl($items->getEntity());
     }
 
@@ -172,11 +166,8 @@ class StringFormatter extends FormatterBase implements ContainerFactoryPluginInt
    *   The URI elements of the entity.
    */
   protected function getEntityUrl(EntityInterface $entity) {
-    // For the default revision, the 'revision' link template falls back to
-    // 'canonical'.
-    // @see \Drupal\Core\Entity\Entity::toUrl()
-    $rel = $entity->getEntityType()->hasLinkTemplate('revision') ? 'revision' : 'canonical';
-    return $entity->toUrl($rel);
+    // For the default revision this falls back to 'canonical'.
+    return $entity->toUrl('revision');
   }
 
 }

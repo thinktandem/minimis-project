@@ -158,10 +158,14 @@ details {
   line-height: 1.295em;
 }
 details summary {
-  padding: 0.95em 1.45em;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
 }
 details summary:focus {
   outline: none;
+}
+details summary:focus,
+details summary:hover {
   text-decoration: underline;
 }
 img {

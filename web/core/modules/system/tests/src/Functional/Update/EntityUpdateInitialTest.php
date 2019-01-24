@@ -10,7 +10,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * @see https://www.drupal.org/project/drupal/issues/2925550
  *
  * @group Update
- * @group legacy
  */
 class EntityUpdateInitialTest extends UpdatePathTestBase {
 

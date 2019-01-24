@@ -356,13 +356,4 @@ class Section {
     );
   }
 
-  /**
-   * Magic method: Implements a deep clone.
-   */
-  public function __clone() {
-    foreach ($this->components as $uuid => $component) {
-      $this->components[$uuid] = clone $component;
-    }
-  }
-
 }

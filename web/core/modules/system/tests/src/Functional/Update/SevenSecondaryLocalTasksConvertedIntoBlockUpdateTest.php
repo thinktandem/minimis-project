@@ -10,7 +10,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * @see https://www.drupal.org/node/2569529
  *
  * @group system
- * @group legacy
  */
 class SevenSecondaryLocalTasksConvertedIntoBlockUpdateTest extends UpdatePathTestBase {
 

@@ -106,7 +106,7 @@ class UserAccessControlHandler extends EntityAccessControlHandler {
           return AccessResult::allowed()->cachePerPermissions()->cachePerUser();
         }
         else {
-          return AccessResult::neutral();
+          return AccessResult::forbidden();
         }
 
       case 'preferred_langcode':
@@ -116,7 +116,7 @@ class UserAccessControlHandler extends EntityAccessControlHandler {
         // Allow view access to own mail address and other personalization
         // settings.
         if ($operation == 'view') {
-          return $is_own_account ? AccessResult::allowed()->cachePerUser() : AccessResult::neutral();
+          return $is_own_account ? AccessResult::allowed()->cachePerUser() : AccessResult::forbidden();
         }
         // Anyone that can edit the user can also edit this field.
         return AccessResult::allowed()->cachePerPermissions();
@@ -127,14 +127,14 @@ class UserAccessControlHandler extends EntityAccessControlHandler {
 
       case 'created':
         // Allow viewing the created date, but not editing it.
-        return ($operation == 'view') ? AccessResult::allowed() : AccessResult::neutral();
+        return ($operation == 'view') ? AccessResult::allowed() : AccessResult::forbidden();
 
       case 'roles':
       case 'status':
       case 'access':
       case 'login':
       case 'init':
-        return AccessResult::neutral();
+        return AccessResult::forbidden();
     }
 
     return parent::checkFieldAccess($operation, $field_definition, $account, $items);

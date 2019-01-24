@@ -15,7 +15,7 @@ class CssCollectionGrouperUnitTest extends UnitTestCase {
   /**
    * A CSS asset grouper.
    *
-   * @var \Drupal\Core\Asset\CssCollectionGrouper
+   * @var \Drupal\Core\Asset\CssCollectionGrouper object.
    */
   protected $grouper;
 

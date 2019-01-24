@@ -73,6 +73,3 @@ metatag.metatag_tag.schema_metatag_test_nutrition_information:
 metatag.metatag_tag.schema_metatag_test_opening_hours_specification:
   type: text
   label: 'openingHoursSpecification'
-metatag.metatag_tag.schema_metatag_test_contact_point:
-  type: text
-  label: 'contactPoint'

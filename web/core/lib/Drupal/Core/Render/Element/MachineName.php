@@ -28,8 +28,7 @@ use Drupal\Core\Language\LanguageInterface;
  *     - The form state object.
  *     In most cases, an existing API or menu argument loader function can be
  *     re-used. The callback is only invoked if the submitted value differs from
- *     the element's initial #default_value. The initial #default_value is
- *     stored in form state so AJAX forms can be reliably validated.
+ *     the element's #default_value.
  *   - source: (optional) The #array_parents of the form element containing the
  *     human-readable name (i.e., as contained in the $form structure) to use as
  *     source for the machine name. Defaults to array('label').
@@ -151,17 +150,6 @@ class MachineName extends Textfield {
       'field_suffix' => $element['#field_suffix'],
     ];
 
-    // Store the initial value in form state. The machine name needs this to
-    // ensure that the exists function is not called for existing values when
-    // editing them.
-    $initial_values = $form_state->get('machine_name.initial_values') ?: [];
-    // Store the initial values in an array so we can differentiate between a
-    // NULL default value and a new machine name element.
-    if (!array_key_exists($element['#name'], $initial_values)) {
-      $initial_values[$element['#name']] = $element['#default_value'];
-      $form_state->set('machine_name.initial_values', $initial_values);
-    }
-
     // By default, machine names are restricted to Latin alphanumeric characters.
     // So, default to LTR directionality.
     if (!isset($element['#attributes'])) {
@@ -258,11 +246,8 @@ class MachineName extends Textfield {
       }
     }
 
-    // Verify that the machine name is unique. If the value matches the initial
-    // default value then it does not need to be validated as the machine name
-    // element assumes the form is editing the existing value.
-    $initial_values = $form_state->get('machine_name.initial_values') ?: [];
-    if (!array_key_exists($element['#name'], $initial_values) || $initial_values[$element['#name']] !== $element['#value']) {
+    // Verify that the machine name is unique.
+    if ($element['#default_value'] !== $element['#value']) {
       $function = $element['#machine_name']['exists'];
       if (call_user_func($function, $element['#value'], $element, $form_state)) {
         $form_state->setError($element, t('The machine-readable name is already in use. It must be unique.'));

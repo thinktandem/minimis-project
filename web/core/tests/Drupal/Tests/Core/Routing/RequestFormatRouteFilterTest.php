@@ -2,10 +2,7 @@
 
 namespace Drupal\Tests\Core\Routing;
 
-use Drupal\Core\DependencyInjection\ContainerBuilder;
-use Drupal\Core\GeneratedUrl;
 use Drupal\Core\Routing\RequestFormatRouteFilter;
-use Drupal\Core\Utility\UnroutedUrlAssemblerInterface;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
@@ -62,14 +59,6 @@ class RequestFormatRouteFilterTest extends UnitTestCase {
    * @covers ::filter
    */
   public function testNoRouteFound() {
-    $url = $this->prophesize(GeneratedUrl::class);
-    $url_assembler = $this->prophesize(UnroutedUrlAssemblerInterface::class);
-    $url_assembler->assemble('http://localhost/test?_format=xml', ['query' => ['_format' => 'json'], 'external' => TRUE], TRUE)
-      ->willReturn($url);
-    $container = new ContainerBuilder();
-    $container->set('unrouted_url_assembler', $url_assembler->reveal());
-    \Drupal::setContainer($container);
-
     $collection = new RouteCollection();
     $route_with_format = $route = new Route('/test');
     $route_with_format->setRequirement('_format', 'json');
@@ -88,16 +77,6 @@ class RequestFormatRouteFilterTest extends UnitTestCase {
    */
   public function testNoRouteFoundWhenNoRequestFormatAndSingleRouteWithMultipleFormats() {
     $this->setExpectedException(NotAcceptableHttpException::class, 'No route found for the specified format html.');
-
-    $url = $this->prophesize(GeneratedUrl::class);
-    $url_assembler = $this->prophesize(UnroutedUrlAssemblerInterface::class);
-    $url_assembler->assemble('http://localhost/test', ['query' => ['_format' => 'json'], 'external' => TRUE], TRUE)
-      ->willReturn($url);
-    $url_assembler->assemble('http://localhost/test', ['query' => ['_format' => 'xml'], 'external' => TRUE], TRUE)
-      ->willReturn($url);
-    $container = new ContainerBuilder();
-    $container->set('unrouted_url_assembler', $url_assembler->reveal());
-    \Drupal::setContainer($container);
 
     $collection = new RouteCollection();
     $route_with_format = $route = new Route('/test');

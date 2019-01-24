@@ -239,8 +239,7 @@ class BlockForm extends EntityForm {
     // @todo Allow list of conditions to be configured in
     //   https://www.drupal.org/node/2284687.
     $visibility = $this->entity->getVisibility();
-    $definitions = $this->manager->getFilteredDefinitions('block_ui', $form_state->getTemporaryValue('gathered_contexts'), ['block' => $this->entity]);
-    foreach ($definitions as $condition_id => $definition) {
+    foreach ($this->manager->getDefinitionsForContexts($form_state->getTemporaryValue('gathered_contexts')) as $condition_id => $definition) {
       // Don't display the current theme condition.
       if ($condition_id == 'current_theme') {
         continue;
@@ -360,7 +359,7 @@ class BlockForm extends EntityForm {
     // Save the settings of the plugin.
     $entity->save();
 
-    $this->messenger()->addStatus($this->t('The block configuration has been saved.'));
+    drupal_set_message($this->t('The block configuration has been saved.'));
     $form_state->setRedirect(
       'block.admin_display_theme',
       [

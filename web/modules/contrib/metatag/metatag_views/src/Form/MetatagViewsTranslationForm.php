@@ -36,43 +36,33 @@ class MetatagViewsTranslationForm extends FormBase {
   protected $languageManager;
 
   /**
-   * The Views manager.
-   *
    * @var \Drupal\Core\Entity\EntityStorageInterface
    */
   protected $viewsManager;
 
   /**
-   * The Metatag token service.
-   *
    * @var \Drupal\metatag\MetatagToken
    */
   protected $tokenService;
 
   /**
-   * The Metatag tag plugin manager.
-   *
    * @var \Drupal\metatag\MetatagTagPluginManager
    */
   protected $tagPluginManager;
 
   /**
-   * The View entity object.
+   * View entity object.
    *
    * @var \Drupal\views\ViewEntityInterface
    */
   protected $view;
 
   /**
-   * View ID.
-   *
    * @var string
    */
   protected $viewId;
 
   /**
-   * View display ID.
-   *
    * @var string
    */
   protected $displayId = 'default';

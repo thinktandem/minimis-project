@@ -12,8 +12,6 @@
   margin: 0;
   width: 100%;
   overflow: auto;
-  background-color: transparent;
-  border-radius: 0;
 }
 .system-status-report__entry:last-of-type {
   border-bottom: 1px solid #bebfb9;
@@ -66,7 +64,6 @@
 .system-status-report details[open] > *,
 .system-status-report details > summary:first-child {
   display: block;
-  color: inherit;
 }
 
 .system-status-report__status-title .details-title:before,

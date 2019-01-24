@@ -3,6 +3,7 @@
 namespace Drupal\filter\Plugin\Filter;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\Xss;
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
@@ -42,7 +43,7 @@ class FilterCaption extends FilterBase {
         $caption = FilteredMarkup::create(Xss::filter($caption, ['a', 'em', 'strong', 'cite', 'code', 'br']));
 
         // The caption must be non-empty.
-        if (mb_strlen($caption) === 0) {
+        if (Unicode::strlen($caption) === 0) {
           continue;
         }
 

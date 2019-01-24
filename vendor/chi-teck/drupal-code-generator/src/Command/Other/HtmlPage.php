@@ -32,11 +32,11 @@ class HtmlPage extends BaseGenerator {
 
     $this->addFile()
       ->path('css/main.css')
-      ->content("body{\n  background-color: #EEE;\n}\n");
+      ->content('body{background-color: #EEE}');
 
     $this->addFile()
       ->path('js/main.js')
-      ->content("console.log('It works!');\n");
+      ->content("console.log('It works!');");
   }
 
 }

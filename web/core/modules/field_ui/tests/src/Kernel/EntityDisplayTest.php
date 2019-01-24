@@ -3,6 +3,7 @@
 namespace Drupal\Tests\field_ui\Kernel;
 
 use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Entity\Display\EntityDisplayInterface;
@@ -86,7 +87,7 @@ class EntityDisplayTest extends KernelTestBase {
         'link_to_entity' => FALSE,
       ],
       'third_party_settings' => [],
-      'region' => 'content',
+      'region' => 'content'
     ];
     $this->assertEqual($display->getComponents(), $expected);
 
@@ -165,15 +166,7 @@ class EntityDisplayTest extends KernelTestBase {
 
     // Check that the default visibility taken into account for extra fields
     // unknown in the display.
-    $this->assertEqual(
-      $display->getComponent('display_extra_field'),
-      [
-        'weight' => 5,
-        'region' => 'content',
-        'settings' => [],
-        'third_party_settings' => [],
-      ]
-    );
+    $this->assertEqual($display->getComponent('display_extra_field'), ['weight' => 5, 'region' => 'content']);
     $this->assertNull($display->getComponent('display_extra_field_hidden'));
 
     // Check that setting explicit options overrides the defaults.
@@ -221,7 +214,7 @@ class EntityDisplayTest extends KernelTestBase {
     $field_storage = FieldStorageConfig::create([
       'field_name' => $field_name,
       'entity_type' => 'entity_test',
-      'type' => 'test_field',
+      'type' => 'test_field'
     ]);
     $field_storage->save();
     $field = FieldConfig::create([
@@ -367,7 +360,7 @@ class EntityDisplayTest extends KernelTestBase {
     $field_storage = FieldStorageConfig::create([
       'field_name' => $field_name,
       'entity_type' => 'entity_test',
-      'type' => 'test_field',
+      'type' => 'test_field'
     ]);
     $field_storage->save();
     $field = FieldConfig::create([
@@ -416,7 +409,7 @@ class EntityDisplayTest extends KernelTestBase {
     $field_storage = FieldStorageConfig::create([
       'field_name' => $field_name,
       'entity_type' => 'entity_test',
-      'type' => 'text',
+      'type' => 'text'
     ]);
     $field_storage->save();
     $field = FieldConfig::create([
@@ -522,14 +515,14 @@ class EntityDisplayTest extends KernelTestBase {
     // Create two arbitrary user roles.
     for ($i = 0; $i < 2; $i++) {
       $roles[$i] = Role::create([
-        'id' => mb_strtolower($this->randomMachineName()),
+        'id' => Unicode::strtolower($this->randomMachineName()),
         'label' => $this->randomString(),
       ]);
       $roles[$i]->save();
     }
 
     // Create a field of type 'test_field' attached to 'entity_test'.
-    $field_name = mb_strtolower($this->randomMachineName());
+    $field_name = Unicode::strtolower($this->randomMachineName());
     FieldStorageConfig::create([
       'field_name' => $field_name,
       'entity_type' => 'entity_test',

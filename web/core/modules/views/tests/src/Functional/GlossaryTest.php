@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\views\Functional;
 
+use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Url;
 use Drupal\views\Tests\AssertViewsCacheTagsTrait;
@@ -40,7 +41,7 @@ class GlossaryTest extends ViewTestBase {
     $nodes_by_char = [];
     foreach ($nodes_per_char as $char => $count) {
       $setting = [
-        'type' => $type->id(),
+        'type' => $type->id()
       ];
       for ($i = 0; $i < $count; $i++) {
         $node = $setting;
@@ -108,7 +109,7 @@ class GlossaryTest extends ViewTestBase {
     $this->assertResponse(200);
     foreach ($nodes_per_char as $char => $count) {
       $href = Url::fromRoute('view.glossary.page_1', ['arg_0' => $char])->toString();
-      $label = mb_strtoupper($char);
+      $label = Unicode::strtoupper($char);
       // Get the summary link for a certain character. Filter by label and href
       // to ensure that both of them are correct.
       $result = $this->xpath('//a[contains(@href, :href) and normalize-space(text())=:label]/..', [':href' => $href, ':label' => $label]);

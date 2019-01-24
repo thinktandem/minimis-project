@@ -9,7 +9,6 @@ use Drupal\views\Entity\View;
  * Tests Views image style dependencies update.
  *
  * @group views
- * @group legacy
  */
 class ImageStyleDependencyUpdateTest extends UpdatePathTestBase {
 

@@ -12,6 +12,7 @@ use Drupal\Core\Cache\MemoryBackend;
 use Drupal\Core\Database\Database;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\KeyValueStore\KeyValueMemoryFactory;
+use Drupal\Core\Lock\NullLockBackend;
 use Drupal\Core\Path\CurrentPathStack;
 use Drupal\Core\Routing\MatcherDumper;
 use Drupal\Core\Routing\RouteProvider;
@@ -83,7 +84,7 @@ class RouteProviderTest extends KernelTestBase {
   protected function setUp() {
     parent::setUp();
     $this->fixtures = new RoutingFixtures();
-    $this->state = new State(new KeyValueMemoryFactory());
+    $this->state = new State(new KeyValueMemoryFactory(), new MemoryBackend('test'), new NullLockBackend());
     $this->currentPath = new CurrentPathStack(new RequestStack());
     $this->cache = new MemoryBackend();
     $this->pathProcessor = \Drupal::service('path_processor_manager');
@@ -96,7 +97,7 @@ class RouteProviderTest extends KernelTestBase {
   public function register(ContainerBuilder $container) {
     parent::register($container);
 
-    // Read the incoming path alias for these tests.
+    // Readd the incoming path alias for these tests.
     if ($container->hasDefinition('path_processor_alias')) {
       $definition = $container->getDefinition('path_processor_alias');
       $definition->addTag('path_processor_inbound');
@@ -222,7 +223,7 @@ class RouteProviderTest extends KernelTestBase {
    */
   public function testMixedCasePaths($path, $expected_route_name, $method = 'GET') {
     // The case-insensitive behavior for higher UTF-8 characters depends on
-    // mb_strtolower() using mb_strtolower()
+    // \Drupal\Component\Utility\Unicode::strtolower() using mb_strtolower()
     // but kernel tests do not currently run the check that enables it.
     // @todo remove this when https://www.drupal.org/node/2849669 is fixed.
     Unicode::check();
@@ -273,7 +274,7 @@ class RouteProviderTest extends KernelTestBase {
   public function testDuplicateRoutePaths($path, $number, $expected_route_name = NULL) {
 
     // The case-insensitive behavior for higher UTF-8 characters depends on
-    // mb_strtolower() using mb_strtolower()
+    // \Drupal\Component\Utility\Unicode::strtolower() using mb_strtolower()
     // but kernel tests do not currently run the check that enables it.
     // @todo remove this when https://www.drupal.org/node/2849669 is fixed.
     Unicode::check();

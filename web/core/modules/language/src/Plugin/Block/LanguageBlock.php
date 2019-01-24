@@ -57,6 +57,7 @@ class LanguageBlock extends BlockBase implements ContainerFactoryPluginInterface
     $this->pathMatcher = $path_matcher;
   }
 
+
   /**
    * {@inheritdoc}
    */
@@ -69,6 +70,7 @@ class LanguageBlock extends BlockBase implements ContainerFactoryPluginInterface
       $container->get('path.matcher')
     );
   }
+
 
   /**
    * {@inheritdoc}

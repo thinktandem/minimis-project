@@ -7,8 +7,6 @@
 
 namespace Zend\Diactoros;
 
-use function stream_get_contents;
-
 /**
  * Caching version of php://input
  */

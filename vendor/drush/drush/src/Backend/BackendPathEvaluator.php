@@ -1,8 +1,8 @@
 <?php
 namespace Drush\Backend;
 
-use Consolidation\SiteAlias\AliasRecord;
-use Consolidation\SiteAlias\HostPath;
+use Drush\SiteAlias\AliasRecord;
+use Drush\SiteAlias\HostPath;
 
 class BackendPathEvaluator
 {

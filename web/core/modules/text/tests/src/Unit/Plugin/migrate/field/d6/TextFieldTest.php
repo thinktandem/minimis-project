@@ -32,7 +32,7 @@ class TextFieldTest extends UnitTestCase {
 
     $migration = $this->prophesize(MigrationInterface::class);
 
-    // The plugin's defineValueProcessPipeline() method will call
+    // The plugin's processFieldValues() method will call
     // setProcessOfProperty() and return nothing. So, in order to examine the
     // process pipeline created by the plugin, we need to ensure that
     // getProcess() always returns the last input to setProcessOfProperty().
@@ -45,13 +45,13 @@ class TextFieldTest extends UnitTestCase {
   }
 
   /**
-   * @covers ::defineValueProcessPipeline
+   * @covers ::processFieldValues
    */
-  public function testProcessFilteredTextFieldValues($method = 'defineValueProcessPipeline') {
+  public function testProcessFilteredTextFieldValues() {
     $field_info = [
       'widget_type' => 'text_textfield',
     ];
-    $this->plugin->$method($this->migration, 'body', $field_info);
+    $this->plugin->processFieldValues($this->migration, 'body', $field_info);
 
     $process = $this->migration->getProcess();
     $this->assertSame('sub_process', $process['plugin']);
@@ -68,16 +68,16 @@ class TextFieldTest extends UnitTestCase {
   }
 
   /**
-   * @covers ::defineValueProcessPipeline
+   * @covers ::processFieldValues
    */
-  public function testProcessBooleanTextImplicitValues($method = 'defineValueProcessPipeline') {
+  public function testProcessBooleanTextImplicitValues() {
     $info = [
       'widget_type' => 'optionwidgets_onoff',
       'global_settings' => [
         'allowed_values' => "foo\nbar",
-      ],
+      ]
     ];
-    $this->plugin->$method($this->migration, 'field', $info);
+    $this->plugin->processFieldValues($this->migration, 'field', $info);
 
     $expected = [
       'value' => [
@@ -93,16 +93,16 @@ class TextFieldTest extends UnitTestCase {
   }
 
   /**
-   * @covers ::defineValueProcessPipeline
+   * @covers ::processFieldValues
    */
-  public function testProcessBooleanTextExplicitValues($method = 'defineValueProcessPipeline') {
+  public function testProcessBooleanTextExplicitValues() {
     $info = [
       'widget_type' => 'optionwidgets_onoff',
       'global_settings' => [
         'allowed_values' => "foo|Foo\nbaz|Baz",
-      ],
+      ]
     ];
-    $this->plugin->$method($this->migration, 'field', $info);
+    $this->plugin->processFieldValues($this->migration, 'field', $info);
 
     $expected = [
       'value' => [

@@ -16,15 +16,10 @@
         var date = $authorContext.find('.field--name-created input').val();
 
         if (name && date) {
-          return Drupal.t('By @name on @date', {
-            '@name': name,
-            '@date': date
-          });
-        }
-        if (name) {
+          return Drupal.t('By @name on @date', { '@name': name, '@date': date });
+        } else if (name) {
           return Drupal.t('By @name', { '@name': name });
-        }
-        if (date) {
+        } else if (date) {
           return Drupal.t('Authored on @date', { '@date': date });
         }
       });

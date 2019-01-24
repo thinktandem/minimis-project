@@ -8,7 +8,6 @@ namespace Drupal\KernelTests\Core\File;
  * @group File
  */
 class UnmanagedDeleteTest extends FileTestBase {
-
   /**
    * Delete a normal file.
    */

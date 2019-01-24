@@ -2,20 +2,14 @@
 
 namespace Drupal\Tests\search\Functional;
 
-use Drupal\Tests\BrowserTestBase;
+use Drupal\Component\Utility\Unicode;
 
 /**
  * Tests that the search_simply() function works as intended.
  *
  * @group search
  */
-class SearchSimplifyTest extends BrowserTestBase {
-
-  /**
-   * {@inheritdoc}
-   */
-  protected static $modules = ['search'];
-
+class SearchSimplifyTest extends SearchTestBase {
   /**
    * Tests that all Unicode characters simplify correctly.
    */
@@ -27,7 +21,7 @@ class SearchSimplifyTest extends BrowserTestBase {
     // their own lines).  So the even-numbered lines should simplify to nothing,
     // and the odd-numbered lines we need to split into shorter chunks and
     // verify that simplification doesn't lose any characters.
-    $input = file_get_contents($this->root . '/core/modules/search/tests/UnicodeTest.txt');
+    $input = file_get_contents(\Drupal::root() . '/core/modules/search/tests/UnicodeTest.txt');
     $basestrings = explode(chr(10), $input);
     $strings = [];
     foreach ($basestrings as $key => $string) {
@@ -41,8 +35,8 @@ class SearchSimplifyTest extends BrowserTestBase {
         // Split this into 30-character chunks, so we don't run into limits
         // of truncation in search_simplify().
         $start = 0;
-        while ($start < mb_strlen($string)) {
-          $newstr = mb_substr($string, $start, 30);
+        while ($start < Unicode::strlen($string)) {
+          $newstr = Unicode::substr($string, $start, 30);
           // Special case: leading zeros are removed from numeric strings,
           // and there's one string in this file that is numbers starting with
           // zero, so prepend a 1 on that string.
@@ -56,7 +50,7 @@ class SearchSimplifyTest extends BrowserTestBase {
     }
     foreach ($strings as $key => $string) {
       $simplified = search_simplify($string);
-      $this->assertTrue(mb_strlen($simplified) >= mb_strlen($string), "Nothing is removed from string $key.");
+      $this->assertTrue(Unicode::strlen($simplified) >= Unicode::strlen($string), "Nothing is removed from string $key.");
     }
 
     // Test the low-numbered ASCII control characters separately. They are not

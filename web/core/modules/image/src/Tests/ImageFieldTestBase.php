@@ -10,12 +10,11 @@ use Drupal\simpletest\WebTestBase;
 /**
  * TODO: Test the following functions.
  *
- * In file:
- * - image.effects.inc:
+ * image.effects.inc:
  *   image_style_generate()
  *   \Drupal\image\ImageStyleInterface::createDerivative()
  *
- * - image.module:
+ * image.module:
  *   image_style_options()
  *   \Drupal\image\ImageStyleInterface::flush()
  *   image_filter_keyword()

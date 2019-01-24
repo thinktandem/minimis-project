@@ -4,9 +4,7 @@ namespace Drupal\{{ machine_name }}\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\FormatterBase;
-{% if configurable %}
 use Drupal\Core\Form\FormStateInterface;
-{% endif %}
 
 /**
  * Plugin implementation of the '{{ plugin_label }}' formatter.
@@ -21,13 +19,13 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class {{ class }} extends FormatterBase {
 
-{% if configurable %}
   /**
    * {@inheritdoc}
    */
   public static function defaultSettings() {
     return [
-      'foo' => 'bar',
+      'prefix' => '',
+      'suffix' => '',
     ] + parent::defaultSettings();
   }
 
@@ -35,11 +33,18 @@ class {{ class }} extends FormatterBase {
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
+    $settings = $this->getSettings();
 
-    $elements['foo'] = [
+    $elements['prefix'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Foo'),
-      '#default_value' => $this->getSetting('foo'),
+      '#title' => $this->t('Prefix'),
+      '#default_value' => $settings['prefix'],
+    ];
+
+    $elements['suffix'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Suffix'),
+      '#default_value' => $settings['suffix'],
     ];
 
     return $elements;
@@ -49,21 +54,32 @@ class {{ class }} extends FormatterBase {
    * {@inheritdoc}
    */
   public function settingsSummary() {
-    $summary[] = $this->t('Foo: @foo', ['@foo' => $this->getSetting('foo')]);
+    $settings = $this->getSettings();
+    $summary = [];
+
+    if ($settings['prefix']) {
+      $summary[] = $this->t('Prefix: @prefix', ['@prefix' => $settings['prefix']]);
+    }
+    if ($settings['suffix']) {
+      $summary[] = $this->t('Suffix: @suffix', ['@suffix' => $settings['suffix']]);
+    }
+
     return $summary;
   }
 
-{% endif %}
   /**
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $element = [];
+    $settings = $this->getSettings();
 
     foreach ($items as $delta => $item) {
       $element[$delta] = [
         '#type' => 'item',
         '#markup' => $item->value,
+        '#field_prefix' => $settings['prefix'],
+        '#field_suffix' => $settings['suffix'],
       ];
     }
 

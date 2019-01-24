@@ -3,6 +3,7 @@
 namespace Drupal\Core\Entity\Plugin\EntityReferenceSelection;
 
 use Drupal\Component\Utility\Html;
+use Drupal\Component\Utility\Unicode;
 
 /**
  * Defines an alternative to the default Entity Reference Selection plugin.
@@ -34,11 +35,11 @@ class PhpSelection extends DefaultSelection {
     // possible.
     // @see \Drupal\Core\Entity\EntityReferenceSelection\SelectionInterface::getReferenceableEntities()
     if (is_string($match)) {
-      $match = Html::escape(mb_strtolower($match));
+      $match = Html::escape(Unicode::strtolower($match));
     }
     elseif (is_array($match)) {
       array_walk($match, function (&$item) {
-        $item = Html::escape(mb_strtolower($item));
+        $item = Html::escape(Unicode::strtolower($item));
       });
     }
 
@@ -88,7 +89,7 @@ class PhpSelection extends DefaultSelection {
    */
   protected function matchLabel($match, $match_operator, $label) {
     // Always use a case-insensitive value.
-    $label = mb_strtolower($label);
+    $label = Unicode::strtolower($label);
 
     switch ($match_operator) {
       case '=':
@@ -112,7 +113,7 @@ class PhpSelection extends DefaultSelection {
       case 'CONTAINS':
         return strpos($label, $match) !== FALSE;
       case 'ENDS_WITH':
-        return mb_substr($label, -mb_strlen($match)) === (string) $match;
+        return Unicode::substr($label, -Unicode::strlen($match)) === (string) $match;
       case 'IS NOT NULL':
         return TRUE;
       case 'IS NULL':

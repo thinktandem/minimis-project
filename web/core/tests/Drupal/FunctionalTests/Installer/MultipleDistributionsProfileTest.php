@@ -3,6 +3,7 @@
 namespace Drupal\FunctionalTests\Installer;
 
 use Drupal\Component\Serialization\Yaml;
+use Drupal\Core\Site\Settings;
 
 /**
  * Tests multiple distribution profile support.
@@ -77,6 +78,7 @@ class MultipleDistributionsProfileTest extends InstallerTestBase {
 
     // Confirm that Drupal recognizes this distribution as the current profile.
     $this->assertEqual(\Drupal::installProfile(), 'distribution_one');
+    $this->assertEqual(Settings::get('install_profile'), 'distribution_one', 'The install profile has been written to settings.php.');
     $this->assertEqual($this->config('core.extension')->get('profile'), 'distribution_one', 'The install profile has been written to core.extension configuration.');
 
     $this->rebuildContainer();

@@ -133,14 +133,14 @@ class PathautoAdminDelete extends FormBase {
     }
     else if ($delete_all) {
       \Drupal::service('pathauto.alias_storage_helper')->deleteAll();
-      $this->messenger()->addMessage($this->t('All of your path aliases have been deleted.'));
+      drupal_set_message($this->t('All of your path aliases have been deleted.'));
     }
     else {
       $storage_helper = \Drupal::service('pathauto.alias_storage_helper');
       foreach (array_keys(array_filter($form_state->getValue(['delete', 'plugins']))) as $id) {
         $alias_type = $this->aliasTypeManager->createInstance($id);
         $storage_helper->deleteBySourcePrefix((string) $alias_type->getSourcePrefix());
-        $this->messenger()->addMessage($this->t('All of your %label path aliases have been deleted.', ['%label' => $alias_type->getLabel()]));
+        drupal_set_message($this->t('All of your %label path aliases have been deleted.', ['%label' => $alias_type->getLabel()]));
       }
     }
   }
@@ -168,25 +168,17 @@ class PathautoAdminDelete extends FormBase {
   public static function batchFinished($success, $results, $operations) {
     if ($success) {
       if ($results['delete_all']) {
-        \Drupal::service('messenger')
-          ->addMessage(t('All of your automatically generated path aliases have been deleted.'));
+        drupal_set_message(t('All of your automatically generated path aliases have been deleted.'));
       }
       else if (isset($results['deletions'])) {
         foreach (array_values($results['deletions']) as $label) {
-          \Drupal::service('messenger')
-            ->addMessage(t('All of your automatically generated %label path aliases have been deleted.', [
-              '%label' => $label,
-            ]));
+          drupal_set_message(t('All of your automatically generated %label path aliases have been deleted.', ['%label' => $label]));
         }
       }
     }
     else {
       $error_operation = reset($operations);
-      \Drupal::service('messenger')
-        ->addMessage(t('An error occurred while processing @operation with arguments : @args', [
-          '@operation' => $error_operation[0],
-          '@args' => print_r($error_operation[0]),
-        ]));
+      drupal_set_message(t('An error occurred while processing @operation with arguments : @args', array('@operation' => $error_operation[0], '@args' => print_r($error_operation[0], TRUE))));
     }
   }
 

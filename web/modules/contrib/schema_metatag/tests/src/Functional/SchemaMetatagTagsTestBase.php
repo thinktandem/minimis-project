@@ -128,12 +128,8 @@ abstract class SchemaMetatagTagsTestBase extends BrowserTestBase {
         // config form.
         $class = $this->schemaTagsNamespace . $class_name;
         $test_value = $class::testValue();
-        // Store the input value.
         $raw_values[$tag_name] = $test_value;
-        // Adjust the input value as necessary to transform it to the
-        // expected output value, and store that.
-        $processed_value = $class::processedTestValue($test_value);
-        $expected_output_values[$key] = $class::outputValue($processed_value);
+        $expected_output_values[$key] = $class::outputValue($test_value);
 
         // Rewrite the test values to match the way the form elements are
         // structured.

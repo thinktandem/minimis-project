@@ -32,6 +32,7 @@ class UserTrackerTab extends LocalTaskDefault {
     return $this->currentUser;
   }
 
+
   /**
    * {@inheritdoc}
    */

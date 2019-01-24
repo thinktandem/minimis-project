@@ -37,7 +37,6 @@ class UserPicture extends DrupalSqlBase {
       'picture' => "Path to the user's uploaded picture.",
     ];
   }
-
   /**
    * {@inheritdoc}
    */

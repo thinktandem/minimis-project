@@ -22,16 +22,6 @@ class ShortcutForm extends ContentEntityForm {
   /**
    * {@inheritdoc}
    */
-  public function form(array $form, FormStateInterface $form_state) {
-    $form = parent::form($form, $form_state);
-    $form['#attached']['library'][] = 'core/drupal.form';
-
-    return $form;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function save(array $form, FormStateInterface $form_state) {
     $entity = $this->entity;
     $status = $entity->save();
@@ -52,7 +42,7 @@ class ShortcutForm extends ContentEntityForm {
     else {
       $message = $this->t('Added a shortcut for %title.', ['%title' => $view_link]);
     }
-    $this->messenger()->addStatus($message);
+    drupal_set_message($message);
 
     $form_state->setRedirect(
       'entity.shortcut_set.customize_form',

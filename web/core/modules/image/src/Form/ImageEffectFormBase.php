@@ -123,7 +123,7 @@ abstract class ImageEffectFormBase extends FormBase {
     }
     $this->imageStyle->save();
 
-    $this->messenger()->addStatus($this->t('The image effect was successfully applied.'));
+    drupal_set_message($this->t('The image effect was successfully applied.'));
     $form_state->setRedirectUrl($this->imageStyle->urlInfo('edit-form'));
   }
 

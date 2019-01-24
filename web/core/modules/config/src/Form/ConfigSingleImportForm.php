@@ -62,7 +62,7 @@ class ConfigSingleImportForm extends ConfirmFormBase {
   /**
    * The configuration manager.
    *
-   * @var \Drupal\Core\Config\ConfigManagerInterface
+   * @var \Drupal\Core\Config\ConfigManagerInterface;
    */
   protected $configManager;
 
@@ -395,7 +395,7 @@ class ConfigSingleImportForm extends ConfirmFormBase {
     /** @var \Drupal\Core\Config\ConfigImporter $config_importer */
     $config_importer = $form_state->get('config_importer');
     if ($config_importer->alreadyImporting()) {
-      $this->messenger()->addError($this->t('Another request may be importing configuration already.'));
+      drupal_set_message($this->t('Another request may be importing configuration already.'), 'error');
     }
     else {
       try {
@@ -416,9 +416,9 @@ class ConfigSingleImportForm extends ConfirmFormBase {
       }
       catch (ConfigImporterException $e) {
         // There are validation errors.
-        $this->messenger()->addError($this->t('The configuration import failed for the following reasons:'));
+        drupal_set_message($this->t('The configuration import failed for the following reasons:'), 'error');
         foreach ($config_importer->getErrors() as $message) {
-          $this->messenger()->addError($message);
+          drupal_set_message($message, 'error');
         }
       }
     }

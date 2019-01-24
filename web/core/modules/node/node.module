@@ -28,7 +28,6 @@ use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
-use Drupal\user\UserInterface;
 
 /**
  * Denotes that the node is not published.
@@ -105,7 +104,7 @@ function node_help($route_name, RouteMatchInterface $route_match) {
     else {
       $message = t('The content access permissions need to be rebuilt. <a href=":node_access_rebuild">Rebuild permissions</a>.', [':node_access_rebuild' => \Drupal::url('node.configure_rebuild_confirm')]);
     }
-    \Drupal::messenger()->addError($message);
+    drupal_set_message($message, 'error');
   }
 
   switch ($route_name) {
@@ -548,12 +547,9 @@ function template_preprocess_node_add_list(&$variables) {
  * Implements hook_preprocess_HOOK() for HTML document templates.
  */
 function node_preprocess_html(&$variables) {
-  // If on an individual node page or node preview page, add the node type to
-  // the body classes.
-  if (($node = \Drupal::routeMatch()->getParameter('node')) || ($node = \Drupal::routeMatch()->getParameter('node_preview'))) {
-    if ($node instanceof NodeInterface) {
-      $variables['node_type'] = $node->getType();
-    }
+  // If on an individual node page, add the node type to body classes.
+  if (($node = \Drupal::routeMatch()->getParameter('node')) && $node instanceof NodeInterface) {
+    $variables['node_type'] = $node->getType();
   }
 }
 
@@ -714,7 +710,7 @@ function node_ranking() {
 /**
  * Implements hook_user_cancel().
  */
-function node_user_cancel($edit, UserInterface $account, $method) {
+function node_user_cancel($edit, $account, $method) {
   switch ($method) {
     case 'user_cancel_block_unpublish':
       // Unpublish nodes (current revisions).
@@ -810,7 +806,7 @@ function node_get_recent($number = 10) {
  *   the global content language of the current request.
  *
  * @return array
- *   An array as expected by \Drupal\Core\Render\RendererInterface::render().
+ *   An array as expected by drupal_render().
  */
 function node_view(NodeInterface $node, $view_mode = 'full', $langcode = NULL) {
   return entity_view($node, $view_mode, $langcode);
@@ -828,8 +824,7 @@ function node_view(NodeInterface $node, $view_mode = 'full', $langcode = NULL) {
  *   content language of the current request.
  *
  * @return array
- *   An array in the format expected by
- *   \Drupal\Core\Render\RendererInterface::render().
+ *   An array in the format expected by drupal_render().
  */
 function node_view_multiple($nodes, $view_mode = 'teaser', $langcode = NULL) {
   return entity_view_multiple($nodes, $view_mode, $langcode);
@@ -845,7 +840,7 @@ function node_page_top(array &$page) {
     $page['page_top']['node_preview'] = [
       '#type' => 'container',
       '#attributes' => [
-        'class' => ['node-preview-container', 'container-inline'],
+        'class' => ['node-preview-container', 'container-inline']
       ],
     ];
 
@@ -944,19 +939,19 @@ function node_node_access(NodeInterface $node, $op, $account) {
       return AccessResult::allowedIfHasPermission($account, 'create ' . $type . ' content');
 
     case 'update':
-      if ($account->hasPermission('edit any ' . $type . ' content')) {
+      if ($account->hasPermission('edit any ' . $type . ' content', $account)) {
         return AccessResult::allowed()->cachePerPermissions();
       }
       else {
-        return AccessResult::allowedIf($account->hasPermission('edit own ' . $type . ' content') && ($account->id() == $node->getOwnerId()))->cachePerPermissions()->cachePerUser()->addCacheableDependency($node);
+        return AccessResult::allowedIf($account->hasPermission('edit own ' . $type . ' content', $account) && ($account->id() == $node->getOwnerId()))->cachePerPermissions()->cachePerUser()->addCacheableDependency($node);
       }
 
     case 'delete':
-      if ($account->hasPermission('delete any ' . $type . ' content')) {
+      if ($account->hasPermission('delete any ' . $type . ' content', $account)) {
         return AccessResult::allowed()->cachePerPermissions();
       }
       else {
-        return AccessResult::allowedIf($account->hasPermission('delete own ' . $type . ' content') && ($account->id() == $node->getOwnerId()))->cachePerPermissions()->cachePerUser()->addCacheableDependency($node);
+        return AccessResult::allowedIf($account->hasPermission('delete own ' . $type . ' content', $account) && ($account->id() == $node->getOwnerId()))->cachePerPermissions()->cachePerUser()->addCacheableDependency($node);
       }
 
     default:
@@ -1038,6 +1033,7 @@ function node_access_view_all_nodes($account = NULL) {
 
   return $access[$account->id()];
 }
+
 
 /**
  * Implements hook_query_TAG_alter().
@@ -1189,7 +1185,7 @@ function node_access_rebuild($batch_mode = FALSE) {
         'operations' => [
           ['_node_access_rebuild_batch_operation', []],
         ],
-        'finished' => '_node_access_rebuild_batch_finished',
+        'finished' => '_node_access_rebuild_batch_finished'
       ];
       batch_set($batch);
     }
@@ -1225,7 +1221,7 @@ function node_access_rebuild($batch_mode = FALSE) {
   }
 
   if (!isset($batch)) {
-    \Drupal::messenger()->addStatus(t('Content permissions have been rebuilt.'));
+    drupal_set_message(t('Content permissions have been rebuilt.'));
     node_access_needs_rebuild(FALSE);
   }
 }
@@ -1298,11 +1294,11 @@ function _node_access_rebuild_batch_operation(&$context) {
  */
 function _node_access_rebuild_batch_finished($success, $results, $operations) {
   if ($success) {
-    \Drupal::messenger()->addStatus(t('The content access permissions have been rebuilt.'));
+    drupal_set_message(t('The content access permissions have been rebuilt.'));
     node_access_needs_rebuild(FALSE);
   }
   else {
-    \Drupal::messenger()->addError(t('The content access permissions have not been properly rebuilt.'));
+    drupal_set_message(t('The content access permissions have not been properly rebuilt.'), 'error');
   }
 }
 

@@ -52,8 +52,7 @@ class CodeParsingTest extends CodeTestAbstract
         ];
     }
 
-    // Must be public for updateTests.php
-    public function getParseOutput(Parser $parser, $code, array $modes) {
+    private function getParseOutput(Parser $parser, $code, array $modes) {
         $dumpPositions = isset($modes['positions']);
 
         $errors = new ErrorHandler\Collecting;

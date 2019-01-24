@@ -43,6 +43,7 @@ class Fast404ExceptionHtmlSubscriber extends HttpExceptionSubscriberBase {
     $this->httpKernel = $http_kernel;
   }
 
+
   /**
    * {@inheritdoc}
    */

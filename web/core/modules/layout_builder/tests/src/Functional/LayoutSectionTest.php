@@ -4,7 +4,6 @@ namespace Drupal\Tests\layout_builder\Functional;
 
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\layout_builder\Entity\LayoutBuilderEntityViewDisplay;
-use Drupal\layout_builder\Plugin\SectionStorage\OverridesSectionStorage;
 use Drupal\layout_builder\Section;
 use Drupal\layout_builder\SectionComponent;
 use Drupal\Tests\BrowserTestBase;
@@ -22,6 +21,13 @@ class LayoutSectionTest extends BrowserTestBase {
   public static $modules = ['field_ui', 'layout_builder', 'node', 'block_test'];
 
   /**
+   * The name of the layout section field.
+   *
+   * @var string
+   */
+  protected $fieldName = 'layout_builder__layout';
+
+  /**
    * {@inheritdoc}
    */
   protected function setUp() {
@@ -35,7 +41,6 @@ class LayoutSectionTest extends BrowserTestBase {
     ]);
 
     LayoutBuilderEntityViewDisplay::load('node.bundle_with_section_field.default')
-      ->enableLayoutBuilder()
       ->setOverridable()
       ->save();
 
@@ -220,7 +225,7 @@ class LayoutSectionTest extends BrowserTestBase {
     ]);
     $entity->addTranslation('es', [
       'title' => 'Translated node title',
-      OverridesSectionStorage::FIELD_NAME => [
+      $this->fieldName => [
         [
           'section' => new Section('layout_twocol', [], [
             'foo' => new SectionComponent('foo', 'first', [
@@ -367,7 +372,7 @@ class LayoutSectionTest extends BrowserTestBase {
           'value' => 'The node body',
         ],
       ],
-      OverridesSectionStorage::FIELD_NAME => $section_values,
+      $this->fieldName => $section_values,
     ]);
   }
 

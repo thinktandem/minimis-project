@@ -12,10 +12,10 @@
 namespace Symfony\Component\HttpKernel\Tests\Fragment;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\Fragment\HIncludeFragmentRenderer;
 use Symfony\Component\HttpKernel\UriSigner;
+use Symfony\Component\HttpFoundation\Request;
 
 class HIncludeFragmentRendererTest extends TestCase
 {
@@ -32,7 +32,7 @@ class HIncludeFragmentRendererTest extends TestCase
     {
         $strategy = new HIncludeFragmentRenderer(null, new UriSigner('foo'));
 
-        $this->assertEquals('<hx:include src="/_fragment?_hash=BP%2BOzCD5MRUI%2BHJpgPDOmoju00FnzLhP3TGcSHbbBLs%3D&amp;_path=_format%3Dhtml%26_locale%3Den%26_controller%3Dmain_controller"></hx:include>', $strategy->render(new ControllerReference('main_controller', array(), array()), Request::create('/'))->getContent());
+        $this->assertEquals('<hx:include src="/_fragment?_path=_format%3Dhtml%26_locale%3Den%26_controller%3Dmain_controller&amp;_hash=BP%2BOzCD5MRUI%2BHJpgPDOmoju00FnzLhP3TGcSHbbBLs%3D"></hx:include>', $strategy->render(new ControllerReference('main_controller', array(), array()), Request::create('/'))->getContent());
     }
 
     public function testRenderWithUri()
@@ -80,23 +80,10 @@ class HIncludeFragmentRendererTest extends TestCase
         $engine->expects($this->once())
             ->method('exists')
             ->with('default')
-            ->willThrowException(new \InvalidArgumentException());
+            ->will($this->throwException(new \InvalidArgumentException()));
 
         // only default
         $strategy = new HIncludeFragmentRenderer($engine);
         $this->assertEquals('<hx:include src="/foo">default</hx:include>', $strategy->render('/foo', Request::create('/'), array('default' => 'default'))->getContent());
-    }
-
-    public function testRenderWithEngineAndDefaultText()
-    {
-        $engine = $this->getMockBuilder('Symfony\\Component\\Templating\\EngineInterface')->getMock();
-        $engine->expects($this->once())
-            ->method('exists')
-            ->with('loading...')
-            ->willThrowException(new \RuntimeException());
-
-        // only default
-        $strategy = new HIncludeFragmentRenderer($engine);
-        $this->assertEquals('<hx:include src="/foo">loading...</hx:include>', $strategy->render('/foo', Request::create('/'), array('default' => 'loading...'))->getContent());
     }
 }

@@ -7,7 +7,6 @@
 
 namespace Drupal\Tests\Core\Mail;
 
-use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\Render\RenderContext;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Tests\UnitTestCase;
@@ -104,9 +103,6 @@ class MailManagerTest extends UnitTestCase {
       'system.mail' => [
         'interface' => $interface,
       ],
-      'system.site' => [
-        'mail' => 'test@example.com',
-      ],
     ]);
     $logger_factory = $this->getMock('\Drupal\Core\Logger\LoggerChannelFactoryInterface');
     $string_translation = $this->getStringTranslationStub();
@@ -114,11 +110,6 @@ class MailManagerTest extends UnitTestCase {
     // Construct the manager object and override its discovery.
     $this->mailManager = new TestMailManager(new \ArrayObject(), $this->cache, $this->moduleHandler, $this->configFactory, $logger_factory, $string_translation, $this->renderer);
     $this->mailManager->setDiscovery($this->discovery);
-
-    // @see \Drupal\Core\Plugin\Factory\ContainerFactory::createInstance()
-    $container = new ContainerBuilder();
-    $container->set('config.factory', $this->configFactory);
-    \Drupal::setContainer($container);
   }
 
   /**
@@ -143,6 +134,7 @@ class MailManagerTest extends UnitTestCase {
     $instance = $this->mailManager->getInstance($options);
     $this->assertInstanceOf('Drupal\Core\Mail\Plugin\Mail\TestMailCollector', $instance);
   }
+
 
   /**
    * Tests that mails are sent in a separate render context.
@@ -171,7 +163,6 @@ class MailManagerTest extends UnitTestCase {
  * Provides a testing version of MailManager with an empty constructor.
  */
 class TestMailManager extends MailManager {
-
   /**
    * Sets the discovery for the manager.
    *

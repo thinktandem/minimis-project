@@ -74,9 +74,6 @@ class EntityCreateAccessCheckTest extends UnitTestCase {
     if ($expect_permission_context) {
       $expected_access_result->cachePerPermissions();
     }
-    if (!$entity_bundle && !$expect_permission_context) {
-      $expected_access_result->setReason("Could not find '{bundle_argument}' request argument, therefore cannot check create access.");
-    }
 
     $entity_manager = $this->getMock('Drupal\Core\Entity\EntityManagerInterface');
 

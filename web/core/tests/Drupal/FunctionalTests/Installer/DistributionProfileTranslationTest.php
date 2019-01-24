@@ -91,6 +91,7 @@ class DistributionProfileTranslationTest extends InstallerTestBase {
     parent::setUpSettings();
   }
 
+
   /**
    * Confirms that the installation succeeded.
    */

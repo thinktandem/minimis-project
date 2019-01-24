@@ -52,6 +52,7 @@ class CommentUninstallTest extends BrowserTestBase {
     }
   }
 
+
   /**
    * Tests if uninstallation succeeds if the field has been deleted beforehand.
    */

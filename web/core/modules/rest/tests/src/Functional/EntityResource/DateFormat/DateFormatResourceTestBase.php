@@ -2,15 +2,75 @@
 
 namespace Drupal\Tests\rest\Functional\EntityResource\DateFormat;
 
-@trigger_error('The ' . __NAMESPACE__ . '\DateFormatResourceTestBase is deprecated in Drupal 8.6.x and will be removed before Drupal 9.0.0. Instead, use Drupal\FunctionalTests\Rest\DateFormatResourceTestBase. See https://www.drupal.org/node/2971931.', E_USER_DEPRECATED);
-
-use Drupal\FunctionalTests\Rest\DateFormatResourceTestBase as DateFormatResourceTestBaseReal;
+use Drupal\Core\Datetime\Entity\DateFormat;
+use Drupal\Tests\rest\Functional\EntityResource\EntityResourceTestBase;
 
 /**
- * @deprecated in Drupal 8.6.x. Will be removed before Drupal 9.0.0. Use
- *   Drupal\FunctionalTests\Rest\DateFormatResourceTestBase instead.
- *
- * @see https://www.drupal.org/node/2971931
+ * ResourceTestBase for DateFormat entity.
  */
-abstract class DateFormatResourceTestBase extends DateFormatResourceTestBaseReal {
+abstract class DateFormatResourceTestBase extends EntityResourceTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static $modules = [];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $entityTypeId = 'date_format';
+
+  /**
+   * The DateFormat entity.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatInterface
+   */
+  protected $entity;
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUpAuthorization($method) {
+    $this->grantPermissionsToTestedRole(['administer site configuration']);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function createEntity() {
+    // Create a date format.
+    $date_format = DateFormat::create([
+      'id' => 'llama',
+      'label' => 'Llama',
+      'pattern' => 'F d, Y',
+    ]);
+
+    $date_format->save();
+
+    return $date_format;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getExpectedNormalizedEntity() {
+    return [
+      'dependencies' => [],
+      'id' => 'llama',
+      'label' => 'Llama',
+      'langcode' => 'en',
+      'locked' => FALSE,
+      'pattern' => 'F d, Y',
+      'status' => TRUE,
+      'uuid' => $this->entity->uuid(),
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function getNormalizedPostEntity() {
+    // @todo Update in https://www.drupal.org/node/2300677.
+  }
+
 }

@@ -5,7 +5,7 @@ namespace Drupal\Tests\node\Functional;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
-use Drupal\Tests\system\Functional\Entity\EntityWithUriCacheTagsTestBase;
+use Drupal\system\Tests\Entity\EntityWithUriCacheTagsTestBase;
 
 /**
  * Tests the Node entity's cache tags.
@@ -32,7 +32,7 @@ class NodeCacheTagsTest extends EntityWithUriCacheTagsTestBase {
     // Create a "Llama" node.
     $node = Node::create(['type' => 'camelids']);
     $node->setTitle('Llama')
-      ->setPublished()
+      ->setPublished(TRUE)
       ->save();
 
     return $node;

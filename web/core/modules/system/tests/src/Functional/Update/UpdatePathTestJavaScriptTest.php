@@ -8,7 +8,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests the presence of JavaScript at update.php.
  *
  * @group Update
- * @group legacy
  */
 class UpdatePathTestJavaScriptTest extends UpdatePathTestBase {
 

@@ -72,6 +72,13 @@ class FieldConfigEntityUnitTest extends UnitTestCase {
   protected $fieldStorage;
 
   /**
+   * The typed configuration manager used for testing.
+   *
+   * @var \Drupal\Core\Config\TypedConfigManagerInterface|\PHPUnit_Framework_MockObject_MockObject
+   */
+  protected $typedConfigManager;
+
+  /**
    * The mock field type plugin manager;
    *
    * @var \Drupal\Core\Field\FieldTypePluginManagerInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -91,6 +98,8 @@ class FieldConfigEntityUnitTest extends UnitTestCase {
 
     $this->uuid = $this->getMock('\Drupal\Component\Uuid\UuidInterface');
 
+    $this->typedConfigManager = $this->getMock('Drupal\Core\Config\TypedConfigManagerInterface');
+
     $this->fieldTypePluginManager = $this->getMock('Drupal\Core\Field\FieldTypePluginManagerInterface');
 
     $container = new ContainerBuilder();
@@ -98,6 +107,7 @@ class FieldConfigEntityUnitTest extends UnitTestCase {
     $container->set('entity_field.manager', $this->entityFieldManager);
     $container->set('entity_type.manager', $this->entityTypeManager);
     $container->set('uuid', $this->uuid);
+    $container->set('config.typed', $this->typedConfigManager);
     $container->set('plugin.manager.field.field_type', $this->fieldTypePluginManager);
     // Inject the container into entity.manager so it can defer to
     // entity_type.manager, etc.
@@ -241,13 +251,13 @@ class FieldConfigEntityUnitTest extends UnitTestCase {
       'dependencies' => [
         'module' => [
           'fruiter',
-        ],
+        ]
       ],
       'third_party_settings' => [
         'fruiter' => [
           'fruit' => 'apple',
-        ],
-      ],
+        ]
+      ]
     ]);
     $changed = $field->onDependencyRemoval(['module' => ['fruiter']]);
     $this->assertTrue($changed);
@@ -289,10 +299,9 @@ class FieldConfigEntityUnitTest extends UnitTestCase {
       ->method('getKey')
       ->with('id')
       ->will($this->returnValue('id'));
-    $this->entityType->expects($this->once())
-      ->method('getPropertiesToExport')
-      ->with('test_entity_type.test_bundle.field_test')
-      ->will($this->returnValue(array_combine(array_keys($expected), array_keys($expected))));
+    $this->typedConfigManager->expects($this->once())
+      ->method('getDefinition')
+      ->will($this->returnValue(['mapping' => array_fill_keys(array_keys($expected), '')]));
 
     $export = $field->toArray();
     $this->assertEquals($expected, $export);

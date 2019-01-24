@@ -19,7 +19,7 @@ fieldset:not(.fieldgroup) {
  * @todo remove once this Mozilla bug is fixed.
  * See https://bugzilla.mozilla.org/show_bug.cgi?id=504622
  */
-@media (min--moz-device-pixel-ratio: 0) {
+@-moz-document url-prefix() {
   fieldset:not(.fieldgroup) {
     display: table-cell;
   }
@@ -41,27 +41,13 @@ fieldset:not(.fieldgroup) > legend {
  * @todo remove once this Mozilla bug is fixed.
  * See https://bugzilla.mozilla.org/show_bug.cgi?id=504622
  */
-@media (min--moz-device-pixel-ratio: 0) {
+@-moz-document url-prefix() {
   .fieldgroup {
     display: table-cell;
   }
 }
 .form-item {
   margin: 0.75em 0;
-}
-/**
- * When a table row has a single form item, prevent it from adding unnecessary
- * extra spacing. If it has multiple form items, allow spacing between them,
- * overriding Classy.
- */
-tr.odd .form-item,
-tr.even .form-item {
-  margin-top: 0.75em;
-  margin-bottom: 0.75em;
-}
-td > .form-item:only-child {
-  margin-top: 0;
-  margin-bottom: 0;
 }
 .form-type-checkbox {
   padding: 0;

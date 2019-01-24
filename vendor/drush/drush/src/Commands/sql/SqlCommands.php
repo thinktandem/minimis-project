@@ -123,17 +123,17 @@ class SqlCommands extends DrushCommands
      * Open a SQL command-line interface using Drupal's credentials.
      *
      * @command sql:cli
-     * @option extra Add custom options to the connect string
+     * @option extra Add custom options to the connect string (e.g. --extra=--skip-column-names)
      * @optionset_sql
      * @aliases sqlc,sql-cli
      * @usage drush sql:cli
      *   Open a SQL command-line interface using Drupal's credentials.
-     * @usage drush sql:cli --extra=--progress-reports
+     * @usage drush sql:cli --extra=-A
      *   Open a SQL CLI and skip reading table information.
      * @remote-tty
      * @bootstrap max configuration
      */
-    public function cli($options = ['extra' => self::REQ])
+    public function cli($options = [])
     {
         $sql = SqlBase::create($options);
         if (drush_shell_proc_open($sql->connect())) {
@@ -201,7 +201,7 @@ class SqlCommands extends DrushCommands
      * @option ordered-dump Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.
      * @option gzip Compress the dump using the gzip program which must be in your $PATH.
      * @option extra Add custom arguments/options when connecting to database (used internally to list tables).
-     * @option extra-dump Add custom arguments/options to the dumping of the database (e.g. mysqldump command).
+     * @option extra-dump Add custom arguments/options to the dumping the database (e.g. mysqldump command).
      * @usage drush sql:dump --result-file=../18.sql
      *   Save SQL dump to the directory above Drupal root.
      * @usage drush sql:dump --skip-tables-key=common

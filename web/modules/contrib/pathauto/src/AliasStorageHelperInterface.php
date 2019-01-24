@@ -1,7 +1,6 @@
 <?php
 
 namespace Drupal\pathauto;
-
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Language\LanguageInterface;
 
@@ -94,6 +93,7 @@ interface AliasStorageHelperInterface {
    *   An array of PIDs.
    */
   public function loadBySourcePrefix($source);
+
 
   /**
    * Returns the count of url aliases for the source.

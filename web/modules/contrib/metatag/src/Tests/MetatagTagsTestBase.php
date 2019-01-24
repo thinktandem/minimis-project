@@ -3,6 +3,7 @@
 namespace Drupal\metatag\Tests;
 
 use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\Html;
 use Drupal\simpletest\WebTestBase;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -111,7 +112,7 @@ abstract class MetatagTagsTestBase extends WebTestBase {
   public function testTagsInputOutput() {
     // Create a content type to test with.
     $this->createContentType(['type' => 'page']);
-    $this->drupalCreateNode([
+    $node = $this->drupalCreateNode([
       'title' => t('Hello, world!'),
       'type' => 'page',
     ]);
@@ -303,7 +304,7 @@ abstract class MetatagTagsTestBase extends WebTestBase {
    * Generate a URL for an image.
    *
    * @return string
-   *   An absolute URL to a non-existent image.
+   *   An absolute URL to a non-existant image.
    */
   private function randomImageUrl() {
     return 'http://www.example.com/images/' . $this->randomMachineName() . '.png';

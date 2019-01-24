@@ -2,17 +2,20 @@
 
 namespace Drupal\paragraphs;
 
-use Drupal\Core\Plugin\PluginBase;
+use Drupal\Component\Plugin\PluginBase;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Entity\EntityFieldManager;
+use Drupal\Core\Field\FieldConfigInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\field\FieldConfigInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\paragraphs\Entity\ParagraphsType;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class ParagraphsBehaviorBase extends PluginBase implements ParagraphsBehaviorInterface, ContainerFactoryPluginInterface {
+
+  use StringTranslationTrait;
 
   /**
    * The entity field manager.
@@ -109,13 +112,6 @@ abstract class ParagraphsBehaviorBase extends PluginBase implements ParagraphsBe
    * {@inheritdoc}
    */
   public function settingsSummary(Paragraph $paragraph) {
-    return [];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function settingsIcon(Paragraph $paragraph) {
     return [];
   }
 

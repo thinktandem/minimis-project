@@ -8,10 +8,8 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests system_update_8002().
  *
  * @group Update
- * @group legacy
  */
 class RouterIndexOptimizationTest extends UpdatePathTestBase {
-
   /**
    * {@inheritdoc}
    */

@@ -184,9 +184,6 @@ class AnnotatedCommandFactory implements AutomaticOptionsProviderInterface
     protected function getCommandInfoListFromCache($commandFileInstance)
     {
         $commandInfoList = [];
-        if (!is_object($commandFileInstance)) {
-            return [];
-        }
         $className = get_class($commandFileInstance);
         if (!$this->getDataStore()->has($className)) {
             return [];

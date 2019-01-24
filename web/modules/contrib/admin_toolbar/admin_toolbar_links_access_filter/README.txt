@@ -3,6 +3,7 @@ CONTENTS OF THIS FILE
 
  * Introduction
  * Requirements
+ * Recommended modules
  * Installation
  * Configuration
  * Maintainers
@@ -29,6 +30,15 @@ REQUIREMENTS
 This module requires the following modules:
 
  * Admin Toolbar (https://www.drupal.org/project/admin_toolbar)
+
+
+RECOMMENDED MODULES
+-------------------
+
+ * Admin Toolbar (https://www.drupal.org/project/admin_toolbar):
+   Improve the default Drupal Toolbar (the administration menu at the top of
+   your site) to transform it into a drop-down menu, providing a fast access to
+   all administration pages.
 
 
 INSTALLATION

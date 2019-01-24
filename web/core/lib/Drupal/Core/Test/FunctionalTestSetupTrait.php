@@ -3,7 +3,8 @@
 namespace Drupal\Core\Test;
 
 use Drupal\Component\FileCache\FileCacheFactory;
-use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Core\Cache\Cache;
 use Drupal\Core\Config\Development\ConfigSchemaChecker;
 use Drupal\Core\Database\Database;
 use Drupal\Core\DrupalKernel;
@@ -12,7 +13,6 @@ use Drupal\Core\Serialization\Yaml;
 use Drupal\Core\Session\UserSession;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\StreamWrapper\StreamWrapperInterface;
-use Drupal\Tests\SessionTestTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Yaml\Yaml as SymfonyYaml;
@@ -21,9 +21,6 @@ use Symfony\Component\Yaml\Yaml as SymfonyYaml;
  * Defines a trait for shared functional test setup functionality.
  */
 trait FunctionalTestSetupTrait {
-
-  use SessionTestTrait;
-  use RefreshVariablesTrait;
 
   /**
    * The "#1" admin user.
@@ -223,6 +220,32 @@ trait FunctionalTestSetupTrait {
   }
 
   /**
+   * Refreshes in-memory configuration and state information.
+   *
+   * Useful after a page request is made that changes configuration or state in
+   * a different thread.
+   *
+   * In other words calling a settings page with $this->drupalPostForm() with a
+   * changed value would update configuration to reflect that change, but in the
+   * thread that made the call (thread running the test) the changed values
+   * would not be picked up.
+   *
+   * This method clears the cache and loads a fresh copy.
+   */
+  protected function refreshVariables() {
+    // Clear the tag cache.
+    \Drupal::service('cache_tags.invalidator')->resetChecksums();
+    foreach (Cache::getBins() as $backend) {
+      if (is_callable([$backend, 'reset'])) {
+        $backend->reset();
+      }
+    }
+
+    $this->container->get('config.factory')->reset();
+    $this->container->get('state')->resetCache();
+  }
+
+  /**
    * Creates a mock request and sets it on the generator.
    *
    * This is used to manipulate how the generator generates paths during tests.
@@ -412,7 +435,7 @@ trait FunctionalTestSetupTrait {
       $modules = array_unique($modules);
       try {
         $success = $container->get('module_installer')->install($modules, TRUE);
-        $this->assertTrue($success, new FormattableMarkup('Enabled modules: %modules', ['%modules' => implode(', ', $modules)]));
+        $this->assertTrue($success, SafeMarkup::format('Enabled modules: %modules', ['%modules' => implode(', ', $modules)]));
       }
       catch (MissingDependencyException $e) {
         // The exception message has all the details.

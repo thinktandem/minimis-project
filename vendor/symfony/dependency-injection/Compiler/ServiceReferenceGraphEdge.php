@@ -25,7 +25,6 @@ class ServiceReferenceGraphEdge
     private $value;
     private $lazy;
     private $weak;
-    private $byConstructor;
 
     /**
      * @param ServiceReferenceGraphNode $sourceNode
@@ -33,16 +32,14 @@ class ServiceReferenceGraphEdge
      * @param mixed                     $value
      * @param bool                      $lazy
      * @param bool                      $weak
-     * @param bool                      $byConstructor
      */
-    public function __construct(ServiceReferenceGraphNode $sourceNode, ServiceReferenceGraphNode $destNode, $value = null, $lazy = false, $weak = false, $byConstructor = false)
+    public function __construct(ServiceReferenceGraphNode $sourceNode, ServiceReferenceGraphNode $destNode, $value = null, $lazy = false, $weak = false)
     {
         $this->sourceNode = $sourceNode;
         $this->destNode = $destNode;
         $this->value = $value;
         $this->lazy = $lazy;
         $this->weak = $weak;
-        $this->byConstructor = $byConstructor;
     }
 
     /**
@@ -93,15 +90,5 @@ class ServiceReferenceGraphEdge
     public function isWeak()
     {
         return $this->weak;
-    }
-
-    /**
-     * Returns true if the edge links with a constructor argument.
-     *
-     * @return bool
-     */
-    public function isReferencedByConstructor()
-    {
-        return $this->byConstructor;
     }
 }

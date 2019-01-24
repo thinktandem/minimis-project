@@ -6,7 +6,6 @@ use Drupal\aggregator\Plugin\FetcherInterface;
 use Drupal\aggregator\FeedInterface;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\Core\Http\ClientFactory;
-use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
@@ -44,26 +43,16 @@ class DefaultFetcher implements FetcherInterface, ContainerFactoryPluginInterfac
   protected $logger;
 
   /**
-   * The messenger.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
-   */
-  protected $messenger;
-
-  /**
    * Constructs a DefaultFetcher object.
    *
    * @param \Drupal\Core\Http\ClientFactory $http_client_factory
    *   A Guzzle client object.
    * @param \Psr\Log\LoggerInterface $logger
    *   A logger instance.
-   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
-   *   The messenger.
    */
-  public function __construct(ClientFactory $http_client_factory, LoggerInterface $logger, MessengerInterface $messenger) {
+  public function __construct(ClientFactory $http_client_factory, LoggerInterface $logger) {
     $this->httpClientFactory = $http_client_factory;
     $this->logger = $logger;
-    $this->messenger = $messenger;
   }
 
   /**
@@ -72,8 +61,7 @@ class DefaultFetcher implements FetcherInterface, ContainerFactoryPluginInterfac
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $container->get('http_client_factory'),
-      $container->get('logger.factory')->get('aggregator'),
-      $container->get('messenger')
+      $container->get('logger.factory')->get('aggregator')
     );
   }
 
@@ -100,7 +88,7 @@ class DefaultFetcher implements FetcherInterface, ContainerFactoryPluginInterfac
         'allow_redirects' => [
           'on_redirect' => function (RequestInterface $request, ResponseInterface $response, UriInterface $uri) use (&$actual_uri) {
             $actual_uri = (string) $uri;
-          },
+          }
         ],
       ])->send($request);
 
@@ -127,7 +115,7 @@ class DefaultFetcher implements FetcherInterface, ContainerFactoryPluginInterfac
     }
     catch (RequestException $e) {
       $this->logger->warning('The feed from %site seems to be broken because of error "%error".', ['%site' => $feed->label(), '%error' => $e->getMessage()]);
-      $this->messenger->addWarning(t('The feed from %site seems to be broken because of error "%error".', ['%site' => $feed->label(), '%error' => $e->getMessage()]));
+      drupal_set_message(t('The feed from %site seems to be broken because of error "%error".', ['%site' => $feed->label(), '%error' => $e->getMessage()]), 'warning');
       return FALSE;
     }
   }

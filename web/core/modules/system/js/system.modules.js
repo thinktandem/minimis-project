@@ -43,9 +43,7 @@
 
           $details.attr('open', true).each(hidePackageDetails);
 
-          Drupal.announce(Drupal.t('!modules modules are available in the modified list.', {
-            '!modules': $rowsAndDetails.find('tbody tr:visible').length
-          }));
+          Drupal.announce(Drupal.t('!modules modules are available in the modified list.', { '!modules': $rowsAndDetails.find('tbody tr:visible').length }));
         } else if (searching) {
           searching = false;
           $rowsAndDetails.show();

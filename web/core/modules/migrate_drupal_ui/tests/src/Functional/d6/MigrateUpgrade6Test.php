@@ -23,7 +23,6 @@ class MigrateUpgrade6Test extends MigrateUpgradeExecuteTestBase {
   public static $modules = [
     'language',
     'content_translation',
-    'config_translation',
     'migrate_drupal_ui',
     'telephone',
     'aggregator',
@@ -31,8 +30,6 @@ class MigrateUpgrade6Test extends MigrateUpgradeExecuteTestBase {
     'forum',
     'statistics',
     'migration_provider_test',
-    // Required for translation migrations.
-    'migrate_drupal_multilingual',
   ];
 
   /**
@@ -60,21 +57,21 @@ class MigrateUpgrade6Test extends MigrateUpgradeExecuteTestBase {
       'block' => 35,
       'block_content' => 2,
       'block_content_type' => 1,
-      'comment' => 8,
+      'comment' => 6,
       // The 'standard' profile provides the 'comment' comment type, and the
       // migration creates 12 comment types, one per node type.
       'comment_type' => 13,
       'contact_form' => 5,
       'configurable_language' => 5,
       'editor' => 2,
-      'field_config' => 90,
-      'field_storage_config' => 64,
-      'file' => 7,
+      'field_config' => 88,
+      'field_storage_config' => 62,
+      'file' => 8,
       'filter_format' => 7,
       'image_style' => 5,
-      'language_content_settings' => 10,
+      'language_content_settings' => 3,
       'migration' => 105,
-      'node' => 18,
+      'node' => 17,
       // The 'book' module provides the 'book' node type, and the migration
       // creates 12 node types.
       'node_type' => 13,
@@ -84,9 +81,9 @@ class MigrateUpgrade6Test extends MigrateUpgradeExecuteTestBase {
       'shortcut_set' => 1,
       'action' => 23,
       'menu' => 8,
-      'taxonomy_term' => 15,
+      'taxonomy_term' => 8,
       'taxonomy_vocabulary' => 7,
-      'tour' => 5,
+      'tour' => 4,
       'user' => 7,
       'user_role' => 6,
       'menu_link_content' => 10,
@@ -106,13 +103,13 @@ class MigrateUpgrade6Test extends MigrateUpgradeExecuteTestBase {
   protected function getEntityCountsIncremental() {
     $counts = $this->getEntityCounts();
     $counts['block_content'] = 3;
-    $counts['comment'] = 9;
+    $counts['comment'] = 7;
     $counts['entity_view_display'] = 55;
     $counts['entity_view_mode'] = 14;
-    $counts['file'] = 8;
+    $counts['file'] = 9;
     $counts['menu_link_content'] = 11;
-    $counts['node'] = 19;
-    $counts['taxonomy_term'] = 16;
+    $counts['node'] = 18;
+    $counts['taxonomy_term'] = 9;
     $counts['user'] = 8;
     $counts['view'] = 16;
     return $counts;
@@ -135,12 +132,7 @@ class MigrateUpgrade6Test extends MigrateUpgradeExecuteTestBase {
       'filefield',
       'filter',
       'forum',
-      'i18n',
-      'i18nblocks',
-      'i18ncck',
       'i18nmenu',
-      'i18nprofile',
-      'i18nstrings',
       'i18ntaxonomy',
       'imagecache',
       'imagefield',
@@ -167,6 +159,8 @@ class MigrateUpgrade6Test extends MigrateUpgradeExecuteTestBase {
       'date_api',
       'date_timezone',
       'event',
+      'i18n',
+      'i18nstrings',
       'imageapi',
       'number',
       'php',
@@ -180,7 +174,12 @@ class MigrateUpgrade6Test extends MigrateUpgradeExecuteTestBase {
    */
   protected function getMissingPaths() {
     return [
+      'i18nblocks',
+      'i18ncck',
       'i18ncontent',
+      // This module is in the missing path list because it is installed on the
+      // source site but it is not installed on the destination site.
+      'i18nprofile',
     ];
   }
 

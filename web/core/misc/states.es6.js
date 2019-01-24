@@ -3,7 +3,7 @@
  * Drupal's states library.
  */
 
-(function($, Drupal) {
+(function ($, Drupal) {
   /**
    * The base States namespace.
    *
@@ -13,6 +13,7 @@
    * @namespace Drupal.states
    */
   const states = {
+
     /**
      * An array of functions that should be postponed.
      */
@@ -35,7 +36,7 @@
    *   The result.
    */
   function invert(a, invertState) {
-    return invertState && typeof a !== 'undefined' ? !a : a;
+    return (invertState && typeof a !== 'undefined') ? !a : a;
   }
 
   /**
@@ -60,30 +61,6 @@
   }
 
   /**
-   * Bitwise AND with a third undefined state.
-   *
-   * @function Drupal.states~ternary
-   *
-   * @param {*} a
-   *   Value a.
-   * @param {*} b
-   *   Value b
-   *
-   * @return {bool}
-   *   The result.
-   */
-  function ternary(a, b) {
-    if (typeof a === 'undefined') {
-      return b;
-    }
-    if (typeof b === 'undefined') {
-      return a;
-    }
-
-    return a && b;
-  }
-
-  /**
    * Attaches the states.
    *
    * @type {Drupal~behavior}
@@ -96,10 +73,8 @@
       const $states = $(context).find('[data-drupal-states]');
       const il = $states.length;
       for (let i = 0; i < il; i++) {
-        const config = JSON.parse(
-          $states[i].getAttribute('data-drupal-states'),
-        );
-        Object.keys(config || {}).forEach(state => {
+        const config = JSON.parse($states[i].getAttribute('data-drupal-states'));
+        Object.keys(config || {}).forEach((state) => {
           new states.Dependent({
             element: $($states[i]),
             state: states.State.sanitize(state),
@@ -110,7 +85,7 @@
 
       // Execute all postponed functions now.
       while (states.postponed.length) {
-        states.postponed.shift()();
+        (states.postponed.shift())();
       }
     },
   };
@@ -131,11 +106,11 @@
    *   element depends on. It can be nested and can contain
    *   arbitrary AND and OR clauses.
    */
-  states.Dependent = function(args) {
+  states.Dependent = function (args) {
     $.extend(this, { values: {}, oldValue: null }, args);
 
     this.dependees = this.getDependees();
-    Object.keys(this.dependees || {}).forEach(selector => {
+    Object.keys(this.dependees || {}).forEach((selector) => {
       this.initializeDependee(selector, this.dependees[selector]);
     });
   };
@@ -165,13 +140,12 @@
       // compare().
       // Otherwise numeric keys in the form's #states array fail to match
       // string values returned from jQuery's val().
-      return typeof value === 'string'
-        ? compare(reference.toString(), value)
-        : compare(reference, value);
+      return (typeof value === 'string') ? compare(reference.toString(), value) : compare(reference, value);
     },
   };
 
   states.Dependent.prototype = {
+
     /**
      * Initializes one of the elements this dependent depends on.
      *
@@ -187,7 +161,7 @@
       // Cache for the states of this dependee.
       this.values[selector] = {};
 
-      Object.keys(dependeeStates).forEach(i => {
+      Object.keys(dependeeStates).forEach((i) => {
         let state = dependeeStates[i];
         // Make sure we're not initializing this selector/state combination
         // twice.
@@ -201,7 +175,7 @@
         this.values[selector][state.name] = null;
 
         // Monitor state changes of the specified state for this dependee.
-        $(selector).on(`state:${state}`, { selector, state }, e => {
+        $(selector).on(`state:${state}`, { selector, state }, (e) => {
           this.update(e.data.selector, e.data.state, e.value);
         });
 
@@ -229,13 +203,10 @@
       const value = this.values[selector][state.name];
       if (reference.constructor.name in states.Dependent.comparisons) {
         // Use a custom compare function for certain reference value types.
-        return states.Dependent.comparisons[reference.constructor.name](
-          reference,
-          value,
-        );
+        return states.Dependent.comparisons[reference.constructor.name](reference, value);
       }
 
-      // Do a plain comparison otherwise.
+        // Do a plain comparison otherwise.
       return compare(reference, value);
     },
 
@@ -279,11 +250,7 @@
 
         // By adding "trigger: true", we ensure that state changes don't go into
         // infinite loops.
-        this.element.trigger({
-          type: `state:${this.state}`,
-          value,
-          trigger: true,
-        });
+        this.element.trigger({ type: `state:${this.state}`, value, trigger: true });
       }
     },
 
@@ -310,11 +277,7 @@
         const len = constraints.length;
         for (let i = 0; i < len; i++) {
           if (constraints[i] !== 'xor') {
-            const constraint = this.checkConstraints(
-              constraints[i],
-              selector,
-              i,
-            );
+            const constraint = this.checkConstraints(constraints[i], selector, i);
             // Return if this is OR and we have a satisfied constraint or if
             // this is XOR and we have a second satisfied constraint.
             if (constraint && (hasXor || result)) {
@@ -329,20 +292,18 @@
       // bogus, we don't want to end up with an infinite loop.
       else if ($.isPlainObject(constraints)) {
         // This constraint is an object (AND).
-        // eslint-disable-next-line no-restricted-syntax
-        for (const n in constraints) {
-          if (constraints.hasOwnProperty(n)) {
-            result = ternary(
-              result,
-              this.checkConstraints(constraints[n], selector, n),
-            );
-            // False and anything else will evaluate to false, so return when
-            // any false condition is found.
-            if (result === false) {
-              return false;
-            }
-          }
-        }
+        result = Object.keys(constraints).every((constraint) => {
+          const check = this.checkConstraints(
+            constraints[constraint],
+            selector,
+            constraint,
+          );
+          /**
+           * The checkConstraints() function's return value can be undefined. If
+           * this so, consider it to have returned true.
+           */
+          return typeof check === 'undefined' ? true : check;
+        });
       }
       return result;
     },
@@ -372,9 +333,10 @@
     checkConstraints(value, selector, state) {
       // Normalize the last parameter. If it's non-numeric, we treat it either
       // as a selector (in case there isn't one yet) or as a trigger/state.
-      if (typeof state !== 'string' || /[0-9]/.test(state[0])) {
+      if (typeof state !== 'string' || (/[0-9]/).test(state[0])) {
         state = null;
-      } else if (typeof selector === 'undefined') {
+      }
+      else if (typeof selector === 'undefined') {
         // Propagate the state to the selector when there isn't one yet.
         selector = state;
         state = null;
@@ -386,7 +348,7 @@
         return invert(this.compare(value, selector, state), state.invert);
       }
 
-      // Resolve this constraint as an AND/OR operator.
+        // Resolve this constraint as an AND/OR operator.
       return this.verifyConstraints(value, selector);
     },
 
@@ -403,7 +365,7 @@
       // Swivel the lookup function so that we can record all available
       // selector- state combinations for initialization.
       const _compare = this.compare;
-      this.compare = function(reference, selector, state) {
+      this.compare = function (reference, selector, state) {
         (cache[selector] || (cache[selector] = [])).push(state.name);
         // Return nothing (=== undefined) so that the constraint loops are not
         // broken.
@@ -429,7 +391,7 @@
    * @param {object} args
    *   Trigger arguments.
    */
-  states.Trigger = function(args) {
+  states.Trigger = function (args) {
     $.extend(this, args);
 
     if (this.state in states.Trigger.states) {
@@ -444,6 +406,7 @@
   };
 
   states.Trigger.prototype = {
+
     /**
      * @memberof Drupal.states.Trigger#
      */
@@ -453,8 +416,9 @@
       if (typeof trigger === 'function') {
         // We have a custom trigger initialization function.
         trigger.call(window, this.element);
-      } else {
-        Object.keys(trigger || {}).forEach(event => {
+      }
+      else {
+        Object.keys(trigger || {}).forEach((event) => {
           this.defaultTrigger(event, trigger[event]);
         });
       }
@@ -475,32 +439,19 @@
       let oldValue = valueFn.call(this.element);
 
       // Attach the event callback.
-      this.element.on(
-        event,
-        $.proxy(function(e) {
-          const value = valueFn.call(this.element, e);
-          // Only trigger the event if the value has actually changed.
-          if (oldValue !== value) {
-            this.element.trigger({
-              type: `state:${this.state}`,
-              value,
-              oldValue,
-            });
-            oldValue = value;
-          }
-        }, this),
-      );
+      this.element.on(event, $.proxy(function (e) {
+        const value = valueFn.call(this.element, e);
+        // Only trigger the event if the value has actually changed.
+        if (oldValue !== value) {
+          this.element.trigger({ type: `state:${this.state}`, value, oldValue });
+          oldValue = value;
+        }
+      }, this));
 
-      states.postponed.push(
-        $.proxy(function() {
-          // Trigger the event once for initialization purposes.
-          this.element.trigger({
-            type: `state:${this.state}`,
-            value: oldValue,
-            oldValue: null,
-          });
-        }, this),
-      );
+      states.postponed.push($.proxy(function () {
+        // Trigger the event once for initialization purposes.
+        this.element.trigger({ type: `state:${this.state}`, value: oldValue, oldValue: null });
+      }, this));
     },
   };
 
@@ -534,7 +485,7 @@
         // support selectors matching multiple checkboxes, iterate over all and
         // return whether any is checked.
         let checked = false;
-        this.each(function() {
+        this.each(function () {
           // Use prop() here as we want a boolean of the checkbox state.
           // @see http://api.jquery.com/prop/
           checked = $(this).prop('checked');
@@ -567,9 +518,7 @@
 
     collapsed: {
       collapsed(e) {
-        return typeof e !== 'undefined' && 'value' in e
-          ? e.value
-          : !this.is('[open]');
+        return (typeof e !== 'undefined' && 'value' in e) ? e.value : !this.is('[open]');
       },
     },
   };
@@ -582,7 +531,7 @@
    * @param {string} state
    *   The name of the state.
    */
-  states.State = function(state) {
+  states.State = function (state) {
     /**
      * Original unresolved name.
      */
@@ -601,7 +550,8 @@
       // Replace the state with its normalized name.
       if (this.name in states.State.aliases) {
         this.name = states.State.aliases[this.name];
-      } else {
+      }
+      else {
         process = false;
       }
     } while (process);
@@ -618,7 +568,7 @@
    * @return {Drupal.states.state}
    *   A state object.
    */
-  states.State.sanitize = function(state) {
+  states.State.sanitize = function (state) {
     if (state instanceof states.State) {
       return state;
     }
@@ -648,6 +598,7 @@
   };
 
   states.State.prototype = {
+
     /**
      * @memberof Drupal.states.State#
      */
@@ -674,7 +625,7 @@
    */
 
   const $document = $(document);
-  $document.on('state:disabled', e => {
+  $document.on('state:disabled', (e) => {
     // Only act when this change was triggered by a dependency and not by the
     // element monitoring itself.
     if (e.trigger) {
@@ -690,19 +641,17 @@
     }
   });
 
-  $document.on('state:required', e => {
+  $document.on('state:required', (e) => {
     if (e.trigger) {
       if (e.value) {
         const label = `label${e.target.id ? `[for=${e.target.id}]` : ''}`;
-        const $label = $(e.target)
-          .attr({ required: 'required', 'aria-required': 'aria-required' })
-          .closest('.js-form-item, .js-form-wrapper')
-          .find(label);
+        const $label = $(e.target).attr({ required: 'required', 'aria-required': 'aria-required' }).closest('.js-form-item, .js-form-wrapper').find(label);
         // Avoids duplicate required markers on initialization.
         if (!$label.hasClass('js-form-required').length) {
           $label.addClass('js-form-required form-required');
         }
-      } else {
+      }
+      else {
         $(e.target)
           .removeAttr('required aria-required')
           .closest('.js-form-item, .js-form-wrapper')
@@ -712,27 +661,23 @@
     }
   });
 
-  $document.on('state:visible', e => {
+  $document.on('state:visible', (e) => {
     if (e.trigger) {
-      $(e.target)
-        .closest('.js-form-item, .js-form-submit, .js-form-wrapper')
-        .toggle(e.value);
+      $(e.target).closest('.js-form-item, .js-form-submit, .js-form-wrapper').toggle(e.value);
     }
   });
 
-  $document.on('state:checked', e => {
+  $document.on('state:checked', (e) => {
     if (e.trigger) {
       $(e.target).prop('checked', e.value);
     }
   });
 
-  $document.on('state:collapsed', e => {
+  $document.on('state:collapsed', (e) => {
     if (e.trigger) {
       if ($(e.target).is('[open]') === e.value) {
-        $(e.target)
-          .find('> summary')
-          .trigger('click');
+        $(e.target).find('> summary').trigger('click');
       }
     }
   });
-})(jQuery, Drupal);
+}(jQuery, Drupal));

@@ -161,7 +161,7 @@ class EntityRevisionTranslationTest extends EntityKernelTestBase {
   }
 
   /**
-   * @covers \Drupal\Core\Entity\ContentEntityBase::setNewRevision
+   * @covers \Drupal\Core\Entity\RevisionableInterface::setNewRevision
    */
   public function testSetNewRevision() {
     $user = $this->createUser();

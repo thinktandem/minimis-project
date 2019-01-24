@@ -15,8 +15,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\SelfCheckingResourceInterface;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Loader\LoaderInterface;
-use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\MessageCatalogue;
 
 class TranslatorCacheTest extends TestCase
 {
@@ -123,7 +123,7 @@ class TranslatorCacheTest extends TestCase
     {
         /*
          * Similar to the previous test. After we used the second translator, make
-         * sure there's still a usable cache for the first one.
+         * sure there's still a useable cache for the first one.
          */
 
         $locale = 'any_locale';
@@ -142,7 +142,7 @@ class TranslatorCacheTest extends TestCase
         $translator->addResource($format, array($msgid => 'FAIL'), $locale);
         $translator->trans($msgid);
 
-        // Now the first translator must still have a usable cache.
+        // Now the first translator must still have a useable cache.
         $translator = new Translator($locale, null, $this->tmpDir, $debug);
         $translator->addLoader($format, $this->createFailingLoader());
         $translator->addResource($format, array($msgid => 'OK'), $locale);

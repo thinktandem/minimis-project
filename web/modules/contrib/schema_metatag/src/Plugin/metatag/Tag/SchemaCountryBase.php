@@ -47,28 +47,10 @@ class SchemaCountryBase extends SchemaNameBase {
           $items[$key] = 'Country';
           break;
 
-        case 'name':
-          $items[$key] = parent::testDefaultValue(3, ',');
-          break;
-
         default:
           $items[$key] = parent::testDefaultValue(1, '');
           break;
 
-      }
-    }
-    return $items;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function processedTestValue($items) {
-    foreach ($items as $key => $value) {
-      switch ($key) {
-        case 'name':
-          $items[$key] = static::processTestExplodeValue($items[$key]);
-          break;
       }
     }
     return $items;

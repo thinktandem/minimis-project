@@ -97,7 +97,6 @@ class XmlEncoderTest extends UnitTestCase {
 }
 
 class TestObject {
-
   public function getA() {
     return 'A';
   }

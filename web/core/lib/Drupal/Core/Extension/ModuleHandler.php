@@ -5,7 +5,6 @@ namespace Drupal\Core\Extension;
 use Drupal\Component\Graph\Graph;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Cache\CacheBackendInterface;
-use Drupal\Core\Extension\Exception\UnknownExtensionException;
 
 /**
  * Class that manages modules in a Drupal installation.
@@ -173,7 +172,7 @@ class ModuleHandler implements ModuleHandlerInterface {
     if (isset($this->moduleList[$name])) {
       return $this->moduleList[$name];
     }
-    throw new UnknownExtensionException(sprintf('The module %s does not exist.', $name));
+    throw new \InvalidArgumentException(sprintf('The module %s does not exist.', $name));
   }
 
   /**
@@ -429,6 +428,7 @@ class ModuleHandler implements ModuleHandlerInterface {
     $this->triggerDeprecationError($description, $hook);
     return $result;
   }
+
 
   /**
    * Triggers an E_USER_DEPRECATED error if any module implements the hook.

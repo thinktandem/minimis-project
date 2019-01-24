@@ -123,14 +123,14 @@ class OpmlFeedAdd extends FormBase {
       }
       catch (RequestException $e) {
         $this->logger('aggregator')->warning('Failed to download OPML file due to "%error".', ['%error' => $e->getMessage()]);
-        $this->messenger()->addStatus($this->t('Failed to download OPML file due to "%error".', ['%error' => $e->getMessage()]));
+        drupal_set_message($this->t('Failed to download OPML file due to "%error".', ['%error' => $e->getMessage()]));
         return;
       }
     }
 
     $feeds = $this->parseOpml($data);
     if (empty($feeds)) {
-      $this->messenger()->addStatus($this->t('No new feed has been added.'));
+      drupal_set_message($this->t('No new feed has been added.'));
       return;
     }
 
@@ -138,7 +138,7 @@ class OpmlFeedAdd extends FormBase {
     foreach ($feeds as $feed) {
       // Ensure URL is valid.
       if (!UrlHelper::isValid($feed['url'], TRUE)) {
-        $this->messenger()->addWarning($this->t('The URL %url is invalid.', ['%url' => $feed['url']]));
+        drupal_set_message($this->t('The URL %url is invalid.', ['%url' => $feed['url']]), 'warning');
         continue;
       }
 
@@ -153,11 +153,11 @@ class OpmlFeedAdd extends FormBase {
       $result = $this->feedStorage->loadMultiple($ids);
       foreach ($result as $old) {
         if (strcasecmp($old->label(), $feed['title']) == 0) {
-          $this->messenger()->addWarning($this->t('A feed named %title already exists.', ['%title' => $old->label()]));
+          drupal_set_message($this->t('A feed named %title already exists.', ['%title' => $old->label()]), 'warning');
           continue 2;
         }
         if (strcasecmp($old->getUrl(), $feed['url']) == 0) {
-          $this->messenger()->addWarning($this->t('A feed with the URL %url already exists.', ['%url' => $old->getUrl()]));
+          drupal_set_message($this->t('A feed with the URL %url already exists.', ['%url' => $old->getUrl()]), 'warning');
           continue 2;
         }
       }

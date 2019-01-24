@@ -60,19 +60,4 @@ class SchemaEventBase extends SchemaNameBase {
     return $items;
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function processedTestValue($items) {
-    foreach ($items as $key => $value) {
-      switch ($key) {
-        case 'location':
-          $items[$key] = SchemaPlaceBase::processedTestValue($items[$key]);
-          break;
-
-      }
-    }
-    return $items;
-  }
-
 }

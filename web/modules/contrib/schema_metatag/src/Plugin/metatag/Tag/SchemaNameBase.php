@@ -98,28 +98,11 @@ class SchemaNameBase extends MetaNameBase {
   }
 
   /**
-   * Nested elements that cannot be exploded.
-   *
-   * @return array
-   *   Array of keys that might contain commas, or otherwise cannot be exploded.
-   */
-  protected function neverExplode() {
-    return [
-      'streetAddress',
-      'reviewBody',
-      'recipeInstructions',
-    ];
-  }
-
-  /**
    * {@inheritdoc}
    */
   protected function processItem(&$value, $key = 0) {
-
-    $explode = $key === 0 ? $this->multiple() : !in_array($key, $this->neverExplode());
-
     // Parse out the image URL, if needed.
-    $value = $this->parseImageUrlValue($value, $explode);
+    $value = $this->parseImageUrlValue($value);
 
     $value = trim($value);
 
@@ -127,7 +110,8 @@ class SchemaNameBase extends MetaNameBase {
     if ($this->secure() && strpos($value, 'http://') !== FALSE) {
       $value = str_replace('http://', 'https://', $value);
     }
-    if ($explode) {
+
+    if ($this->multiple()) {
       $value = SchemaMetatagManager::explode($value);
       // Clean out any empty values that might have been added by explode().
       if (is_array($value)) {
@@ -142,7 +126,7 @@ class SchemaNameBase extends MetaNameBase {
    * A copy of the base method of the same name, but where $value is passed
    * in instead of assumed to be $this->value().
    */
-  protected function parseImageUrlValue($value, $explode) {
+  protected function parseImageUrlValue($value) {
 
     // If this contains embedded image tags, extract the image URLs.
     if ($this->type() === 'image') {
@@ -154,7 +138,7 @@ class SchemaNameBase extends MetaNameBase {
       }
 
       if (strip_tags($value) != $value) {
-        if ($explode) {
+        if ($this->multiple()) {
           $values = explode(',', $value);
         }
         else {
@@ -198,7 +182,7 @@ class SchemaNameBase extends MetaNameBase {
   }
 
   /**
-   * Provide a test input value for the property that will validate.
+   * Provide a test value for the property that will validate.
    *
    * Tags like @type that contain values other than simple strings, for
    * instance a list of allowed options, should extend this method and return
@@ -210,45 +194,6 @@ class SchemaNameBase extends MetaNameBase {
    */
   public static function testValue() {
     return static::testDefaultValue(2, ' ');
-  }
-
-  /**
-   * Provide a test output value for the input value.
-   *
-   * Tags that return values in a different format than the input, like
-   * values that are exploded, should extend this method and return
-   * a valid value.
-   *
-   * @param mixed $items
-   *   The input value, either a string or an array.
-   *
-   * @return mixed
-   *   Return the correct output value.
-   */
-  public static function processedTestValue($items) {
-    return $items;
-  }
-
-  /**
-   * Explode a test value.
-   *
-   * For test values, emulates the extra processing a multiple value would get.
-   *
-   * @param array $items
-   *   The input value, either a string or an array.
-   *
-   * @return mixed
-   *   Return the correct output value.
-   */
-  public static function processTestExplodeValue($items) {
-    if (!is_array($items)) {
-      $items = SchemaMetatagManager::explode($items);
-      // Clean out any empty values that might have been added by explode().
-      if (is_array($items)) {
-        $value = array_filter($items);
-      }
-    }
-    return $items;
   }
 
   /**

@@ -10,7 +10,7 @@
     this.$node = $(node);
     this.$node.data('details', this);
 
-    var anchor = window.location.hash && window.location.hash !== '#' ? ', ' + window.location.hash : '';
+    var anchor = location.hash && location.hash !== '#' ? ', ' + location.hash : '';
     if (this.$node.find('.error' + anchor).length) {
       this.$node.attr('open', true);
     }

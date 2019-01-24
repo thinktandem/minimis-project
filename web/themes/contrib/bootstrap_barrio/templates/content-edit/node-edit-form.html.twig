@@ -15,14 +15,14 @@
  * @see seven_form_node_form_alter()
  */
 #}
-<div class="content clearfix row">
-  <div class="col-md-6 layout-region layout-region-node-main">
+<div class="content clearfix">
+  <div class="layout-region layout-region-node-main">
     {{ form|without('advanced', 'actions') }}
   </div>
-  <div class="col-md-6 layout-region-node-secondary">
+  <div class="col-sm-8 layout-region-node-secondary">
     {{ form.advanced }}
   </div>
-  <div class="col layout-region-node-footer">
+  <div class="col-sm-4 layout-region-node-footer">
     {{ form.actions }}
   </div>
 </div>

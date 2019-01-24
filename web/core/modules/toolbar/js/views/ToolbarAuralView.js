@@ -29,8 +29,7 @@
       var text = void 0;
       if (trayNameElement !== null) {
         text = Drupal.t('Tray "@tray" @action.', {
-          '@tray': trayNameElement.textContent,
-          '@action': action
+          '@tray': trayNameElement.textContent, '@action': action
         });
       } else {
         text = Drupal.t('Tray @action.', { '@action': action });

@@ -3,7 +3,6 @@
 namespace Drupal\Tests\content_translation\Functional;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Tests\content_moderation\Traits\ContentModerationTestTrait;
 use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 
 /**
@@ -12,7 +11,6 @@ use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 abstract class ContentTranslationPendingRevisionTestBase extends ContentTranslationTestBase {
 
   use ContentTypeCreationTrait;
-  use ContentModerationTestTrait;
 
   /**
    * {@inheritdoc}
@@ -112,7 +110,6 @@ abstract class ContentTranslationPendingRevisionTestBase extends ContentTranslat
   protected function setupBundle() {
     parent::setupBundle();
     $this->createContentType(['type' => $this->bundle]);
-    $this->createEditorialWorkflow();
   }
 
   /**
@@ -127,9 +124,6 @@ abstract class ContentTranslationPendingRevisionTestBase extends ContentTranslat
    *   The active revision translation or NULL if none could be identified.
    */
   protected function loadRevisionTranslation(ContentEntityInterface $entity, $langcode) {
-    // Explicitly invalidate the cache for that node, as the call below is
-    // statically cached.
-    $this->storage->resetCache([$entity->id()]);
     $revision_id = $this->storage->getLatestTranslationAffectedRevisionId($entity->id(), $langcode);
     /** @var \Drupal\Core\Entity\ContentEntityInterface $revision */
     $revision = $revision_id ? $this->storage->loadRevision($revision_id) : NULL;

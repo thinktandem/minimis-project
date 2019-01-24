@@ -140,9 +140,6 @@ abstract class InstallerTestBase extends BrowserTestBase {
     // Setup Mink.
     $this->initMink();
 
-    // Set up the browser test output file.
-    $this->initBrowserOutputFile();
-
     $this->visitInstaller();
 
     // Select language.

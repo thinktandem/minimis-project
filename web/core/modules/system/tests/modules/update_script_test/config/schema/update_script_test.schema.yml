@@ -7,3 +7,4 @@ update_script_test.settings:
     requirement_type:
       type: integer
       label: 'Requirement type'
+

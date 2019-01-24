@@ -61,12 +61,12 @@ class TermViewsData extends EntityViewsData {
         'argument field' => 'tid',
         'base'   => 'node_field_data',
         'field'  => 'nid',
-        'relationship' => 'node_field_data:term_node_tid',
+        'relationship' => 'node_field_data:term_node_tid'
       ],
     ];
 
     $data['taxonomy_term_field_data']['vid']['help'] = $this->t('Filter the results of "Taxonomy: Term" to a particular vocabulary.');
-    $data['taxonomy_term_field_data']['vid']['field']['help'] = t('The vocabulary name.');
+    unset($data['taxonomy_term_field_data']['vid']['field']);
     $data['taxonomy_term_field_data']['vid']['argument']['id'] = 'vocabulary_vid';
     unset($data['taxonomy_term_field_data']['vid']['sort']);
 
@@ -133,7 +133,7 @@ class TermViewsData extends EntityViewsData {
       ],
     ];
 
-    $data['taxonomy_index']['table']['group'] = $this->t('Taxonomy term');
+    $data['taxonomy_index']['table']['group']  = $this->t('Taxonomy term');
 
     $data['taxonomy_index']['table']['join'] = [
       'taxonomy_term_field_data' => [
@@ -216,7 +216,7 @@ class TermViewsData extends EntityViewsData {
       'title' => $this->t('Post date'),
       'help' => $this->t('The date the content related to a term was posted.'),
       'sort' => [
-        'id' => 'date',
+        'id' => 'date'
       ],
       'filter' => [
         'id' => 'date',

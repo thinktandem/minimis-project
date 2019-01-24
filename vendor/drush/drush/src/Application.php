@@ -5,7 +5,7 @@ use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Drush\Boot\BootstrapManager;
 use Drush\Runtime\TildeExpansionHook;
-use Consolidation\SiteAlias\SiteAliasManager;
+use Drush\SiteAlias\SiteAliasManager;
 use Drush\Log\LogLevel;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Runtime\RedispatchHook;
@@ -316,7 +316,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $discovery = $this->commandDiscovery();
         $commandClasses = $discovery->discover($commandfileSearchpath, '\Drush');
-
         $this->loadCommandClasses($commandClasses);
 
         // Uncomment the lines below to use Console's built in help and list commands.
@@ -351,10 +350,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $discovery = new CommandFileDiscovery();
         $discovery
             ->setIncludeFilesAtBase(true)
-            ->setSearchDepth(3)
-            ->ignoreNamespacePart('contrib', 'Commands')
-            ->ignoreNamespacePart('custom', 'Commands')
-            ->ignoreNamespacePart('src')
             ->setSearchLocations(['Commands', 'Hooks', 'Generators'])
             ->setSearchPattern('#.*(Command|Hook|Generator)s?.php$#');
         return $discovery;

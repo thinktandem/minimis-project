@@ -8,7 +8,6 @@ namespace Drupal\Tests\file\Kernel;
  * @group file
  */
 class ValidateTest extends FileManagedUnitTestBase {
-
   /**
    * Test that the validators passed into are checked.
    */

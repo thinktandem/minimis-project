@@ -38,11 +38,6 @@
  * @ingroup themeable
  */
 #}
-{%
-  set title_classes = [
-    label_display == 'visually_hidden' ? 'visually-hidden',
-  ]
-%}
 
 {% if label_hidden %}
   {% if multiple %}
@@ -58,7 +53,7 @@
   {% endif %}
 {% else %}
   <div{{ attributes }}>
-    <div{{ title_attributes.addClass(title_classes) }}>{{ label }}</div>
+    <div{{ title_attributes }}>{{ label }}</div>
     {% if multiple %}
       <div>
     {% endif %}

@@ -12,7 +12,6 @@ class ProfileExtensionList extends ExtensionList {
    */
   protected $defaults = [
     'dependencies' => [],
-    'install' => [],
     'description' => '',
     'package' => 'Other',
     'version' => NULL,

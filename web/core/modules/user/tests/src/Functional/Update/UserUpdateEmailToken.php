@@ -8,7 +8,6 @@ use Drupal\FunctionalTests\Update\UpdatePathTestBase;
  * Tests user email token upgrade path.
  *
  * @group Update
- * @group legacy
  */
 class UserUpdateEmailToken extends UpdatePathTestBase {
 

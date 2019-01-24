@@ -18,9 +18,7 @@ use Drupal\views\ResultRow;
 class MachineName extends FieldPluginBase {
 
   /**
-   * Stores the available options.
-   *
-   * @var array
+   * @var array Stores the available options.
    */
   protected $valueOptions;
 

@@ -10,7 +10,6 @@ use Drupal\Tests\BrowserTestBase;
  * @group system
  */
 class AdminMetaTagTest extends BrowserTestBase {
-
   /**
    * Verify that the meta tag HTML is generated correctly.
    */

@@ -1,3 +1,27 @@
+/* Import the Open Sans webfont from Google CDN */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Open Sans Light'), local('OpenSans-Light'), url(https://themes.googleusercontent.com/static/fonts/opensans/v6/DXI1ORHCpsQm3Vp6mXoaTRsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(https://themes.googleusercontent.com/static/fonts/opensans/v6/uYKcPVoh6c5R0NpdEY5A-Q.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(https://themes.googleusercontent.com/static/fonts/opensans/v6/MTP_ySUJH_bn48VBG8sNShsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+}
+
+.adminimal-admin-toolbar .toolbar {
+  font-family: "Open Sans";
+}
+
 .adminimal-admin-toolbar .toolbar a {
   transition: all, 0.2s;
 }
@@ -11,8 +35,7 @@
   background: #333;
 }
 
-.adminimal-admin-toolbar .toolbar-tray .toolbar-menu a,
-.adminimal-admin-toolbar .toolbar-tray .toolbar-menu span {
+.adminimal-admin-toolbar .toolbar-tray .toolbar-menu a {
   background: transparent;
   color: #ccc;
 }
@@ -38,15 +61,9 @@
   box-shadow: none;
 }
 
-.adminimal-admin-toolbar .toolbar-tray a,
-.adminimal-admin-toolbar .toolbar-tray span {
+.adminimal-admin-toolbar .toolbar-tray a {
   background: #2d2d2d;
   color: #bbb;
-}
-
-.adminimal-admin-toolbar .toolbar-tray span {
-  display: block;
-  padding: 1em 1.3333em;
 }
 
 .adminimal-admin-toolbar .toolbar-tray-horizontal a:hover,
@@ -115,6 +132,10 @@
 
 .adminimal-admin-toolbar .toolbar .toolbar-toggle-orientation {
   background-color: #333;
+}
+
+.toolbar .toolbar-icon:before {
+  transition: .25s;
 }
 
 .adminimal-admin-toolbar .toolbar .toolbar-icon.toolbar-handle:focus {

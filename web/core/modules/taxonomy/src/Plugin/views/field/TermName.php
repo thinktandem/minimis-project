@@ -31,6 +31,7 @@ class TermName extends EntityField {
     return $items;
   }
 
+
   /**
    * {@inheritdoc}
    */

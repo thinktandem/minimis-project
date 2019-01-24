@@ -37,7 +37,7 @@ content:
     type: entity_reference_label
     weight: 0
     region: content
-    label: inline
+    label: above
     settings:
       link: true
     third_party_settings: {  }
@@ -46,5 +46,4 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-hidden:
-  content_moderation_control: true
+hidden: {  }

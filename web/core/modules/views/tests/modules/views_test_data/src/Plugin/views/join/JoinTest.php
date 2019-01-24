@@ -35,6 +35,7 @@ class JoinTest extends JoinPluginBase {
     $this->joinValue = $join_value;
   }
 
+
   /**
    * {@inheritdoc}
    */

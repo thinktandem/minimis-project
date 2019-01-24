@@ -45,7 +45,6 @@ class ContentEntity extends BaseGenerator {
     $questions['fieldable'] = new ConfirmationQuestion('Make the entity type fieldable?', TRUE);
     $questions['revisionable'] = new ConfirmationQuestion('Make the entity type revisionable?', FALSE);
     $questions['translatable'] = new ConfirmationQuestion('Make the entity type translatable?', FALSE);
-    $questions['bundle'] = new ConfirmationQuestion('The entity type has bundle?', FALSE);
     $questions['template'] = new ConfirmationQuestion('Create entity template?', TRUE);
     $questions['access_controller'] = new ConfirmationQuestion('Create CRUD permissions?', FALSE);
     $questions['title_base_field'] = new ConfirmationQuestion('Add "title" base field?', TRUE);
@@ -66,11 +65,8 @@ class ContentEntity extends BaseGenerator {
       $vars['entity_base_path'] = '/' . $vars['entity_base_path'];
     }
 
-    if (($vars['fieldable_no_bundle'] = $vars['fieldable'] && !$vars['bundle'])) {
+    if ($vars['fieldable']) {
       $vars['configure'] = 'entity.' . $vars['entity_type_id'] . '.settings';
-    }
-    elseif ($vars['bundle']) {
-      $vars['configure'] = 'entity.' . $vars['entity_type_id'] . '_type.collection';
     }
 
     $vars['class_prefix'] = Utils::camelize($vars['entity_type_label']);
@@ -81,14 +77,14 @@ class ContentEntity extends BaseGenerator {
       'model.links.menu.yml.twig',
       'model.links.task.yml.twig',
       'model.permissions.yml.twig',
+      'model.routing.yml.twig',
       'src/Entity/Example.php.twig',
       'src/ExampleInterface.php.twig',
       'src/ExampleListBuilder.php.twig',
       'src/Form/ExampleForm.php.twig',
     ];
 
-    if ($vars['fieldable_no_bundle']) {
-      $templates[] = 'model.routing.yml.twig';
+    if ($vars['fieldable']) {
       $templates[] = 'src/Form/ExampleSettingsForm.php.twig';
     }
 
@@ -108,14 +104,6 @@ class ContentEntity extends BaseGenerator {
       $templates[] = 'config/optional/rest.resource.entity.example.yml.twig';
     }
 
-    if ($vars['bundle']) {
-      $templates[] = 'config/optional/views.view.example.yml.twig';
-      $templates[] = 'config/schema/model.entity_type.schema.yml.twig';
-      $templates[] = 'src/ExampleTypeListBuilder.php.twig';
-      $templates[] = 'src/Entity/ExampleType.php.twig';
-      $templates[] = 'src/Form/ExampleTypeForm.php.twig';
-    }
-
     $templates_path = 'd8/module/content-entity/';
 
     $vars['template_name'] = str_replace('_', '-', $vars['entity_type_id']) . '.html.twig';
@@ -125,14 +113,12 @@ class ContentEntity extends BaseGenerator {
       'model',
       'Example',
       'rest.resource.entity.example',
-      'views.view.example',
     ];
     $path_replacements = [
       $vars['template_name'],
       $vars['machine_name'],
       $vars['class_prefix'],
       'rest.resource.entity.' . $vars['entity_type_id'],
-      'views.view.' . $vars['entity_type_id'],
     ];
 
     foreach ($templates as $template) {
