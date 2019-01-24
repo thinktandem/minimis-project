@@ -20,7 +20,8 @@
     "require": {
         "cweagans/composer-patches": "^1.6",
         "drupal-composer/drupal-scaffold": "^2.2",
-        "thinktandem/minimis": "dev-8.x-1.x"
+        "thinktandem/minimis": "dev-8.x-1.x",
+        "drupal/module_missing_message_fixer": "1.x-dev"
     },
     "repositories": [
         {

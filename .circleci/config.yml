@@ -47,7 +47,8 @@ jobs:
       - run:
           name: Push to DO
           command: |
+            git fetch drupalorg
+            git pull drupalorg 8.x-1.x --rebase
             git add -A
             git commit -m "Compiling and Pushing from CircleCI"
-            git pull drupalorg 8.x-1.x --rebase
             git push drupalorg 8.x-1.x
