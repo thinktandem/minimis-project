@@ -1,5 +1,5 @@
 # Minimis
-This is a Composer-based installer for Tandem's [Minimis](https://www.drupal.org/project/minimis) Drupal 8 distribution
+This is a Composer-based installer for Tandem's [Minimis](https://github.com/thinktandem/minimis) Drupal 8 distribution
 
 ## Install
 
