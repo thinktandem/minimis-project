@@ -7704,7 +7704,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thinktandem/minimis",
-                "reference": "afe2a2da0569b1edbf66fdf3d74efc9b038e53b1"
+                "reference": "30c811557f26125e759598f6be5a449c999e5b0b"
             },
             "require": {
                 "composer/installers": "^1.2",
@@ -7837,7 +7837,7 @@
                 }
             ],
             "description": "Thinktandem's Minimis Distribution",
-            "time": "2019-11-04T15:22:13+00:00"
+            "time": "2019-11-13T13:51:57+00:00"
         },
         {
             "name": "twbs/bootstrap",
