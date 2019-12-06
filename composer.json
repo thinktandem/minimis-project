@@ -13,15 +13,6 @@
     ],
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "require-dev": {
-        "drush/drush": "^9.0",
-        "drupal/console": "^1.0.2"
-    },
-    "require": {
-        "cweagans/composer-patches": "^1.6",
-        "drupal-composer/drupal-scaffold": "^2.2",
-        "thinktandem/minimis": "dev-8.x-1.x"
-    },
     "repositories": [
         {
             "type": "composer",
@@ -52,18 +43,32 @@
             }
         }
     ],
+    "require": {
+        "cweagans/composer-patches": "^1.6",
+        "thinktandem/minimis": "dev-8.x-1.x"
+    },
+    "require-dev": {
+        "drush/drush": "^9.0",
+        "drupal/console": "^1.0.2"
+    },
     "scripts": {
         "post-install-cmd": [
-            "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
             "find web -name '.git' | xargs rm -rf"
         ],
         "post-update-cmd": [
-            "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
             "find web -name '.git' | xargs rm -rf"
         ],
         "nuke": "rm -r -f web vendor composer.lock"
     },
     "extra": {
+        "patchLevel": {
+            "drupal/core": "-p2"
+        },
+        "drupal-scaffold": {
+            "locations": {
+                "web-root": "web/"
+            }
+        },
         "installer-paths": {
             "web/core": ["type:drupal-core"],
             "web/libraries/{$name}": ["type:drupal-library"],

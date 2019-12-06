@@ -8,4 +8,4 @@ config:
 services:
   appserver:
     run:
-      - "cd $LANDO_MOUNT && composer install"
+      - "cd /app && composer install"
