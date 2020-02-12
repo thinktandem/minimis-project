@@ -12,7 +12,9 @@ lando start
 
 ### Non-Lando
 ```bash
-composer create-project thinktandem/minimis-project YOUR_DIR -s dev
+git clone git@github.com:thinktandem/minimis-project.git 
+cd minimis-project
+composer install
 ```
 
 [List of Features](https://github.com/thinktandem/minimis/blob/8.x-1.x/README.md) is on the distro github repo itself.
