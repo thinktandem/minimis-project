@@ -27,20 +27,8 @@
             "url": "https://github.com/thinktandem/bootstrap"
         },
         {
-            "type": "package",
-            "package": {
-                "name": "dinbror/blazy",
-                "version": "1.8.2",
-                "type": "drupal-library",
-                "extra": {
-                    "installer-name": "blazy"
-                },
-                "source": {
-                    "type": "git",
-                    "url": "https://github.com/dinbror/blazy",
-                    "reference": "1.8.2"
-                }
-            }
+            "type": "composer",
+            "url": "https://asset-packagist.org"
         }
     ],
     "require": {
@@ -61,6 +49,7 @@
         "nuke": "rm -r -f web vendor composer.lock"
     },
     "extra": {
+        "installer-types": ["bower-asset", "npm-asset"],
         "patchLevel": {
             "drupal/core": "-p2"
         },
@@ -71,7 +60,7 @@
         },
         "installer-paths": {
             "web/core": ["type:drupal-core"],
-            "web/libraries/{$name}": ["type:drupal-library"],
+            "web/libraries/{$name}": ["type:drupal-library", "type:bower-asset", "type:npm-asset"],
             "web/modules/contrib/{$name}": ["type:drupal-module"],
             "web/profiles/contrib/{$name}": ["type:drupal-profile"],
             "web/themes/contrib/{$name}": ["type:drupal-theme"],
