@@ -8059,7 +8059,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thinktandem/minimis",
-                "reference": "9c33dc14aa38bc7969c8ed330b518017cf630880"
+                "reference": "2eb252acae458410cc780ae0729c1e719c47be55"
             },
             "require": {
                 "bower-asset/lazysizes": "5.1",
@@ -8069,7 +8069,7 @@
                 "drupal/adminimal_admin_toolbar": "^1.5",
                 "drupal/adminimal_theme": "^1.3",
                 "drupal/big_pipe_sessionless": "^1.2",
-                "drupal/bootstrap_barrio": "^4.25",
+                "drupal/bootstrap_barrio": "4.28",
                 "drupal/bootstrap_library": "^1.9",
                 "drupal/config_readonly": "1.x-dev",
                 "drupal/config_rewrite": "^1.1",
@@ -8191,7 +8191,7 @@
                 }
             ],
             "description": "Thinktandem's Minimis Distribution",
-            "time": "2020-06-18T00:51:21+00:00"
+            "time": "2020-06-18T03:11:46+00:00"
         },
         {
             "name": "twbs/bootstrap",
