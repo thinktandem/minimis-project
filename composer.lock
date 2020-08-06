@@ -8064,7 +8064,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thinktandem/minimis",
-                "reference": "6ffd11772080988ce85bb8ba35dbab92df09d854"
+                "reference": "0aec54c3c73e0bc2e28cce0082cbdb210fa30b41"
             },
             "require": {
                 "bower-asset/lazysizes": "5.2.2",
@@ -8196,7 +8196,7 @@
                 }
             ],
             "description": "Thinktandem's Minimis Distribution",
-            "time": "2020-08-06T12:54:09+00:00"
+            "time": "2020-08-06T13:47:35+00:00"
         },
         {
             "name": "twbs/bootstrap",
