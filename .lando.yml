@@ -4,7 +4,7 @@ config:
   webroot: web
   database: mariadb
   via: nginx
-  php: 7.2
+  php: 7.3
 services:
   appserver:
     run:
