@@ -2013,27 +2013,27 @@
         },
         {
             "name": "drupal/bootstrap_barrio",
-            "version": "5.5.1",
+            "version": "5.1.5",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bootstrap_barrio.git",
-                "reference": "5.5.1"
+                "reference": "5.1.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap_barrio-5.5.1.zip",
-                "reference": "5.5.1",
-                "shasum": "cc6f630435c4f4e93141511c2e0d8db92b3f90cd"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_barrio-5.1.5.zip",
+                "reference": "5.1.5",
+                "shasum": "65567fb80be6a2f9b941b5f4537eb2585619b3d6"
             },
             "require": {
                 "drupal/core": "^8 || ^9",
-                "twbs/bootstrap": "^5.0.0"
+                "twbs/bootstrap": "^4.4.1"
             },
             "type": "drupal-theme",
             "extra": {
                 "drupal": {
-                    "version": "5.5.1",
-                    "datestamp": "1621798745",
+                    "version": "5.1.5",
+                    "datestamp": "1621798643",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -2063,26 +2063,27 @@
         },
         {
             "name": "drupal/bootstrap_library",
-            "version": "1.10.0",
+            "version": "1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bootstrap_library.git",
-                "reference": "8.x-1.10"
+                "reference": "8.x-1.14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap_library-8.x-1.10.zip",
-                "reference": "8.x-1.10",
-                "shasum": "d71b28d164e66d62b9ae2a64a044b2ffee2ac511"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_library-8.x-1.14.zip",
+                "reference": "8.x-1.14",
+                "shasum": "02ce49a5f8b2047150ae89350ad9caac1e04e352"
             },
             "require": {
-                "drupal/core": "~8.0"
+                "drupal/core": "^8 || ^9",
+                "twbs/bootstrap": "^4.4.1"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.10",
-                    "datestamp": "1525127580",
+                    "version": "8.x-1.14",
+                    "datestamp": "1597506570",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -2091,16 +2092,17 @@
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
-                "GPL-2.0-or-later"
+                "GPL-2.0+"
             ],
             "authors": [
                 {
-                    "name": "hatuhay",
-                    "homepage": "https://www.drupal.org/user/827704"
+                    "name": "Alberto Siles",
+                    "homepage": "https://www.drupal.org/user/827704",
+                    "email": "alberto@siles.pe"
                 }
             ],
-            "description": "Register Boostrap as a library by installing files in /sites/all/libraries/bootstrap.",
-            "homepage": "https://www.drupal.org/project/bootstrap_library",
+            "description": "Provides Bootstrap Integration.",
+            "homepage": "http://drupal.org/project/bootstrap_library",
             "support": {
                 "source": "https://git.drupalcode.org/project/bootstrap_library"
             }
@@ -8247,7 +8249,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/thinktandem/minimis",
-                "reference": "79d2b94afbf778ac39bdc3dc4e410b185782f4c6"
+                "reference": "12766dbdf9ffa5753097873c4148fa0f6f8ef072"
             },
             "require": {
                 "bower-asset/lazysizes": "5.2.2",
@@ -8257,7 +8259,7 @@
                 "drupal/adminimal_admin_toolbar": "^1.5",
                 "drupal/adminimal_theme": "^1.3",
                 "drupal/big_pipe_sessionless": "1.2",
-                "drupal/bootstrap_barrio": "^5.1",
+                "drupal/bootstrap_barrio": "5.1.*",
                 "drupal/bootstrap_library": "^1.9",
                 "drupal/config_readonly": "^1.0",
                 "drupal/config_rewrite": "^1.1",
@@ -8379,26 +8381,31 @@
                 }
             ],
             "description": "Thinktandem's Minimis Distribution",
-            "time": "2021-06-03T12:50:30+00:00"
+            "time": "2021-06-03T13:23:47+00:00"
         },
         {
             "name": "twbs/bootstrap",
-            "version": "v5.0.1",
+            "version": "v4.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "58b1be927f43c779377e478df2d119f2ddf956ca"
+                "reference": "6ffb0b48e455430f8a5359ed689ad64c1143fac2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/58b1be927f43c779377e478df2d119f2ddf956ca",
-                "reference": "58b1be927f43c779377e478df2d119f2ddf956ca",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/6ffb0b48e455430f8a5359ed689ad64c1143fac2",
+                "reference": "6ffb0b48e455430f8a5359ed689ad64c1143fac2",
                 "shasum": ""
             },
             "replace": {
                 "twitter/bootstrap": "self.version"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.3.x-dev"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
@@ -8431,7 +8438,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2021-05-13T16:22:20+00:00"
+            "time": "2021-01-19T16:16:38+00:00"
         },
         {
             "name": "twig/twig",
