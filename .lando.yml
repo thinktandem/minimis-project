@@ -6,7 +6,7 @@ config:
   via: nginx
   php: 7.4
   composer_version: 2
-services:
-  appserver:
-    run:
-      - "cd /app && composer install"
+
+events:
+  post-start:
+    - appserver: cd /app && composer install
