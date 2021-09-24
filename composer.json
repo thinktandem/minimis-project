@@ -1,6 +1,6 @@
 {
     "name": "thinktandem/minimis-project",
-    "description": "Template for Tandem's Drupal 8 Minimis Distribution.",
+    "description": "Template for Tandem's Drupal 9 Minimis Distribution.",
     "type": "project",
     "license": "GPL-2.0+",
     "authors": [
@@ -33,11 +33,10 @@
     ],
     "require": {
         "cweagans/composer-patches": "^1.6",
-        "thinktandem/minimis": "dev-8.x-1.x"
+        "thinktandem/minimis": "dev-9.x-1.x"
     },
     "require-dev": {
-        "drush/drush": "^9.0",
-        "drupal/console": "^1.0.2"
+        "drush/drush": "^10.0"
     },
     "scripts": {
         "post-install-cmd": [
