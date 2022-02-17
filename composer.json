@@ -36,7 +36,7 @@
         "thinktandem/minimis": "dev-9.x-1.x"
     },
     "require-dev": {
-        "drush/drush": "^10.0"
+        "drush/drush": "^11.0"
     },
     "scripts": {
         "post-install-cmd": [
